@@ -77,11 +77,11 @@ public class MainActivity extends AppCompatActivity {
           }
 
           @Override public void onError(Throwable e) {
-            Toast.makeText(MainActivity.this, "Not found", Toast.LENGTH_SHORT);
+            Toast.makeText(MainActivity.this, "Not found", Toast.LENGTH_SHORT).show();
           }
 
           @Override public void onNext(Item item) {
-            Toast.makeText(MainActivity.this, "FOUND!!!", Toast.LENGTH_SHORT);
+            Toast.makeText(MainActivity.this, "FOUND!!!", Toast.LENGTH_SHORT).show();
           }
         });
   }

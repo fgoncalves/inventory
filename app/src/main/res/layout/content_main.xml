@@ -19,6 +19,7 @@
           android:layout_height="wrap_content"
           android:hint="(barcode)"
           android:layout_marginTop="50dp"
+          android:inputType="number"
           android:singleLine="true"/>
       <Button
           android:id="@+id/fetchDetailsButton"
