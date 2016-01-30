@@ -5,7 +5,7 @@ import com.google.gson.annotations.SerializedName;
 import java.util.Collections;
 import java.util.List;
 
-public class Item {
+public class Item extends Error {
 
   @SerializedName("gtin14") @Expose private final String gtin14;
   @SerializedName("brand_name") @Expose private final String brandName;
@@ -24,10 +24,11 @@ public class Item {
   @SerializedName("publisher") @Expose private final String publisher;
   @SerializedName("images") @Expose private final List<Image> images;
 
-  private Item(String gtin14, String brandName, String name, String size, String ingredients,
-      String servingSize, String servingsPerContainer, Integer calories, Integer fatCalories,
-      Double fat, Integer potassium, Integer carbohydrate, Integer sugars, Integer protein,
-      String publisher, List<Image> images) {
+  private Item(String errorMessage, String gtin14, String brandName, String name, String size,
+      String ingredients, String servingSize, String servingsPerContainer, Integer calories,
+      Integer fatCalories, Double fat, Integer potassium, Integer carbohydrate, Integer sugars,
+      Integer protein, String publisher, List<Image> images) {
+    super(errorMessage);
     this.gtin14 = gtin14;
     this.brandName = brandName;
     this.name = name;
@@ -111,6 +112,7 @@ public class Item {
   }
 
   public static class Builder {
+    private String errorMessage;
     private String gtin14;
     private String brandName;
     private String name;
@@ -127,6 +129,11 @@ public class Item {
     private Integer protein;
     private String publisher;
     private List<Image> images;
+
+    public Builder withErrorMessage(String errorMessage) {
+      this.errorMessage = errorMessage;
+      return this;
+    }
 
     public Builder withGtin14(String gtin14) {
       this.gtin14 = gtin14;
@@ -209,8 +216,9 @@ public class Item {
     }
 
     public Item build() {
-      return new Item(gtin14, brandName, name, size, ingredients, servingSize, servingsPerContainer,
-          calories, fatCalories, fat, potassium, carbohydrate, sugars, protein, publisher, images);
+      return new Item(errorMessage, gtin14, brandName, name, size, ingredients, servingSize,
+          servingsPerContainer, calories, fatCalories, fat, potassium, carbohydrate, sugars,
+          protein, publisher, images);
     }
   }
 }

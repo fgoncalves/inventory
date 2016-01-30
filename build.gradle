@@ -29,5 +29,6 @@ project.ext.jacocoExcludes = ['**/R.class',
                               '**/*$ViewInjector*.*',
                               '**/BuildConfig.*',
                               '**/Manifest*.*',
+                              '**/*ModuleAdapter*',
                               '**/*Module.*']
 

@@ -5,6 +5,6 @@ import retrofit.http.GET;
 import retrofit.http.Path;
 import rx.Observable;
 
-public interface Calls {
+public interface ItemCalls {
   @GET("/api/items/{itemID}") Observable<Item> get(@Path("itemID") String itemId);
 }

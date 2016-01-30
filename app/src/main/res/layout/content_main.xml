@@ -9,10 +9,24 @@
     android:layout_height="match_parent"
     tools:context="com.fred.inventory.MainActivity">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="@dimen/text_margin"
-        android:text="@string/large_text"/>
+  <RelativeLayout
+      android:layout_width="match_parent"
+      android:layout_height="match_parent">
+
+      <EditText
+          android:id="@+id/productId"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:hint="(barcode)"
+          android:layout_marginTop="50dp"
+          android:singleLine="true"/>
+      <Button
+          android:id="@+id/fetchDetailsButton"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:text="get"
+          android:layout_marginTop="20dp"
+          android:layout_below="@+id/productId"/>
+  </RelativeLayout>
 
 </android.support.v4.widget.NestedScrollView>
