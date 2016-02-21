@@ -13,8 +13,8 @@ import android.widget.Toast;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import com.fred.inventory.data.datakick.models.Item;
-import com.fred.inventory.data.datakick.services.ItemService;
+import com.fred.inventory.data.outpan.models.Product;
+import com.fred.inventory.data.outpan.services.ProductService;
 import dagger.ObjectGraph;
 import javax.inject.Inject;
 import rx.Subscriber;
@@ -25,7 +25,7 @@ public class MainActivity extends AppCompatActivity {
   @Bind(R.id.productId) EditText productId;
   @Bind(R.id.toolbar) Toolbar toolbar;
   @Bind(R.id.fab) FloatingActionButton fab;
-  @Inject ItemService itemService;
+  @Inject ProductService productService;
 
   @Override protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
@@ -68,10 +68,10 @@ public class MainActivity extends AppCompatActivity {
     String text = productId.getText().toString().trim();
     if (text.isEmpty()) return;
 
-    itemService.get(text)
+    productService.get(text)
         .observeOn(AndroidSchedulers.mainThread())
         .subscribeOn(Schedulers.io())
-        .subscribe(new Subscriber<Item>() {
+        .subscribe(new Subscriber<Product>() {
           @Override public void onCompleted() {
 
           }
@@ -80,8 +80,12 @@ public class MainActivity extends AppCompatActivity {
             Toast.makeText(MainActivity.this, "Not found", Toast.LENGTH_SHORT).show();
           }
 
-          @Override public void onNext(Item item) {
-            Toast.makeText(MainActivity.this, "FOUND!!!", Toast.LENGTH_SHORT).show();
+          @Override public void onNext(Product product) {
+            if (product.getName() == null || product.getName().isEmpty()) {
+              Toast.makeText(MainActivity.this, "FOUND!!! EMPTY THOUGH", Toast.LENGTH_SHORT).show();
+            } else {
+              Toast.makeText(MainActivity.this, product.getName(), Toast.LENGTH_SHORT).show();
+            }
           }
         });
   }
