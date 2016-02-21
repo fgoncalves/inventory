@@ -30,6 +30,7 @@ project.ext.jacocoExcludes = ['**/R.class',
                               '**/BuildConfig.*',
                               '**/Manifest*.*',
                               '**/*$ViewBinder$*',
+                              '**/*$InjectAdapter*',
                               '**/*ModuleAdapter*',
                               '**/*Module.*']
 
