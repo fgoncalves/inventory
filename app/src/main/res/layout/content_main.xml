@@ -12,22 +12,6 @@
   <RelativeLayout
       android:layout_width="match_parent"
       android:layout_height="match_parent">
-
-      <EditText
-          android:id="@+id/productId"
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-          android:hint="(barcode)"
-          android:layout_marginTop="50dp"
-          android:inputType="number"
-          android:singleLine="true"/>
-      <Button
-          android:id="@+id/fetchDetailsButton"
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-          android:text="get"
-          android:layout_marginTop="20dp"
-          android:layout_below="@+id/productId"/>
   </RelativeLayout>
 
 </android.support.v4.widget.NestedScrollView>
