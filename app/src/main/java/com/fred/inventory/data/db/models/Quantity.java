@@ -1,7 +1,6 @@
 package com.fred.inventory.data.db.models;
 
 import io.realm.RealmObject;
-import io.realm.annotations.Required;
 
 /**
  * This class represents the quantity for an item. An item can have several
@@ -11,7 +10,7 @@ public class Quantity extends RealmObject {
   public static final String NO_UNIT = null;
 
   //for now an int should be enough
-  @Required private int quantity;
+  private int quantity;
   /**
    * This represents the unit of the quantity.
    */
