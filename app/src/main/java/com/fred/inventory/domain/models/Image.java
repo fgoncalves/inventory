@@ -1,13 +1,10 @@
-package com.fred.inventory.data.db.models;
-
-import io.realm.RealmObject;
-import io.realm.annotations.PrimaryKey;
+package com.fred.inventory.domain.models;
 
 /**
  * The image class holds the information about the image for the product locally
  */
-public class Image extends RealmObject {
-  @PrimaryKey private String name;
+public class Image {
+  private String name;
 
   public String getName() {
     return name;
