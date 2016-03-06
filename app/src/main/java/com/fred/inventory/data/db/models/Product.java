@@ -9,8 +9,8 @@ public class Product extends RealmObject {
    * Same as the bar code
    */
   @PrimaryKey private String id;
-  private RealmList<Image> images;
-  private RealmList<Quantity> quantities;
+  private RealmList<Image> images = new RealmList<>();
+  private RealmList<Quantity> quantities = new RealmList<>();
 
   public String getId() {
     return id;

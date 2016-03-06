@@ -8,7 +8,7 @@ import io.realm.RealmObject;
  * supplies.
  */
 public class ProductList extends RealmObject {
-  private RealmList<Product> products;
+  private RealmList<Product> products = new RealmList<>();
 
   public RealmList<Product> getProducts() {
     return products;

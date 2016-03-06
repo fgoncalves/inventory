@@ -1,6 +1,7 @@
 package com.fred.inventory.domain.models;
 
 import io.realm.annotations.PrimaryKey;
+import java.util.ArrayList;
 import java.util.List;
 
 public class Product {
@@ -8,8 +9,8 @@ public class Product {
    * Same as the bar code
    */
   @PrimaryKey private String id;
-  private List<Image> images;
-  private List<Quantity> quantities;
+  private List<Image> images = new ArrayList<>();
+  private List<Quantity> quantities = new ArrayList<>();
 
   public String getId() {
     return id;
