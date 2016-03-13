@@ -1,5 +1,6 @@
 package com.fred.inventory.domain.models;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -7,7 +8,8 @@ import java.util.List;
  * supplies.
  */
 public class ProductList {
-  private List<Product> products;
+  private String name;
+  private List<Product> products = new ArrayList<>();
 
   public List<Product> getProducts() {
     return products;
@@ -15,5 +17,13 @@ public class ProductList {
 
   public void setProducts(List<Product> products) {
     this.products = products;
+  }
+
+  public String getName() {
+    return name;
+  }
+
+  public void setName(String name) {
+    this.name = name;
   }
 }
