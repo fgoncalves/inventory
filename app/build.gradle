@@ -35,6 +35,7 @@ dependencies {
   compile 'com.squareup.okhttp:okhttp:2.0.0'
   compile 'com.squareup.dagger:dagger:1.2.2'
   compile 'com.jakewharton:butterknife:7.0.1'
+  compile 'com.jakewharton.timber:timber:4.1.1'
   compile 'io.realm:realm-android:0.87.5'
 
   testCompile 'junit:junit:4.12'
