@@ -1,9 +1,9 @@
 package com.fred.inventory.data;
 
+import com.fred.inventory.data.db.ProductService;
+import com.fred.inventory.data.db.ProductServiceImpl;
 import com.fred.inventory.data.db.RealmWrapper;
 import com.fred.inventory.data.db.RealmWrapperImpl;
-import com.fred.inventory.data.outpan.services.ProductService;
-import com.fred.inventory.data.outpan.services.ProductServiceImpl;
 import dagger.Module;
 import dagger.Provides;
 import javax.inject.Singleton;

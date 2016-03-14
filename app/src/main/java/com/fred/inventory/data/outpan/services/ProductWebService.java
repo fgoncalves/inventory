@@ -3,7 +3,7 @@ package com.fred.inventory.data.outpan.services;
 import com.fred.inventory.data.outpan.models.Product;
 import rx.Observable;
 
-public interface ProductService {
+public interface ProductWebService {
   /**
    * Get the product info from the outpan backend.
    *

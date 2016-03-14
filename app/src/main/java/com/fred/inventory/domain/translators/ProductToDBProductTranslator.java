@@ -1,4 +1,4 @@
-package com.fred.inventory.domain.transformers;
+package com.fred.inventory.domain.translators;
 
 import com.fred.inventory.domain.models.Image;
 import com.fred.inventory.domain.models.Product;
@@ -10,11 +10,15 @@ import javax.inject.Inject;
  */
 public class ProductToDBProductTranslator
     implements Translator<Product, com.fred.inventory.data.db.models.Product> {
-  private final ImageToDBImageTranslator imageToDBImageTranslator;
-  private final QuantityToDBQuantityTranslator quantityToDBQuantityTranslator;
+  private final Translator<Image, com.fred.inventory.data.db.models.Image> imageToDBImageTranslator;
+  private final Translator<Quantity, com.fred.inventory.data.db.models.Quantity>
+      quantityToDBQuantityTranslator;
 
-  @Inject public ProductToDBProductTranslator(ImageToDBImageTranslator imageToDBImageTranslator,
-      QuantityToDBQuantityTranslator quantityToDBQuantityTranslator) {
+  @Inject public ProductToDBProductTranslator(
+      @com.fred.inventory.domain.modules.qualifiers.ImageToDBImageTranslator
+      Translator<Image, com.fred.inventory.data.db.models.Image> imageToDBImageTranslator,
+      @com.fred.inventory.domain.modules.qualifiers.QuantityToDBQuantityTranslator
+      Translator<Quantity, com.fred.inventory.data.db.models.Quantity> quantityToDBQuantityTranslator) {
     this.imageToDBImageTranslator = imageToDBImageTranslator;
     this.quantityToDBQuantityTranslator = quantityToDBQuantityTranslator;
   }

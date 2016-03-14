@@ -2,8 +2,8 @@ package com.fred.inventory.data;
 
 import com.fred.inventory.BuildConfig;
 import com.fred.inventory.data.outpan.calls.ProductCalls;
-import com.fred.inventory.data.outpan.services.ProductService;
-import com.fred.inventory.data.outpan.services.ProductServiceImpl;
+import com.fred.inventory.data.outpan.services.ProductWebService;
+import com.fred.inventory.data.outpan.services.ProductWebServiceImpl;
 import dagger.Module;
 import dagger.Provides;
 import javax.inject.Singleton;
@@ -25,7 +25,7 @@ import retrofit.client.OkClient;
   }
 
   @Provides @Singleton
-  public ProductService providesProductService(ProductServiceImpl productService) {
+  public ProductWebService providesProductWebService(ProductWebServiceImpl productService) {
     return productService;
   }
 }

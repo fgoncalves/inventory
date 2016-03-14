@@ -1,4 +1,4 @@
-package com.fred.inventory.domain.transformers;
+package com.fred.inventory.domain.translators;
 
 import com.fred.inventory.domain.models.Image;
 import org.junit.Before;
