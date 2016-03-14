@@ -7,10 +7,10 @@ import rx.Observable;
 
 import static com.fred.inventory.utils.Preconditions.checkNotNull;
 
-public class ProductServiceImpl implements ProductService {
+public class ProductWebServiceImpl implements ProductWebService {
   private final ProductCalls calls;
 
-  @Inject public ProductServiceImpl(ProductCalls calls) {
+  @Inject public ProductWebServiceImpl(ProductCalls calls) {
     this.calls = calls;
   }
 

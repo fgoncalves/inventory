@@ -13,7 +13,7 @@ import rx.schedulers.Schedulers;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
-public class ProductServiceImplTest {
+public class ProductWebServiceImplTest {
   @Mock RealmWrapper realmWrapper;
 
   ProductServiceImpl productService;

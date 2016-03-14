@@ -1,4 +1,4 @@
-package com.fred.inventory.domain.transformers;
+package com.fred.inventory.domain.translators;
 
 /**
  * Transform a model A into a model B.

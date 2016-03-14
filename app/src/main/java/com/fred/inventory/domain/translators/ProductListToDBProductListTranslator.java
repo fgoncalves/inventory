@@ -1,4 +1,4 @@
-package com.fred.inventory.domain.transformers;
+package com.fred.inventory.domain.translators;
 
 import com.fred.inventory.domain.models.Product;
 import com.fred.inventory.domain.models.ProductList;
@@ -11,10 +11,12 @@ import javax.inject.Inject;
  */
 public class ProductListToDBProductListTranslator
     implements Translator<ProductList, com.fred.inventory.data.db.models.ProductList> {
-  private final ProductToDBProductTranslator productToDBProductTranslator;
+  private final Translator<Product, com.fred.inventory.data.db.models.Product>
+      productToDBProductTranslator;
 
   @Inject public ProductListToDBProductListTranslator(
-      ProductToDBProductTranslator productToDBProductTranslator) {
+      @com.fred.inventory.domain.modules.qualifiers.ProductToDBProductTranslator
+      Translator<Product, com.fred.inventory.data.db.models.Product> productToDBProductTranslator) {
     this.productToDBProductTranslator = productToDBProductTranslator;
   }
 
