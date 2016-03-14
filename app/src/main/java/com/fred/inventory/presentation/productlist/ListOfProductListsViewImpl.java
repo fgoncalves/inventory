@@ -42,6 +42,7 @@ public class ListOfProductListsViewImpl extends android.support.v4.widget.Nested
   @Override public void onAttachedToWindow() {
     super.onAttachedToWindow();
     recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+    presenter.onAttachedToWindow();
   }
 
   @Override public void showEmptyView() {
