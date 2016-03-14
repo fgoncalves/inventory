@@ -46,8 +46,14 @@ public class ListOfProductListsPresenterImpl implements ListOfProductListsPresen
    * Subscriber for the list of product lists
    */
   private class ListOfProductListsSubscriber extends Subscriber<List<ProductList>> {
-    @Override public void onCompleted() {
+    private List<ProductList> productLists;
 
+    @Override public void onCompleted() {
+      if (productLists == null || productLists.isEmpty()) {
+        view.showEmptyView();
+      } else {
+        view.hideEmptyView();
+      }
     }
 
     @Override public void onError(Throwable e) {
@@ -56,13 +62,9 @@ public class ListOfProductListsPresenterImpl implements ListOfProductListsPresen
     }
 
     @Override public void onNext(List<ProductList> productLists) {
+      this.productLists = productLists;
       adapter.attachModel(productLists);
       view.setAdapter(adapter);
-      if (productLists.isEmpty()) {
-        view.showEmptyView();
-      } else {
-        view.hideEmptyView();
-      }
     }
   }
 }
