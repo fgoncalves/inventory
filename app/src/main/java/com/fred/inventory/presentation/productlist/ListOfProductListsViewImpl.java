@@ -3,6 +3,7 @@ package com.fred.inventory.presentation.productlist;
 import android.content.Context;
 import android.util.AttributeSet;
 import com.fred.inventory.SuppliesApplication;
+import com.fred.inventory.presentation.productlist.adapters.ListOfProductListsAdapter;
 import javax.inject.Inject;
 
 public class ListOfProductListsViewImpl extends android.support.v4.widget.NestedScrollView
@@ -25,5 +26,21 @@ public class ListOfProductListsViewImpl extends android.support.v4.widget.Nested
   @Override protected void onFinishInflate() {
     super.onFinishInflate();
     SuppliesApplication.scoped(new ListOfProductListsModule(this)).inject(this);
+  }
+
+  @Override public void showEmptyView() {
+
+  }
+
+  @Override public void hideEmptyView() {
+
+  }
+
+  @Override public void setAdapter(ListOfProductListsAdapter adapter) {
+
+  }
+
+  @Override public void displayListAllProductListsError() {
+
   }
 }
