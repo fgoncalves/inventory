@@ -10,6 +10,7 @@ import java.util.List;
 import javax.inject.Inject;
 import rx.Subscriber;
 import rx.Subscription;
+import timber.log.Timber;
 
 public class ListOfProductListsPresenterImpl implements ListOfProductListsPresenter {
   private final ListOfProductListsView view;
@@ -50,6 +51,7 @@ public class ListOfProductListsPresenterImpl implements ListOfProductListsPresen
     }
 
     @Override public void onError(Throwable e) {
+      Timber.d(e, "Failed to list all product lists from the app");
       view.displayListAllProductListsError();
     }
 
