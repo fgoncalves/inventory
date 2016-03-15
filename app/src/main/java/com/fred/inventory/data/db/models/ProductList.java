@@ -9,7 +9,8 @@ import io.realm.annotations.PrimaryKey;
  * supplies.
  */
 public class ProductList extends RealmObject {
-  @PrimaryKey private String name;
+  @PrimaryKey private String id;
+  private String name;
   private RealmList<Product> products = new RealmList<>();
 
   public RealmList<Product> getProducts() {
@@ -26,5 +27,13 @@ public class ProductList extends RealmObject {
 
   public void setName(String name) {
     this.name = name;
+  }
+
+  public String getId() {
+    return id;
+  }
+
+  public void setId(String id) {
+    this.id = id;
   }
 }

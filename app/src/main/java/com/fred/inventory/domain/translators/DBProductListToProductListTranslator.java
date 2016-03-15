@@ -23,6 +23,7 @@ public class DBProductListToProductListTranslator
   @Override public ProductList translate(com.fred.inventory.data.db.models.ProductList model) {
     ProductList productList = new ProductList();
     productList.setName(model.getName());
+    productList.setId(model.getId());
     for (com.fred.inventory.data.db.models.Product product : model.getProducts())
       productList.getProducts().add(dbProductToProductTranslator.translate(product));
     return productList;

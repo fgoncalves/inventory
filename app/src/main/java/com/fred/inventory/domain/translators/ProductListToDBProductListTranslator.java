@@ -24,6 +24,7 @@ public class ProductListToDBProductListTranslator
     com.fred.inventory.data.db.models.ProductList productList =
         new com.fred.inventory.data.db.models.ProductList();
     productList.setName(model.getName());
+    productList.setId(model.getId());
     for (Product product : model.getProducts())
       productList.getProducts().add(productToDBProductTranslator.translate(product));
     return productList;
