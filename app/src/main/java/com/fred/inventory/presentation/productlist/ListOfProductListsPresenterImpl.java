@@ -38,8 +38,12 @@ public class ListOfProductListsPresenterImpl implements ListOfProductListsPresen
     rxSubscriptionPool.addSubscription(getClass().getCanonicalName(), subscription);
   }
 
-  @Override public void onDettachedFromWindow() {
+  @Override public void onDetachedFromWindow() {
     rxSubscriptionPool.unsubscribeFrom(getClass().getCanonicalName());
+  }
+
+  @Override public void onAddButtonClicked() {
+    view.notifyListenersOfAddButtonClick();
   }
 
   /**

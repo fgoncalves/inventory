@@ -1,6 +1,7 @@
 package com.fred.inventory.presentation.productlist;
 
 import android.content.Context;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
@@ -8,13 +9,18 @@ import android.view.View;
 import android.widget.Toast;
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import com.fred.inventory.R;
 import com.fred.inventory.SuppliesApplication;
 import com.fred.inventory.presentation.productlist.adapters.ListOfProductListsAdapter;
+import java.util.ArrayList;
+import java.util.List;
 import javax.inject.Inject;
 
-public class ListOfProductListsViewImpl extends android.support.v4.widget.NestedScrollView
+public class ListOfProductListsViewImpl extends CoordinatorLayout
     implements ListOfProductListsView {
+  private final List<ListOfProductListsClickListener> clickListeners = new ArrayList<>();
+
   @Bind(R.id.empty_list_of_lists_recycler) View emptyView;
   @Bind(R.id.list_of_lists_recycler_view) RecyclerView recyclerView;
 
@@ -60,5 +66,23 @@ public class ListOfProductListsViewImpl extends android.support.v4.widget.Nested
 
   @Override public void displayListAllProductListsError() {
     Toast.makeText(getContext(), R.string.something_went_wrong, Toast.LENGTH_SHORT).show();
+  }
+
+  @Override
+  public void addListOfProductListsClickListener(ListOfProductListsClickListener listener) {
+    clickListeners.add(listener);
+  }
+
+  @Override
+  public void removeListOfProductListsClickListener(ListOfProductListsClickListener listener) {
+    clickListeners.remove(listener);
+  }
+
+  @Override public void notifyListenersOfAddButtonClick() {
+    for (ListOfProductListsClickListener listener : clickListeners) listener.onAddButtonClicked();
+  }
+
+  @OnClick(R.id.addButton) public void onAddButtonClicked() {
+    presenter.onAddButtonClicked();
   }
 }
