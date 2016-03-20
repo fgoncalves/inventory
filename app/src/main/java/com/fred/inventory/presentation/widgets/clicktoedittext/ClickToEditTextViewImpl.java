@@ -12,7 +12,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.ViewSwitcher;
-import com.fred.inventory.SuppliesApplication;
+import com.fred.inventory.MainActivity;
 import javax.inject.Inject;
 
 public class ClickToEditTextViewImpl extends ViewSwitcher implements ClickToEditTextView {
@@ -89,7 +89,7 @@ public class ClickToEditTextViewImpl extends ViewSwitcher implements ClickToEdit
   }
 
   private void inject() {
-    SuppliesApplication.scoped(new ClickToEditTextModule(this)).inject(this);
+    MainActivity.scoped(new ClickToEditTextModule(this)).inject(this);
   }
 
   private void setOnEditorActionListener() {

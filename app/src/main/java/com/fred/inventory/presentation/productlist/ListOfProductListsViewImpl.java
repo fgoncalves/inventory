@@ -10,8 +10,8 @@ import android.widget.Toast;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import com.fred.inventory.MainActivity;
 import com.fred.inventory.R;
-import com.fred.inventory.SuppliesApplication;
 import com.fred.inventory.presentation.productlist.adapters.ListOfProductListsAdapter;
 import java.util.ArrayList;
 import java.util.List;
@@ -42,7 +42,7 @@ public class ListOfProductListsViewImpl extends CoordinatorLayout
     super.onFinishInflate();
     ButterKnife.bind(this);
     if (isInEditMode()) return;
-    SuppliesApplication.scoped(new ListOfProductListsModule(this)).inject(this);
+    MainActivity.scoped(new ListOfProductListsModule(this)).inject(this);
   }
 
   @Override public void onAttachedToWindow() {

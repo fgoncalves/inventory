@@ -7,8 +7,8 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import com.fred.inventory.MainActivity;
 import com.fred.inventory.R;
-import com.fred.inventory.SuppliesApplication;
 import com.fred.inventory.domain.models.ProductList;
 import javax.inject.Inject;
 
@@ -36,7 +36,7 @@ public class ListOfProductListsItemViewImpl extends RelativeLayout
 
     if (isInEditMode()) return;
 
-    SuppliesApplication.scoped(new ListOfProductListsItemModule(this)).inject(this);
+    MainActivity.scoped(new ListOfProductListsItemModule(this)).inject(this);
   }
 
   @Override public void displayProductListName(@NonNull String name) {
