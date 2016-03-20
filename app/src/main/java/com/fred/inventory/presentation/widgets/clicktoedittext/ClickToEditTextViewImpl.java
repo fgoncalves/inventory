@@ -7,6 +7,7 @@ import android.text.TextWatcher;
 import android.util.AttributeSet;
 import android.view.KeyEvent;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -79,6 +80,7 @@ public class ClickToEditTextViewImpl extends ViewSwitcher implements ClickToEdit
 
     text.setSingleLine();
     editText.setSingleLine();
+    editText.setImeOptions(EditorInfo.IME_ACTION_DONE);
   }
 
   private void addChildren() {
