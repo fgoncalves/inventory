@@ -92,8 +92,14 @@ public class ListOfProductListsPresenterImplTest {
   }
 
   @Test public void onDettachedFromWindow_shouldCancelAllSubscriptions() {
-    presenter.onDettachedFromWindow();
+    presenter.onDetachedFromWindow();
 
     verify(rxSubscriptionPool).unsubscribeFrom(anyString());
+  }
+
+  @Test public void onAddButtonClicked_shouldTellViewToNotifyListenersThatAddButtonWasClicked() {
+    presenter.onAddButtonClicked();
+
+    verify(view).notifyListenersOfAddButtonClick();
   }
 }

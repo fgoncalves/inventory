@@ -1,5 +1,7 @@
 package com.fred.inventory.presentation.productlist;
 
+import android.support.annotation.IdRes;
+
 /**
  * Presenter for the list of products
  * <p/>
@@ -8,5 +10,7 @@ package com.fred.inventory.presentation.productlist;
 public interface ListOfProductListsPresenter {
   void onAttachedToWindow();
 
-  void onDettachedFromWindow();
+  void onDetachedFromWindow();
+
+  void onAddButtonClicked();
 }

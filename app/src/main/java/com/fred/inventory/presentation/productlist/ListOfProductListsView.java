@@ -8,6 +8,10 @@ import com.fred.inventory.presentation.productlist.adapters.ListOfProductListsAd
  * Created by fred on 13.03.16.
  */
 public interface ListOfProductListsView {
+  interface ListOfProductListsClickListener {
+    void onAddButtonClicked();
+  }
+
   void showEmptyView();
 
   void hideEmptyView();
@@ -15,4 +19,10 @@ public interface ListOfProductListsView {
   void setAdapter(ListOfProductListsAdapter adapter);
 
   void displayListAllProductListsError();
+
+  void addListOfProductListsClickListener(ListOfProductListsClickListener listener);
+
+  void removeListOfProductListsClickListener(ListOfProductListsClickListener listener);
+
+  void notifyListenersOfAddButtonClick();
 }
