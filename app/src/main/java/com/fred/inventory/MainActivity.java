@@ -1,19 +1,15 @@
 package com.fred.inventory;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
-import android.widget.Toast;
-import butterknife.Bind;
 import butterknife.ButterKnife;
-import com.fred.inventory.presentation.productlist.ListOfProductListsView;
-import com.fred.inventory.presentation.productlist.ListOfProductListsViewImpl;
+import com.fred.inventory.presentation.productlist.ListOfProductListsScreen;
+import com.fred.inventory.utils.path.PathManager;
 import dagger.ObjectGraph;
+import javax.inject.Inject;
 
 public class MainActivity extends AppCompatActivity {
-  @Bind(R.id.toolbar) Toolbar toolbar;
-  @Bind(R.id.listOfProducts) ListOfProductListsViewImpl listOfProductListsView;
+  @Inject PathManager pathManager;
 
   private static ObjectGraph objectGraph;
 
@@ -21,11 +17,19 @@ public class MainActivity extends AppCompatActivity {
     super.onCreate(savedInstanceState);
     objectGraph = ObjectGraph.create(new RootModule(this));
 
-    setContentView(R.layout.list_of_products);
+    setContentView(R.layout.main_activity);
     ButterKnife.bind(this);
 
-    setSupportActionBar(toolbar);
-    setClickListeners();
+    inject();
+    addListOfProductListsScreen();
+  }
+
+  private void addListOfProductListsScreen() {
+    pathManager.single(ListOfProductListsScreen.newInstance(), R.id.main_container);
+  }
+
+  private void inject() {
+    scoped(new MainActivityModule()).inject(this);
   }
 
   /**
@@ -36,18 +40,5 @@ public class MainActivity extends AppCompatActivity {
    */
   public static ObjectGraph scoped(Object... modules) {
     return objectGraph.plus(modules);
-  }
-
-  private void setClickListeners() {
-    listOfProductListsView.addListOfProductListsClickListener(
-        new ListOfProductListsView.ListOfProductListsClickListener() {
-          @Override public void onAddButtonClicked() {
-            Toast.makeText(getContext(), "This theory works fine", Toast.LENGTH_SHORT).show();
-          }
-        });
-  }
-
-  protected Context getContext() {
-    return this;
   }
 }
