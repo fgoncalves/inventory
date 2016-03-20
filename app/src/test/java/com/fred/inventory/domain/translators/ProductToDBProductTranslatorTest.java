@@ -10,7 +10,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class ProductToDBProductTranslatorTest {
   @Mock ImageToDBImageTranslator imageToDBImageTranslator;
-  @Mock QuantityToDBQuantityTranslator quantityToDBQuantityTranslator;
+  @Mock InfoToDBInfoTranslator infoToDBInfoTranslator;
 
   private ProductToDBProductTranslator translator;
 
@@ -18,7 +18,7 @@ public class ProductToDBProductTranslatorTest {
     MockitoAnnotations.initMocks(this);
 
     translator =
-        new ProductToDBProductTranslator(imageToDBImageTranslator, quantityToDBQuantityTranslator);
+        new ProductToDBProductTranslator(imageToDBImageTranslator, infoToDBInfoTranslator);
   }
 
   @Test public void translate_shouldCreateADBProductModelWithTheCorrectData() {

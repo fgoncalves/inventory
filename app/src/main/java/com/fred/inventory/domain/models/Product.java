@@ -10,7 +10,7 @@ public class Product {
    */
   @PrimaryKey private String id;
   private List<Image> images = new ArrayList<>();
-  private List<Quantity> quantities = new ArrayList<>();
+  private List<Info> quantities = new ArrayList<>();
 
   public String getId() {
     return id;
@@ -28,11 +28,11 @@ public class Product {
     this.images = images;
   }
 
-  public List<Quantity> getQuantities() {
+  public List<Info> getQuantities() {
     return quantities;
   }
 
-  public void setQuantities(List<Quantity> quantities) {
+  public void setQuantities(List<Info> quantities) {
     this.quantities = quantities;
   }
 }

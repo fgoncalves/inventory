@@ -10,7 +10,7 @@ public class Product extends RealmObject {
    */
   @PrimaryKey private String id;
   private RealmList<Image> images = new RealmList<>();
-  private RealmList<Quantity> quantities = new RealmList<>();
+  private RealmList<Info> quantities = new RealmList<>();
 
   public String getId() {
     return id;
@@ -28,11 +28,11 @@ public class Product extends RealmObject {
     this.images = images;
   }
 
-  public RealmList<Quantity> getQuantities() {
+  public RealmList<Info> getQuantities() {
     return quantities;
   }
 
-  public void setQuantities(RealmList<Quantity> quantities) {
+  public void setQuantities(RealmList<Info> quantities) {
     this.quantities = quantities;
   }
 }
