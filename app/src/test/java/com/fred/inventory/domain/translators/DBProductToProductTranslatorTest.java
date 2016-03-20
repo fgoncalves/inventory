@@ -10,7 +10,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class DBProductToProductTranslatorTest {
   @Mock DBImageToImageTranslator imageToDBImageTranslator;
-  @Mock DBQuantityToQuantityTranslator quantityToDBQuantityTranslator;
+  @Mock DBInfoToInfoTranslator quantityToDBQuantityTranslator;
 
   private DBProductToProductTranslator translator;
 

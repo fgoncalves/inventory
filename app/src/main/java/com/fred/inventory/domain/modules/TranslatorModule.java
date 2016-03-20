@@ -3,7 +3,7 @@ package com.fred.inventory.domain.modules;
 import com.fred.inventory.domain.models.Image;
 import com.fred.inventory.domain.models.Product;
 import com.fred.inventory.domain.models.ProductList;
-import com.fred.inventory.domain.models.Quantity;
+import com.fred.inventory.domain.models.Info;
 import com.fred.inventory.domain.modules.qualifiers.DBImageToImageTranslator;
 import com.fred.inventory.domain.modules.qualifiers.DBProductListToProductListTranslator;
 import com.fred.inventory.domain.modules.qualifiers.DBProductToProductTranslator;
@@ -12,6 +12,8 @@ import com.fred.inventory.domain.modules.qualifiers.ImageToDBImageTranslator;
 import com.fred.inventory.domain.modules.qualifiers.ProductListToDBProductListTranslator;
 import com.fred.inventory.domain.modules.qualifiers.ProductToDBProductTranslator;
 import com.fred.inventory.domain.modules.qualifiers.QuantityToDBQuantityTranslator;
+import com.fred.inventory.domain.translators.DBInfoToInfoTranslator;
+import com.fred.inventory.domain.translators.InfoToDBInfoTranslator;
 import com.fred.inventory.domain.translators.Translator;
 import dagger.Module;
 import dagger.Provides;
@@ -24,8 +26,8 @@ import javax.inject.Singleton;
   }
 
   @Provides @Singleton @DBQuantityToQuantityTranslator
-  public Translator<com.fred.inventory.data.db.models.Quantity, Quantity> providesDBQuantityToQuantityTranslator() {
-    return new com.fred.inventory.domain.translators.DBQuantityToQuantityTranslator();
+  public Translator<com.fred.inventory.data.db.models.Info, Info> providesDBQuantityToQuantityTranslator() {
+    return new DBInfoToInfoTranslator();
   }
 
   @Provides @Singleton @DBProductToProductTranslator
@@ -46,8 +48,8 @@ import javax.inject.Singleton;
   }
 
   @Provides @Singleton @QuantityToDBQuantityTranslator
-  public Translator<Quantity, com.fred.inventory.data.db.models.Quantity> providesQuantityToDBQuantityTranslator() {
-    return new com.fred.inventory.domain.translators.QuantityToDBQuantityTranslator();
+  public Translator<Info, com.fred.inventory.data.db.models.Info> providesQuantityToDBQuantityTranslator() {
+    return new InfoToDBInfoTranslator();
   }
 
   @Provides @Singleton @ProductToDBProductTranslator
