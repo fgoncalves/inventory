@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.fred.inventory.presentation.itemlist.ItemListViewImpl
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    tools:context="com.fred.inventory.MainActivity"
+    >
+
+  <android.support.v7.widget.Toolbar
+      android:id="@+id/toolbar"
+      android:layout_width="match_parent"
+      android:layout_height="?attr/actionBarSize"
+      android:background="@color/colorPrimary"
+      >
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:weightSum="2"
+        >
+      <com.fred.inventory.presentation.widgets.clicktoedittext.ClickToEditTextViewImpl
+          android:layout_width="0dp"
+          android:layout_height="wrap_content"
+          android:layout_weight="1.5"
+          />
+      <Button
+          style="@style/ToolbarButton"
+          android:layout_width="0dp"
+          android:layout_height="wrap_content"
+          android:text="@string/done"
+          android:textAllCaps="true"
+          android:layout_weight="0.5"
+          />
+    </LinearLayout>
+  </android.support.v7.widget.Toolbar>
+
+  <RelativeLayout
+      android:layout_below="@+id/toolbar"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:layout_marginTop="@dimen/item_container_list_margin_top"
+      android:layout_marginLeft="@dimen/item_container_list_margin_left"
+      android:layout_marginStart="@dimen/item_container_list_margin_left"
+      android:layout_marginRight="@dimen/item_container_list_margin_right"
+      android:layout_marginEnd="@dimen/item_container_list_margin_right"
+      >
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/item_list_recycler_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        />
+
+    <TextView
+        android:id="@+id/empty_item_list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_centerInParent="true"
+        android:text="@string/empty_view"
+        android:visibility="gone"
+        />
+  </RelativeLayout>
+
+  <android.support.design.widget.FloatingActionButton
+      android:id="@+id/add_button"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_margin="@dimen/fab_margin"
+      android:src="@android:drawable/ic_dialog_email"
+      android:layout_alignParentBottom="true"
+      android:layout_alignParentRight="true"
+      android:layout_alignParentEnd="true"
+      />
+
+</com.fred.inventory.presentation.itemlist.ItemListViewImpl>
