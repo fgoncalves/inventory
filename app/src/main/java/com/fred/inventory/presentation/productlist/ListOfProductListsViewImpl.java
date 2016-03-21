@@ -82,7 +82,7 @@ public class ListOfProductListsViewImpl extends CoordinatorLayout
     for (ListOfProductListsClickListener listener : clickListeners) listener.onAddButtonClicked();
   }
 
-  @OnClick(R.id.addButton) public void onAddButtonClicked() {
+  @OnClick(R.id.add_button) public void onAddButtonClicked() {
     presenter.onAddButtonClicked();
   }
 }
