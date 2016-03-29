@@ -3,7 +3,7 @@ package com.fred.inventory;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import butterknife.ButterKnife;
-import com.fred.inventory.presentation.productlist.ListOfProductListsScreen;
+import com.fred.inventory.presentation.listofproducts.ListOfProductListsScreen;
 import com.fred.inventory.utils.path.PathManager;
 import dagger.ObjectGraph;
 import javax.inject.Inject;

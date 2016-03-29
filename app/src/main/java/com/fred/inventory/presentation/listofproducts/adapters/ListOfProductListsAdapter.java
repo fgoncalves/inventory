@@ -1,4 +1,4 @@
-package com.fred.inventory.presentation.productlist.adapters;
+package com.fred.inventory.presentation.listofproducts.adapters;
 
 import com.fred.inventory.domain.models.ProductList;
 import java.util.List;

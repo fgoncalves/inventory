@@ -1,4 +1,4 @@
-package com.fred.inventory.presentation.productlist;
+package com.fred.inventory.presentation.listofproducts;
 
 import android.app.Fragment;
 import android.os.Bundle;
@@ -11,6 +11,8 @@ import android.widget.Toast;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import com.fred.inventory.R;
+import com.fred.inventory.presentation.listofproducts.views.ListOfProductListsView;
+import com.fred.inventory.presentation.listofproducts.views.ListOfProductListsViewImpl;
 
 /**
  * This class is the class

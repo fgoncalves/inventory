@@ -1,4 +1,4 @@
-package com.fred.inventory.presentation.productlist;
+package com.fred.inventory.presentation.listofproducts.views;
 
 import android.content.Context;
 import android.support.design.widget.CoordinatorLayout;
@@ -12,7 +12,9 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import com.fred.inventory.MainActivity;
 import com.fred.inventory.R;
-import com.fred.inventory.presentation.productlist.adapters.ListOfProductListsAdapter;
+import com.fred.inventory.presentation.listofproducts.modules.ListOfProductListsModule;
+import com.fred.inventory.presentation.listofproducts.presenters.ListOfProductListsPresenter;
+import com.fred.inventory.presentation.listofproducts.adapters.ListOfProductListsAdapter;
 import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Inject;

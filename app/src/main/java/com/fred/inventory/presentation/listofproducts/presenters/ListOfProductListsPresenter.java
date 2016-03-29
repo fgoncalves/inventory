@@ -1,6 +1,4 @@
-package com.fred.inventory.presentation.productlist;
-
-import android.support.annotation.IdRes;
+package com.fred.inventory.presentation.listofproducts.presenters;
 
 /**
  * Presenter for the list of products

@@ -1,6 +1,10 @@
-package com.fred.inventory.presentation.productlist;
+package com.fred.inventory.presentation.listofproducts.modules;
 
 import com.fred.inventory.RootModule;
+import com.fred.inventory.presentation.listofproducts.presenters.ListOfProductListsItemPresenter;
+import com.fred.inventory.presentation.listofproducts.presenters.ListOfProductListsItemPresenterImpl;
+import com.fred.inventory.presentation.listofproducts.views.ListOfProductListsItemView;
+import com.fred.inventory.presentation.listofproducts.views.ListOfProductListsItemViewImpl;
 import dagger.Module;
 import dagger.Provides;
 

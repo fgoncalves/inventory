@@ -1,8 +1,9 @@
-package com.fred.inventory.presentation.productlist;
+package com.fred.inventory.presentation.listofproducts.presenters;
 
 import com.fred.inventory.domain.models.ProductList;
 import com.fred.inventory.domain.usecases.ListAllProductListsUseCase;
-import com.fred.inventory.presentation.productlist.adapters.ListOfProductListsAdapter;
+import com.fred.inventory.presentation.listofproducts.adapters.ListOfProductListsAdapter;
+import com.fred.inventory.presentation.listofproducts.views.ListOfProductListsView;
 import com.fred.inventory.utils.rx.RxSubscriptionPool;
 import com.fred.inventory.utils.rx.schedulers.SchedulerTransformer;
 import com.fred.inventory.utils.rx.schedulers.qualifiers.IOToUiSchedulerTransformer;
