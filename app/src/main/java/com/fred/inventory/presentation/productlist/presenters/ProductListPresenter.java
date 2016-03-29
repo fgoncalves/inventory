@@ -6,4 +6,7 @@ package com.fred.inventory.presentation.productlist.presenters;
  * Created by fred on 29.03.16.
  */
 public interface ProductListPresenter {
+  void onAttachedToWindow(String productListId);
+
+  void onDetachedFromWindow();
 }

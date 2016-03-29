@@ -14,9 +14,8 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import rx.Observable;
-import rx.Subscription;
 
-import static org.mockito.Matchers.any;
+import static com.fred.inventory.testhelpers.matchers.SubscriptionMatchers.anySubscription;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -48,7 +47,7 @@ public class ListOfProductListsPresenterImplTest {
   @Test public void onAttachedToWindow_shouldAddSubscriptionToRxPool() {
     presenter.onAttachedToWindow();
 
-    verify(rxSubscriptionPool).addSubscription(anyString(), any(Subscription.class));
+    verify(rxSubscriptionPool).addSubscription(anyString(), anySubscription());
   }
 
   @Test public void onAttachedToWindow_shouldTellViewToDisplayAnEmptyViewIfNoListsArePresent() {
@@ -83,8 +82,8 @@ public class ListOfProductListsPresenterImplTest {
     verify(view).setAdapter(adapter);
   }
 
-
-  @Test public void onAttachedToWindow_shouldTellViewDisplayAnErrorMessageWhenThereWasAnErrorRetrievingTheProductLists() {
+  @Test
+  public void onAttachedToWindow_shouldTellViewDisplayAnErrorMessageWhenThereWasAnErrorRetrievingTheProductLists() {
     when(listAllProductListsUseCase.list()).thenReturn(
         Observable.<List<ProductList>>error(new Exception()));
 

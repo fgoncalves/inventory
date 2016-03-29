@@ -1,6 +1,7 @@
 package com.fred.inventory.presentation.productlist.views;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
@@ -46,5 +47,9 @@ public class ProductListViewImpl extends RelativeLayout implements ProductListVi
   @Override protected void onAttachedToWindow() {
     super.onAttachedToWindow();
     recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+  }
+
+  @Override public void displayProductListName(@NonNull String name) {
+
   }
 }
