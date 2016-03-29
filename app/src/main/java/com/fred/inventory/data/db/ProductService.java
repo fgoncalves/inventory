@@ -13,7 +13,15 @@ public interface ProductService {
   /**
    * Get all the product lists in the database
    *
-   * @return An observable for all the product lists in the database
+   * @return An observable for all the product lists in the database. Empty if none found.
    */
   Observable<List<ProductList>> all();
+
+  /**
+   * Get the specified product list from the local storage
+   *
+   * @param id The list's id
+   * @return An observable for the product list. Will be empty if none is found.
+   */
+  Observable<ProductList> productList(String id);
 }

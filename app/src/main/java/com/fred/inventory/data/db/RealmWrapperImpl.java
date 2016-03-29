@@ -22,4 +22,13 @@ public class RealmWrapperImpl implements RealmWrapper {
       realm.close();
     }
   }
+
+  @Override public <T extends RealmObject> T get(Class<T> clazz, String id) {
+    Realm realm = Realm.getInstance(context);
+    try {
+      return realm.where(clazz).equalTo("id", id).findFirst();
+    } finally {
+      realm.close();
+    }
+  }
 }

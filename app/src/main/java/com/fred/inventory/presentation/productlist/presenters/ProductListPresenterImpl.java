@@ -1,5 +1,6 @@
 package com.fred.inventory.presentation.productlist.presenters;
 
+import com.fred.inventory.domain.usecases.GetProductListUseCase;
 import com.fred.inventory.presentation.productlist.views.ProductListView;
 import javax.inject.Inject;
 
@@ -8,9 +9,12 @@ import javax.inject.Inject;
  * Created by fred on 29.03.16.
  */
 public class ProductListPresenterImpl implements ProductListPresenter {
-  @Inject ProductListView view;
+  private final ProductListView view;
+  private final GetProductListUseCase getProductListUseCase;
 
-  @Inject public ProductListPresenterImpl(ProductListView view) {
+  @Inject public ProductListPresenterImpl(ProductListView view,
+      GetProductListUseCase getProductListUseCase) {
     this.view = view;
+    this.getProductListUseCase = getProductListUseCase;
   }
 }

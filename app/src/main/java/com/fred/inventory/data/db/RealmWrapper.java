@@ -16,4 +16,13 @@ public interface RealmWrapper {
    * @return The list of objects in the realm
    */
   <T extends RealmObject> List<T> all(Class<T> clazz);
+
+  /**
+   * Get the first occurrence of the given object from realm with the given id.
+   *
+   * @param clazz The class of the model
+   * @param id The id of the object to retrieve
+   * @return The first occurrence of the object or null if none is found
+   */
+  <T extends RealmObject> T get(Class<T> clazz, String id);
 }
