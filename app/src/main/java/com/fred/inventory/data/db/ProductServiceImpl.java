@@ -22,4 +22,14 @@ public class ProductServiceImpl implements ProductService {
       }
     });
   }
+
+  @Override public Observable<ProductList> productList(final String id) {
+    return Observable.create(new Observable.OnSubscribe<ProductList>() {
+      @Override public void call(Subscriber<? super ProductList> subscriber) {
+        ProductList productList = realmWrapper.get(ProductList.class, id);
+        if (productList != null) subscriber.onNext(productList);
+        subscriber.onCompleted();
+      }
+    });
+  }
 }

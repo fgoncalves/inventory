@@ -2,7 +2,7 @@ package com.fred.inventory.domain.usecases;
 
 import com.fred.inventory.data.db.ProductService;
 import com.fred.inventory.domain.models.ProductList;
-import com.fred.inventory.domain.translators.DBProductListToProductListTranslator;
+import com.fred.inventory.domain.translators.Translator;
 import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Inject;
@@ -11,10 +11,12 @@ import rx.functions.Func1;
 
 public class ListAllProductListsUseCaseImpl implements ListAllProductListsUseCase {
   private final ProductService service;
-  private final DBProductListToProductListTranslator dbProductListToProductListTranslator;
+  private final Translator<com.fred.inventory.data.db.models.ProductList, ProductList>
+      dbProductListToProductListTranslator;
 
   @Inject public ListAllProductListsUseCaseImpl(ProductService service,
-      DBProductListToProductListTranslator dbProductListToProductListTranslator) {
+      @com.fred.inventory.domain.modules.qualifiers.DBProductListToProductListTranslator
+      Translator<com.fred.inventory.data.db.models.ProductList, ProductList> dbProductListToProductListTranslator) {
     this.service = service;
     this.dbProductListToProductListTranslator = dbProductListToProductListTranslator;
   }

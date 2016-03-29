@@ -1,5 +1,7 @@
 package com.fred.inventory.domain.modules;
 
+import com.fred.inventory.domain.usecases.GetProductListUseCase;
+import com.fred.inventory.domain.usecases.GetProductListUseCaseImpl;
 import com.fred.inventory.domain.usecases.ListAllProductListsUseCase;
 import com.fred.inventory.domain.usecases.ListAllProductListsUseCaseImpl;
 import dagger.Module;
@@ -10,5 +12,10 @@ import javax.inject.Singleton;
   @Provides @Singleton public ListAllProductListsUseCase providesListAllProductListsUseCase(
       ListAllProductListsUseCaseImpl listAllProductListsUseCase) {
     return listAllProductListsUseCase;
+  }
+
+  @Provides @Singleton public GetProductListUseCase providesGetProductListUseCase(
+      GetProductListUseCaseImpl getProductListUseCase) {
+    return getProductListUseCase;
   }
 }
