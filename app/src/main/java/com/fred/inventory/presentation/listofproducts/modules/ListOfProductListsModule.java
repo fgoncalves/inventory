@@ -1,8 +1,12 @@
-package com.fred.inventory.presentation.productlist;
+package com.fred.inventory.presentation.listofproducts.modules;
 
 import com.fred.inventory.RootModule;
-import com.fred.inventory.presentation.productlist.adapters.ListOfProductListsAdapter;
-import com.fred.inventory.presentation.productlist.adapters.ListOfProductListsAdapterImpl;
+import com.fred.inventory.presentation.listofproducts.adapters.ListOfProductListsAdapter;
+import com.fred.inventory.presentation.listofproducts.adapters.ListOfProductListsAdapterImpl;
+import com.fred.inventory.presentation.listofproducts.presenters.ListOfProductListsPresenter;
+import com.fred.inventory.presentation.listofproducts.presenters.ListOfProductListsPresenterImpl;
+import com.fred.inventory.presentation.listofproducts.views.ListOfProductListsView;
+import com.fred.inventory.presentation.listofproducts.views.ListOfProductListsViewImpl;
 import dagger.Module;
 import dagger.Provides;
 import javax.inject.Singleton;

@@ -1,6 +1,7 @@
-package com.fred.inventory.presentation.productlist;
+package com.fred.inventory.presentation.listofproducts.presenters;
 
 import com.fred.inventory.domain.models.ProductList;
+import com.fred.inventory.presentation.listofproducts.views.ListOfProductListsItemView;
 import com.fred.inventory.utils.StringUtils;
 import javax.inject.Inject;
 

@@ -1,4 +1,4 @@
-package com.fred.inventory.presentation.productlist;
+package com.fred.inventory.presentation.listofproducts.views;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
@@ -10,6 +10,8 @@ import butterknife.ButterKnife;
 import com.fred.inventory.MainActivity;
 import com.fred.inventory.R;
 import com.fred.inventory.domain.models.ProductList;
+import com.fred.inventory.presentation.listofproducts.modules.ListOfProductListsItemModule;
+import com.fred.inventory.presentation.listofproducts.presenters.ListOfProductListsItemPresenter;
 import javax.inject.Inject;
 
 public class ListOfProductListsItemViewImpl extends RelativeLayout

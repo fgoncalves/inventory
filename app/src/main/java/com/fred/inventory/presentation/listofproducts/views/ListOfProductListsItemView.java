@@ -1,4 +1,4 @@
-package com.fred.inventory.presentation.productlist;
+package com.fred.inventory.presentation.listofproducts.views;
 
 import android.support.annotation.NonNull;
 import com.fred.inventory.domain.models.ProductList;

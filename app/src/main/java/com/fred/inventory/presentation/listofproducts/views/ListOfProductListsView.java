@@ -1,6 +1,6 @@
-package com.fred.inventory.presentation.productlist;
+package com.fred.inventory.presentation.listofproducts.views;
 
-import com.fred.inventory.presentation.productlist.adapters.ListOfProductListsAdapter;
+import com.fred.inventory.presentation.listofproducts.adapters.ListOfProductListsAdapter;
 
 /**
  * The list of product lists

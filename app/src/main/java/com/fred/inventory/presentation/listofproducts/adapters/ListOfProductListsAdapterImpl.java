@@ -1,11 +1,11 @@
-package com.fred.inventory.presentation.productlist.adapters;
+package com.fred.inventory.presentation.listofproducts.adapters;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
 import com.fred.inventory.R;
 import com.fred.inventory.domain.models.ProductList;
-import com.fred.inventory.presentation.productlist.ListOfProductListsItemView;
+import com.fred.inventory.presentation.listofproducts.views.ListOfProductListsItemView;
 import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Inject;

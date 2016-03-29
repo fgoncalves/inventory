@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.fred.inventory.presentation.itemlist.ItemListViewImpl
+<com.fred.inventory.presentation.productlist.views.ProductListViewImpl
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/listOfProducts"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
@@ -13,48 +15,47 @@
       android:layout_width="match_parent"
       android:layout_height="?attr/actionBarSize"
       android:background="@color/colorPrimary"
+      app:layout_collapseMode="pin"
+      app:popupTheme="@style/AppTheme.PopupOverlay"
       >
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:orientation="horizontal"
-        android:weightSum="2"
+        android:weightSum="1"
         >
       <com.fred.inventory.presentation.widgets.clicktoedittext.ClickToEditTextViewImpl
+          android:id="@+id/product_list_name"
           android:layout_width="0dp"
-          android:layout_height="wrap_content"
-          android:layout_weight="1.5"
+          android:layout_height="match_parent"
+          android:layout_weight="0.75"
           />
+
       <Button
-          style="@style/ToolbarButton"
+          android:id="@+id/toolbar_done_button"
           android:layout_width="0dp"
-          android:layout_height="wrap_content"
+          android:layout_height="match_parent"
+          android:layout_weight="0.25"
           android:text="@string/done"
-          android:textAllCaps="true"
-          android:layout_weight="0.5"
+          style="@style/ToolbarDoneButton"
           />
     </LinearLayout>
   </android.support.v7.widget.Toolbar>
 
   <RelativeLayout
-      android:layout_below="@+id/toolbar"
       android:layout_width="match_parent"
       android:layout_height="match_parent"
-      android:layout_marginTop="@dimen/item_container_list_margin_top"
-      android:layout_marginLeft="@dimen/item_container_list_margin_left"
-      android:layout_marginStart="@dimen/item_container_list_margin_left"
-      android:layout_marginRight="@dimen/item_container_list_margin_right"
-      android:layout_marginEnd="@dimen/item_container_list_margin_right"
+      android:layout_below="@+id/toolbar"
       >
 
     <android.support.v7.widget.RecyclerView
-        android:id="@+id/item_list_recycler_view"
+        android:id="@+id/product_list_recycler_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         />
 
     <TextView
-        android:id="@+id/empty_item_list"
+        android:id="@+id/empty_product_list_recycler"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_centerInParent="true"
@@ -67,11 +68,12 @@
       android:id="@+id/add_button"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
+      android:layout_alignParentBottom="true"
+      android:layout_alignParentEnd="true"
+      android:layout_alignParentRight="true"
       android:layout_margin="@dimen/fab_margin"
       android:src="@android:drawable/ic_dialog_email"
-      android:layout_alignParentBottom="true"
-      android:layout_alignParentRight="true"
-      android:layout_alignParentEnd="true"
+      app:layout_anchor="@id/app_bar"
       />
 
-</com.fred.inventory.presentation.itemlist.ItemListViewImpl>
+</com.fred.inventory.presentation.productlist.views.ProductListViewImpl>

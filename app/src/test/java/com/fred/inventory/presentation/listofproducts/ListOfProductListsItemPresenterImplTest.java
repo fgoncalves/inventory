@@ -1,6 +1,8 @@
-package com.fred.inventory.presentation.productlist;
+package com.fred.inventory.presentation.listofproducts;
 
 import com.fred.inventory.domain.models.ProductList;
+import com.fred.inventory.presentation.listofproducts.presenters.ListOfProductListsItemPresenterImpl;
+import com.fred.inventory.presentation.listofproducts.views.ListOfProductListsItemView;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
