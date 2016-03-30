@@ -30,6 +30,16 @@ public interface PathManager {
       String sharedElementTransactionName, @IdRes int placeholderId);
 
   /**
+   * Convenience method for {@link #go(Fragment, Fragment, Transition, Transition, Transition,
+   * Transition, View, String, int)}
+   * which will simply transition without any custom animations or transitions.
+   *
+   * @param to The fragment to go to
+   * @param placeholderId The placeholder where to put the fragment
+   */
+  void go(Fragment to, @IdRes int placeholderId);
+
+  /**
    * Simply go back
    *
    * @return True if the back was handled. False otherwise
@@ -44,4 +54,11 @@ public interface PathManager {
    * @param placeholderId The place holder id
    */
   void single(Fragment fragment, @IdRes int placeholderId);
+
+  /**
+   * Get the last fragment added to the back stack
+   *
+   * @return The last fragment added to the back stack
+   */
+  Fragment top();
 }
