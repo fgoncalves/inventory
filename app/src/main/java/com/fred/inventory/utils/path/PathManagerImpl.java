@@ -20,7 +20,10 @@ public class PathManagerImpl implements PathManager {
     int backstackElementCount = manager.getBackStackEntryCount();
     while (backstackElementCount-- > 0) manager.popBackStack();
 
-    manager.beginTransaction().add(placeholderId, fragment).addToBackStack(null).commit();
+    manager.beginTransaction()
+        .replace(placeholderId, fragment, fragment.getClass().getCanonicalName())
+        .addToBackStack(fragment.getClass().getCanonicalName())
+        .commit();
   }
 
   @Override public void go(Fragment from, Fragment to, Transition enterTransition,
@@ -40,12 +43,23 @@ public class PathManagerImpl implements PathManager {
       }
     }
 
-    fragmentTransaction.add(placeholderId, to).addToBackStack(null).commit();
+    fragmentTransaction.replace(placeholderId, to, to.getClass().getCanonicalName())
+        .addToBackStack(to.getClass().getCanonicalName())
+        .commit();
+  }
+
+  @Override public void go(Fragment to, @IdRes int placeholderId) {
+    go(null, to, null, null, null, null, null, null, placeholderId);
   }
 
   @Override public boolean back() {
     if (manager.getBackStackEntryCount() == 1) return false;
     manager.popBackStack();
     return true;
+  }
+
+  @Override public Fragment top() {
+    String tag = manager.getBackStackEntryAt(manager.getBackStackEntryCount() - 1).getName();
+    return manager.findFragmentByTag(tag);
   }
 }

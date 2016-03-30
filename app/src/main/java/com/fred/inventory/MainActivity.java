@@ -3,12 +3,15 @@ package com.fred.inventory;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import butterknife.ButterKnife;
+import com.fred.inventory.presentation.base.BaseScreen;
 import com.fred.inventory.presentation.listofproducts.ListOfProductListsScreen;
+import com.fred.inventory.presentation.navigation.NavigationListener;
+import com.fred.inventory.presentation.productlist.ProductListScreen;
 import com.fred.inventory.utils.path.PathManager;
 import dagger.ObjectGraph;
 import javax.inject.Inject;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements NavigationListener {
   @Inject PathManager pathManager;
 
   private static ObjectGraph objectGraph;
@@ -24,14 +27,6 @@ public class MainActivity extends AppCompatActivity {
     addListOfProductListsScreen();
   }
 
-  private void addListOfProductListsScreen() {
-    pathManager.single(ListOfProductListsScreen.newInstance(), R.id.main_container);
-  }
-
-  private void inject() {
-    scoped(new MainActivityModule()).inject(this);
-  }
-
   /**
    * Get the dependency graph scoped with the provided modules
    *
@@ -40,5 +35,30 @@ public class MainActivity extends AppCompatActivity {
    */
   public static ObjectGraph scoped(Object... modules) {
     return objectGraph.plus(modules);
+  }
+
+  @Override public void onBackPressed() {
+    BaseScreen topScreen = (BaseScreen) pathManager.top();
+    topScreen.onBackPressed();
+
+    if (pathManager.back()) return;
+
+    super.onBackPressed();
+  }
+
+  @Override public void onAddProductListButtonClicked() {
+    ProductListScreen screen = ProductListScreen.newInstance();
+    screen.addNavigationListener(this);
+    pathManager.go(screen, R.id.main_container);
+  }
+
+  private void addListOfProductListsScreen() {
+    ListOfProductListsScreen screen = ListOfProductListsScreen.newInstance();
+    screen.addNavigationListener(this);
+    pathManager.single(screen, R.id.main_container);
+  }
+
+  private void inject() {
+    scoped(new MainActivityModule()).inject(this);
   }
 }
