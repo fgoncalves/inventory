@@ -1,7 +1,11 @@
 package com.fred.inventory;
 
+import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.view.Window;
+import android.view.WindowManager;
 import butterknife.ButterKnife;
 import com.fred.inventory.presentation.base.BaseScreen;
 import com.fred.inventory.presentation.listofproducts.ListOfProductListsScreen;
@@ -25,6 +29,19 @@ public class MainActivity extends AppCompatActivity implements NavigationListene
 
     inject();
     addListOfProductListsScreen();
+    setStatusBarColor();
+  }
+
+  /**
+   * Set the status bar color to another one. Method only works above api 21
+   */
+  private void setStatusBarColor() {
+    Window window = getWindow();
+    window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+    window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+      window.setStatusBarColor(ContextCompat.getColor(this, R.color.colorPrimary));
+    }
   }
 
   /**

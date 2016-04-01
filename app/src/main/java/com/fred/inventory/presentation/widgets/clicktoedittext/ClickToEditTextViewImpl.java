@@ -23,15 +23,16 @@ public class ClickToEditTextViewImpl extends ViewSwitcher implements ClickToEdit
 
   public ClickToEditTextViewImpl(Context context) {
     super(context);
+    createChildren(context, null);
   }
 
   public ClickToEditTextViewImpl(Context context, AttributeSet attrs) {
     super(context, attrs);
+    createChildren(context, attrs);
   }
 
   @Override protected void onFinishInflate() {
     super.onFinishInflate();
-    createChildren();
     addChildren();
     setOnClickListener(this);
     setOnEditorActionListener();
@@ -43,7 +44,7 @@ public class ClickToEditTextViewImpl extends ViewSwitcher implements ClickToEdit
   }
 
   @Override public void onClick(View v) {
-    if (v.getId() == text.getId()) presenter.onTextViewClicked();
+    if (getCurrentView() == text) presenter.onTextViewClicked();
   }
 
   @Override public void setTextViewText(@NonNull String text) {
@@ -74,9 +75,14 @@ public class ClickToEditTextViewImpl extends ViewSwitcher implements ClickToEdit
     editText.requestFocus();
   }
 
-  private void createChildren() {
-    text = new TextView(getContext());
-    editText = new EditText(getContext());
+  private void createChildren(Context context, AttributeSet attrs) {
+    if (attrs == null) {
+      text = new TextView(context);
+      editText = new EditText(context);
+    } else {
+      text = new TextView(context, attrs);
+      editText = new EditText(context, attrs);
+    }
 
     text.setSingleLine();
     editText.setSingleLine();
