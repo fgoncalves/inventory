@@ -11,10 +11,6 @@ import javax.inject.Inject;
 import rx.Subscriber;
 import rx.Subscription;
 
-/**
- * <p/>
- * Created by fred on 29.03.16.
- */
 public class ProductListPresenterImpl implements ProductListPresenter {
   private final ProductListView view;
   private final GetProductListUseCase getProductListUseCase;
@@ -51,8 +47,10 @@ public class ProductListPresenterImpl implements ProductListPresenter {
 
   private class GetProductListSubscriber extends Subscriber<ProductList> {
 
-    @Override public void onCompleted() {
+    private boolean isEmpty = true;
 
+    @Override public void onCompleted() {
+      if (isEmpty) view.showEmptyProductList();
     }
 
     @Override public void onError(Throwable e) {
@@ -60,6 +58,8 @@ public class ProductListPresenterImpl implements ProductListPresenter {
     }
 
     @Override public void onNext(ProductList productList) {
+      isEmpty = false;
+      view.hideEmptyProductList();
       displayProductList(productList);
     }
   }

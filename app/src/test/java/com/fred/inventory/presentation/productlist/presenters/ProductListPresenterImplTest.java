@@ -67,4 +67,18 @@ public class ProductListPresenterImplTest {
 
     verify(view).displayProductListName(productList.getName());
   }
+
+  @Test public void onAttachedToWindow_shouldTellViewToHideEmptyViewWhenThereIsDataToBeShown() {
+    presenter.onAttachedToWindow("foo");
+
+    verify(view).hideEmptyProductList();
+  }
+
+  @Test public void onAttachedToWindow_shouldTellViewToShowEmptyProductListWhenThereIsNoneFound() {
+    when(getProductListUseCase.get(anyString())).thenReturn(Observable.<ProductList>empty());
+
+    presenter.onAttachedToWindow("blablabl");
+
+    verify(view).showEmptyProductList();
+  }
 }

@@ -52,4 +52,12 @@ public class ProductListViewImpl extends RelativeLayout implements ProductListVi
   @Override public void displayProductListName(@NonNull String name) {
 
   }
+
+  @Override public void showEmptyProductList() {
+    emptyView.setVisibility(VISIBLE);
+  }
+
+  @Override public void hideEmptyProductList() {
+    emptyView.setVisibility(GONE);
+  }
 }

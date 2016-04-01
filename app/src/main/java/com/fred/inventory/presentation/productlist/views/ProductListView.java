@@ -9,4 +9,8 @@ import android.support.annotation.NonNull;
  */
 public interface ProductListView {
   void displayProductListName(@NonNull String name);
+
+  void showEmptyProductList();
+
+  void hideEmptyProductList();
 }
