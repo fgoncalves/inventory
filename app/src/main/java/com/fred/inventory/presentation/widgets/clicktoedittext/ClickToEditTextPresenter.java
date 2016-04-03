@@ -14,4 +14,8 @@ public interface ClickToEditTextPresenter {
   boolean onKeyboardKeyPressed(int imeAction);
 
   void onTextEntered(@NonNull String text);
+
+  void setText(@NonNull String text);
+
+  void onShowKeyboardRequest();
 }

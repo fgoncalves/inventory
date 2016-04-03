@@ -13,4 +13,8 @@ public interface ProductListView {
   void showEmptyProductList();
 
   void hideEmptyProductList();
+
+  void showKeyboardOnProductListName();
+
+  void showProductList(@NonNull String productListId);
 }

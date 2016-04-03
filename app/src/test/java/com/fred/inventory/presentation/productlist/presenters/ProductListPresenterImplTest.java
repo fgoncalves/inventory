@@ -33,11 +33,15 @@ public class ProductListPresenterImplTest {
 
     productList = new ProductList();
     productList.setName("Some name would go here");
+    productList.setId("Some id");
+
+    presenter.forProductList(productList.getId());
+
     when(getProductListUseCase.get(anyString())).thenReturn(Observable.just(productList));
   }
 
   @Test public void onAttachedToWindow_shouldAddSubscriptionToPool() {
-    presenter.onAttachedToWindow("foo");
+    presenter.onAttachedToWindow();
 
     verify(rxSubscriptionPool).addSubscription(anyString(), anySubscription());
   }
@@ -49,27 +53,27 @@ public class ProductListPresenterImplTest {
   }
 
   @Test public void onAttachedToWindow_shouldQueryForThePassedProductList() {
-    String expectedId = "foobar";
+    presenter.onAttachedToWindow();
 
-    presenter.onAttachedToWindow(expectedId);
-
-    verify(getProductListUseCase).get(expectedId);
+    verify(getProductListUseCase).get(productList.getId());
   }
 
   @Test public void onAttachedToWindow_shouldNotQueryForProductListsIfThePassedIdIsBlank() {
-    presenter.onAttachedToWindow("");
+    presenter.forProductList("");
+
+    presenter.onAttachedToWindow();
 
     verify(getProductListUseCase, never()).get(anyString());
   }
 
-  @Test public void onAttachedToWindow_shouldSetTheProductListNameWhenProducListIsReceived() {
-    presenter.onAttachedToWindow("foo");
+  @Test public void onAttachedToWindow_shouldSetTheProductListNameWhenProductListIsReceived() {
+    presenter.onAttachedToWindow();
 
     verify(view).displayProductListName(productList.getName());
   }
 
   @Test public void onAttachedToWindow_shouldTellViewToHideEmptyViewWhenThereIsDataToBeShown() {
-    presenter.onAttachedToWindow("foo");
+    presenter.onAttachedToWindow();
 
     verify(view).hideEmptyProductList();
   }
@@ -77,8 +81,26 @@ public class ProductListPresenterImplTest {
   @Test public void onAttachedToWindow_shouldTellViewToShowEmptyProductListWhenThereIsNoneFound() {
     when(getProductListUseCase.get(anyString())).thenReturn(Observable.<ProductList>empty());
 
-    presenter.onAttachedToWindow("blablabl");
+    presenter.onAttachedToWindow();
 
     verify(view).showEmptyProductList();
+  }
+
+  @Test
+  public void onAttachedToWindow_shouldTellViewToShowEmptyListWhenThereIsNoProductToGetFromDB() {
+    presenter.forProductList(null);
+
+    presenter.onAttachedToWindow();
+
+    verify(view).showEmptyProductList();
+  }
+
+  @Test
+  public void onAttachedToWindow_shouldTellViewToRequestKeyboardFocusOnClickToEditWidgetIfNoProductIsToBeGottenFromDB() {
+    presenter.forProductList(null);
+
+    presenter.onAttachedToWindow();
+
+    verify(view).showKeyboardOnProductListName();
   }
 }

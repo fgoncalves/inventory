@@ -7,6 +7,7 @@ import android.text.TextWatcher;
 import android.util.AttributeSet;
 import android.view.KeyEvent;
 import android.view.View;
+import android.view.ViewTreeObserver;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
@@ -66,13 +67,35 @@ public class ClickToEditTextViewImpl extends ViewSwitcher implements ClickToEdit
   }
 
   @Override public void showKeyboard() {
-    InputMethodManager imm =
-        (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
-    imm.showSoftInput(editText, InputMethodManager.SHOW_IMPLICIT);
+    editText.getViewTreeObserver()
+        .addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+              @Override public void onGlobalLayout() {
+                editText.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                InputMethodManager imm = (InputMethodManager) getContext().getSystemService(
+                    Context.INPUT_METHOD_SERVICE);
+                imm.showSoftInput(editText, InputMethodManager.SHOW_IMPLICIT);
+              }
+            });
   }
 
   @Override public void requestFocusOnEditText() {
     editText.requestFocus();
+  }
+
+  @Override public void setEditTextText(@NonNull String text) {
+    editText.setText(text);
+  }
+
+  @Override public void onShowKeyboardRequest() {
+    presenter.onShowKeyboardRequest();
+  }
+
+  @Override public boolean isEditable() {
+    return getCurrentView() == editText;
+  }
+
+  @Override public void setText(@NonNull String text) {
+    presenter.setText(text);
   }
 
   private void createChildren(Context context, AttributeSet attrs) {

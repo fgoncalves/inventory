@@ -20,4 +20,12 @@ public interface ClickToEditTextView extends View.OnClickListener {
   void showKeyboard();
 
   void requestFocusOnEditText();
+
+  void setText(@NonNull String text);
+
+  void setEditTextText(@NonNull String text);
+
+  void onShowKeyboardRequest();
+
+  boolean isEditable();
 }

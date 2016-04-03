@@ -47,10 +47,18 @@ public class ProductListViewImpl extends RelativeLayout implements ProductListVi
   @Override protected void onAttachedToWindow() {
     super.onAttachedToWindow();
     recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+
+    if (isInEditMode()) return;
+
+    presenter.onAttachedToWindow();
+  }
+
+  @Override public void showProductList(@NonNull String productListId) {
+    presenter.forProductList(productListId);
   }
 
   @Override public void displayProductListName(@NonNull String name) {
-
+    clickToEditTextView.setText(name);
   }
 
   @Override public void showEmptyProductList() {
@@ -59,5 +67,9 @@ public class ProductListViewImpl extends RelativeLayout implements ProductListVi
 
   @Override public void hideEmptyProductList() {
     emptyView.setVisibility(GONE);
+  }
+
+  @Override public void showKeyboardOnProductListName() {
+    clickToEditTextView.onShowKeyboardRequest();
   }
 }

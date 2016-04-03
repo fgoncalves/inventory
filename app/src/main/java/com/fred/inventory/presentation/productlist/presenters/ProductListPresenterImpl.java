@@ -16,6 +16,7 @@ public class ProductListPresenterImpl implements ProductListPresenter {
   private final GetProductListUseCase getProductListUseCase;
   private final SchedulerTransformer transformer;
   private final RxSubscriptionPool rxSubscriptionPool;
+  private String productListId;
 
   @Inject
   public ProductListPresenterImpl(ProductListView view, GetProductListUseCase getProductListUseCase,
@@ -27,8 +28,12 @@ public class ProductListPresenterImpl implements ProductListPresenter {
     this.rxSubscriptionPool = rxSubscriptionPool;
   }
 
-  @Override public void onAttachedToWindow(String productListId) {
-    if (StringUtils.isBlank(productListId)) return;
+  @Override public void onAttachedToWindow() {
+    if (StringUtils.isBlank(productListId)) {
+      view.showEmptyProductList();
+      view.showKeyboardOnProductListName();
+      return;
+    }
 
     Subscription subscription = getProductListUseCase.get(productListId)
         .compose(transformer.<ProductList>applySchedulers())
@@ -39,6 +44,11 @@ public class ProductListPresenterImpl implements ProductListPresenter {
 
   @Override public void onDetachedFromWindow() {
     rxSubscriptionPool.unsubscribeFrom(getClass().getCanonicalName());
+  }
+
+
+  @Override public void forProductList(String productListId) {
+    this.productListId = productListId;
   }
 
   private void displayProductList(ProductList productList) {
