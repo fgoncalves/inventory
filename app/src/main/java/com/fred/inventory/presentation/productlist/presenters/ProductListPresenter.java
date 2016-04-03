@@ -11,4 +11,6 @@ public interface ProductListPresenter {
   void onDetachedFromWindow();
 
   void forProductList(String productListId);
+
+  void onDoneButtonClicked();
 }

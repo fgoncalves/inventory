@@ -8,4 +8,6 @@ import java.util.List;
  */
 public interface ListOfProductListsAdapter {
   void attachModel(List<ProductList> productListList);
+
+  void onNewData();
 }

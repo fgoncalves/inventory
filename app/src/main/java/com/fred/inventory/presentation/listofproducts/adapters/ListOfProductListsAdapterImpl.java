@@ -36,6 +36,10 @@ public class ListOfProductListsAdapterImpl
     this.model = model;
   }
 
+  @Override public void onNewData() {
+    notifyDataSetChanged();
+  }
+
   public static class ViewHolder extends RecyclerView.ViewHolder {
     ListOfProductListsItemView mainView;
 

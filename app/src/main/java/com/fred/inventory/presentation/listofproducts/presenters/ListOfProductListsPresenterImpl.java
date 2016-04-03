@@ -70,6 +70,7 @@ public class ListOfProductListsPresenterImpl implements ListOfProductListsPresen
       this.productLists = productLists;
       adapter.attachModel(productLists);
       view.setAdapter(adapter);
+      adapter.onNewData();
     }
   }
 }

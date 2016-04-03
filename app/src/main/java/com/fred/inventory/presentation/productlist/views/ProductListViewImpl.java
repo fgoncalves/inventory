@@ -6,10 +6,10 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.view.View;
-import android.widget.Button;
 import android.widget.RelativeLayout;
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import com.fred.inventory.MainActivity;
 import com.fred.inventory.R;
 import com.fred.inventory.presentation.productlist.modules.ProductListModule;
@@ -19,7 +19,6 @@ import javax.inject.Inject;
 
 public class ProductListViewImpl extends RelativeLayout implements ProductListView {
   @Bind(R.id.product_list_name) ClickToEditTextViewImpl clickToEditTextView;
-  @Bind(R.id.toolbar_done_button) Button button;
   @Bind(R.id.product_list_recycler_view) RecyclerView recyclerView;
   @Bind(R.id.empty_product_list_recycler) View emptyView;
 
@@ -71,5 +70,9 @@ public class ProductListViewImpl extends RelativeLayout implements ProductListVi
 
   @Override public void showKeyboardOnProductListName() {
     clickToEditTextView.onShowKeyboardRequest();
+  }
+
+  @OnClick(R.id.toolbar_done_button) public void onDoneButtonClicked() {
+    presenter.onDoneButtonClicked();
   }
 }

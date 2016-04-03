@@ -16,19 +16,31 @@ public class RealmWrapperImpl implements RealmWrapper {
 
   @Override public <T extends RealmObject> List<T> all(Class<T> clazz) {
     Realm realm = Realm.getInstance(context);
-    try {
-      return new ArrayList<>(realm.allObjects(clazz));
-    } finally {
-      realm.close();
-    }
+    //try {
+    return new ArrayList<>(realm.allObjects(clazz));
+    //} finally {
+    //  realm.close();
+    //}
   }
 
   @Override public <T extends RealmObject> T get(Class<T> clazz, String id) {
     Realm realm = Realm.getInstance(context);
-    try {
-      return realm.where(clazz).equalTo("id", id).findFirst();
-    } finally {
-      realm.close();
-    }
+    //try {
+    return realm.where(clazz).equalTo("id", id).findFirst();
+    //} finally {
+    //  realm.close();
+    //}
+  }
+
+  @Override public <T extends RealmObject> T store(T object) {
+    Realm realm = Realm.getInstance(context);
+    //try {
+    realm.beginTransaction();
+    T result = realm.copyToRealmOrUpdate(object);
+    realm.commitTransaction();
+    return result;
+    //} finally {
+    //  realm.close();
+    //}
   }
 }

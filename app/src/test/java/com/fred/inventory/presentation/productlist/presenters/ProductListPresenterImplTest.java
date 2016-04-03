@@ -2,6 +2,7 @@ package com.fred.inventory.presentation.productlist.presenters;
 
 import com.fred.inventory.domain.models.ProductList;
 import com.fred.inventory.domain.usecases.GetProductListUseCase;
+import com.fred.inventory.domain.usecases.SaveProductListInLocalStorageUseCase;
 import com.fred.inventory.presentation.productlist.views.ProductListView;
 import com.fred.inventory.testhelpers.ImmediateToImmediateTransformer;
 import com.fred.inventory.utils.rx.RxSubscriptionPool;
@@ -12,6 +13,7 @@ import org.mockito.MockitoAnnotations;
 import rx.Observable;
 
 import static com.fred.inventory.testhelpers.matchers.SubscriptionMatchers.anySubscription;
+import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
@@ -20,6 +22,7 @@ import static org.mockito.Mockito.when;
 public class ProductListPresenterImplTest {
   @Mock ProductListView view;
   @Mock GetProductListUseCase getProductListUseCase;
+  @Mock SaveProductListInLocalStorageUseCase saveProductListInLocalStorageUseCase;
   @Mock RxSubscriptionPool rxSubscriptionPool;
 
   private ProductListPresenterImpl presenter;
@@ -29,7 +32,8 @@ public class ProductListPresenterImplTest {
     MockitoAnnotations.initMocks(this);
 
     presenter = new ProductListPresenterImpl(view, getProductListUseCase,
-        new ImmediateToImmediateTransformer(), rxSubscriptionPool);
+        saveProductListInLocalStorageUseCase, new ImmediateToImmediateTransformer(),
+        rxSubscriptionPool);
 
     productList = new ProductList();
     productList.setName("Some name would go here");
@@ -38,6 +42,8 @@ public class ProductListPresenterImplTest {
     presenter.forProductList(productList.getId());
 
     when(getProductListUseCase.get(anyString())).thenReturn(Observable.just(productList));
+    when(saveProductListInLocalStorageUseCase.save(any(ProductList.class))).thenReturn(
+        Observable.just(productList));
   }
 
   @Test public void onAttachedToWindow_shouldAddSubscriptionToPool() {
@@ -102,5 +108,19 @@ public class ProductListPresenterImplTest {
     presenter.onAttachedToWindow();
 
     verify(view).showKeyboardOnProductListName();
+  }
+
+  @Test public void onDoneButtonClicked_shouldSaveProductListToLocalStorage() {
+    presenter.onAttachedToWindow();
+
+    presenter.onDoneButtonClicked();
+
+    verify(saveProductListInLocalStorageUseCase).save(productList);
+  }
+
+  @Test public void onDoneButtonClicked_shouldAddSubscriptionToRxPool() {
+    presenter.onDoneButtonClicked();
+
+    verify(rxSubscriptionPool).addSubscription(anyString(), anySubscription());
   }
 }

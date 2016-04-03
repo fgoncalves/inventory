@@ -2,6 +2,7 @@ package com.fred.inventory.data.db;
 
 import com.fred.inventory.data.db.models.ProductList;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
@@ -12,6 +13,8 @@ import rx.schedulers.Schedulers;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 public class ProductServiceImplTest {
@@ -83,5 +86,28 @@ public class ProductServiceImplTest {
     testSubscriber.assertCompleted();
     testSubscriber.assertNoErrors();
     testSubscriber.assertValues(productList);
+  }
+
+  @Test public void store_shouldSetARandomIdIfNoneIsGiven() {
+    ProductList productList = mock(ProductList.class);
+
+    service.createOrUpdate(productList);
+
+    verify(productList).setId(anyString());
+  }
+
+  @Test public void store_shouldStoreProductListToRealm() {
+    TestSubscriber<ProductList> testSubscriber = new TestSubscriber<>();
+    ProductList productList = new ProductList();
+    when(realmWrapper.store(any(ProductList.class))).thenReturn(productList);
+
+    service.createOrUpdate(productList)
+        .subscribeOn(Schedulers.immediate())
+        .observeOn(Schedulers.immediate())
+        .subscribe(testSubscriber);
+
+    testSubscriber.assertCompleted();
+    testSubscriber.assertNoErrors();
+    testSubscriber.assertReceivedOnNext(Arrays.asList(productList));
   }
 }

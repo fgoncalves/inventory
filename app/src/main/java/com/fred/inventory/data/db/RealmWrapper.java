@@ -25,4 +25,14 @@ public interface RealmWrapper {
    * @return The first occurrence of the object or null if none is found
    */
   <T extends RealmObject> T get(Class<T> clazz, String id);
+
+  /**
+   * Store the given object into realm. If the object exists it will be updated.
+   * <p/>
+   * The object must have a valid id.
+   *
+   * @param object The object to be stored
+   * @return The created or updated object
+   */
+  <T extends RealmObject> T store(T object);
 }

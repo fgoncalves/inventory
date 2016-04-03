@@ -2,6 +2,7 @@ package com.fred.inventory.presentation.productlist.presenters;
 
 import com.fred.inventory.domain.models.ProductList;
 import com.fred.inventory.domain.usecases.GetProductListUseCase;
+import com.fred.inventory.domain.usecases.SaveProductListInLocalStorageUseCase;
 import com.fred.inventory.presentation.productlist.views.ProductListView;
 import com.fred.inventory.utils.StringUtils;
 import com.fred.inventory.utils.rx.RxSubscriptionPool;
@@ -14,21 +15,27 @@ import rx.Subscription;
 public class ProductListPresenterImpl implements ProductListPresenter {
   private final ProductListView view;
   private final GetProductListUseCase getProductListUseCase;
+  private final SaveProductListInLocalStorageUseCase saveProductListInLocalStorageUseCase;
   private final SchedulerTransformer transformer;
   private final RxSubscriptionPool rxSubscriptionPool;
   private String productListId;
+  private ProductList productList;
 
   @Inject
   public ProductListPresenterImpl(ProductListView view, GetProductListUseCase getProductListUseCase,
+      SaveProductListInLocalStorageUseCase saveProductListInLocalStorageUseCase,
       @IOToUiSchedulerTransformer SchedulerTransformer transformer,
       RxSubscriptionPool rxSubscriptionPool) {
     this.view = view;
     this.getProductListUseCase = getProductListUseCase;
+    this.saveProductListInLocalStorageUseCase = saveProductListInLocalStorageUseCase;
     this.transformer = transformer;
     this.rxSubscriptionPool = rxSubscriptionPool;
   }
 
   @Override public void onAttachedToWindow() {
+    initializeModel();
+
     if (StringUtils.isBlank(productListId)) {
       view.showEmptyProductList();
       view.showKeyboardOnProductListName();
@@ -46,9 +53,32 @@ public class ProductListPresenterImpl implements ProductListPresenter {
     rxSubscriptionPool.unsubscribeFrom(getClass().getCanonicalName());
   }
 
-
   @Override public void forProductList(String productListId) {
     this.productListId = productListId;
+  }
+
+  @Override public void onDoneButtonClicked() {
+    Subscription subscription = saveProductListInLocalStorageUseCase.save(productList)
+        .compose(transformer.<ProductList>applySchedulers())
+        .subscribe(new Subscriber<ProductList>() {
+          @Override public void onCompleted() {
+
+          }
+
+          @Override public void onError(Throwable e) {
+
+          }
+
+          @Override public void onNext(ProductList productList) {
+            ProductListPresenterImpl.this.productList = productList;
+          }
+        });
+
+    rxSubscriptionPool.addSubscription(getClass().getCanonicalName(), subscription);
+  }
+
+  private void initializeModel() {
+    productList = new ProductList();
   }
 
   private void displayProductList(ProductList productList) {
@@ -69,6 +99,7 @@ public class ProductListPresenterImpl implements ProductListPresenter {
 
     @Override public void onNext(ProductList productList) {
       isEmpty = false;
+      ProductListPresenterImpl.this.productList = productList;
       view.hideEmptyProductList();
       displayProductList(productList);
     }

@@ -24,4 +24,14 @@ public interface ProductService {
    * @return An observable for the product list. Will be empty if none is found.
    */
   Observable<ProductList> productList(String id);
+
+  /**
+   * Create or update the given product list. If the list has an id, then an update will be
+   * attempted. If the list as no id, then a random one will be assigned and the list will be
+   * created.
+   *
+   * @param productList The product list to create or update
+   * @return The created or updated list
+   */
+  Observable<ProductList> createOrUpdate(ProductList productList);
 }

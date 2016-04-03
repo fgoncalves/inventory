@@ -1,6 +1,8 @@
 package com.fred.inventory.data.db;
 
 import com.fred.inventory.data.db.models.ProductList;
+import com.fred.inventory.utils.StringUtils;
+import com.fred.inventory.utils.UniqueIdGenerator;
 import java.util.List;
 import javax.inject.Inject;
 import rx.Observable;
@@ -28,6 +30,17 @@ public class ProductServiceImpl implements ProductService {
       @Override public void call(Subscriber<? super ProductList> subscriber) {
         ProductList productList = realmWrapper.get(ProductList.class, id);
         if (productList != null) subscriber.onNext(productList);
+        subscriber.onCompleted();
+      }
+    });
+  }
+
+  @Override public Observable<ProductList> createOrUpdate(final ProductList productList) {
+    if (StringUtils.isBlank(productList.getId())) productList.setId(UniqueIdGenerator.id());
+
+    return Observable.create(new Observable.OnSubscribe<ProductList>() {
+      @Override public void call(Subscriber<? super ProductList> subscriber) {
+        subscriber.onNext(realmWrapper.store(productList));
         subscriber.onCompleted();
       }
     });
