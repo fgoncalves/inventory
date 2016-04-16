@@ -14,6 +14,11 @@ import com.fred.inventory.presentation.productlist.ProductListScreen;
 import com.fred.inventory.utils.path.PathManager;
 import dagger.ObjectGraph;
 import javax.inject.Inject;
+import rx.Observable;
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Func1;
+import rx.schedulers.Schedulers;
 
 public class MainActivity extends AppCompatActivity implements NavigationListener {
   @Inject PathManager pathManager;
@@ -64,8 +69,37 @@ public class MainActivity extends AppCompatActivity implements NavigationListene
   }
 
   @Override public void onAddProductListButtonClicked() {
-    ProductListScreen screen = ProductListScreen.newInstance();
+    final ProductListScreen screen = ProductListScreen.newInstance();
     screen.addNavigationListener(this);
+    screen.lifeCycle()
+        .filter(new Func1<BaseScreen.LifeCycle, Boolean>() {
+          @Override public Boolean call(BaseScreen.LifeCycle lifeCycle) {
+            return lifeCycle == BaseScreen.LifeCycle.ON_RESUME;
+          }
+        })
+        .flatMap(new Func1<BaseScreen.LifeCycle, Observable<BaseScreen.ScreenEvent>>() {
+          @Override public Observable<BaseScreen.ScreenEvent> call(BaseScreen.LifeCycle lifeCycle) {
+            return screen.screenEvents();
+          }
+        })
+        .observeOn(Schedulers.computation())
+        .subscribeOn(AndroidSchedulers.mainThread())
+        .subscribe(new Subscriber<BaseScreen.ScreenEvent>() {
+          @Override public void onCompleted() {
+
+          }
+
+          @Override public void onError(Throwable e) {
+
+          }
+
+          @Override public void onNext(BaseScreen.ScreenEvent screenEvent) {
+            switch (screenEvent) {
+              case REMOVE:
+                pathManager.back();
+            }
+          }
+        });
     pathManager.go(screen, R.id.main_container);
   }
 

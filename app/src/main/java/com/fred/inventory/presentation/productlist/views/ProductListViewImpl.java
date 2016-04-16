@@ -16,6 +16,8 @@ import com.fred.inventory.presentation.productlist.modules.ProductListModule;
 import com.fred.inventory.presentation.productlist.presenters.ProductListPresenter;
 import com.fred.inventory.presentation.widgets.clicktoedittext.ClickToEditTextViewImpl;
 import javax.inject.Inject;
+import rx.Observable;
+import rx.subjects.PublishSubject;
 
 public class ProductListViewImpl extends RelativeLayout implements ProductListView {
   @Bind(R.id.product_list_name) ClickToEditTextViewImpl clickToEditTextView;
@@ -23,6 +25,8 @@ public class ProductListViewImpl extends RelativeLayout implements ProductListVi
   @Bind(R.id.empty_product_list_recycler) View emptyView;
 
   @Inject ProductListPresenter presenter;
+
+  private PublishSubject<ViewInteractionType> interactions = PublishSubject.create();
 
   public ProductListViewImpl(Context context) {
     super(context);
@@ -74,5 +78,14 @@ public class ProductListViewImpl extends RelativeLayout implements ProductListVi
 
   @OnClick(R.id.toolbar_done_button) public void onDoneButtonClicked() {
     presenter.onDoneButtonClicked();
+  }
+
+  @Override public Observable<ViewInteractionType> interactions() {
+    return interactions;
+  }
+
+  @Override public void doDismiss() {
+    interactions.onNext(ViewInteractionType.DISMISS);
+    interactions.onCompleted();
   }
 }

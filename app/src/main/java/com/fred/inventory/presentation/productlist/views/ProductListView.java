@@ -1,6 +1,7 @@
 package com.fred.inventory.presentation.productlist.views;
 
 import android.support.annotation.NonNull;
+import rx.Observable;
 
 /**
  * Interface for the product list
@@ -8,6 +9,12 @@ import android.support.annotation.NonNull;
  * Created by fred on 29.03.16.
  */
 public interface ProductListView {
+  enum ViewInteractionType {
+    DISMISS
+  }
+
+  void doDismiss();
+
   void displayProductListName(@NonNull String name);
 
   void showEmptyProductList();
@@ -17,4 +24,6 @@ public interface ProductListView {
   void showKeyboardOnProductListName();
 
   void showProductList(@NonNull String productListId);
+
+  Observable<ViewInteractionType> interactions();
 }

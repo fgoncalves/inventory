@@ -15,6 +15,9 @@ public class ListOfProductListsItemPresenterImpl implements ListOfProductListsIt
 
   @Override public void attachModel(ProductList productList) {
     this.productList = productList;
+  }
+
+  @Override public void onAttachedToWindow() {
     view.displayProductListName(StringUtils.valueOrDefault(productList.getName(), ""));
   }
 }

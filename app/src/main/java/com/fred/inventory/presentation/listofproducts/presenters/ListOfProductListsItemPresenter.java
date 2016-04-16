@@ -7,4 +7,6 @@ import com.fred.inventory.domain.models.ProductList;
  */
 public interface ListOfProductListsItemPresenter {
   void attachModel(ProductList productList);
+
+  void onAttachedToWindow();
 }

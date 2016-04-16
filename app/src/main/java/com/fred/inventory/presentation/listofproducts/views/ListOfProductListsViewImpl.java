@@ -43,13 +43,13 @@ public class ListOfProductListsViewImpl extends CoordinatorLayout
   @Override protected void onFinishInflate() {
     super.onFinishInflate();
     ButterKnife.bind(this);
+    recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
     if (isInEditMode()) return;
     MainActivity.scoped(new ListOfProductListsModule(this)).inject(this);
   }
 
   @Override public void onAttachedToWindow() {
     super.onAttachedToWindow();
-    recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
     if (isInEditMode()) return;
     presenter.onAttachedToWindow();
   }

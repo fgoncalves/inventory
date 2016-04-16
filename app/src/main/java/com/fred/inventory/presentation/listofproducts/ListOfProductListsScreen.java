@@ -10,6 +10,7 @@ import com.fred.inventory.presentation.base.BaseScreen;
 import com.fred.inventory.presentation.listofproducts.views.ListOfProductListsView;
 import com.fred.inventory.presentation.listofproducts.views.ListOfProductListsViewImpl;
 import com.fred.inventory.presentation.navigation.NavigationListener;
+import rx.Observable;
 
 public class ListOfProductListsScreen extends BaseScreen {
   public static ListOfProductListsScreen newInstance() {
@@ -40,5 +41,9 @@ public class ListOfProductListsScreen extends BaseScreen {
 
   @Override protected boolean handleBackPress() {
     return false;
+  }
+
+  @Override public Observable<ScreenEvent> screenEvents() {
+    return Observable.empty();
   }
 }

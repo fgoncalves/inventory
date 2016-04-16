@@ -23,20 +23,22 @@ public class ListOfProductListsItemPresenterImplTest {
     productList.setName("Some Name");
 
     presenter = new ListOfProductListsItemPresenterImpl(view);
+    presenter.attachModel(productList);
   }
 
   @Test
-  public void attachModel_shouldTellViewToDisplayProductListName() {
-    presenter.attachModel(productList);
+  public void onAttachedToWindow_shouldTellViewToDisplayProductListName() {
+    presenter.onAttachedToWindow();
 
     verify(view).displayProductListName(productList.getName());
   }
 
   @Test
-  public void attachModel_shouldTellViewToDisplayAnEmptyProductListNameIfOneIsNotPresent() {
+  public void onAttachedToWindow_shouldTellViewToDisplayAnEmptyProductListNameIfOneIsNotPresent() {
     productList.setName(null);
-
     presenter.attachModel(productList);
+
+    presenter.onAttachedToWindow();
 
     verify(view).displayProductListName("");
   }

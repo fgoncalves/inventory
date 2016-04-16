@@ -70,7 +70,7 @@ public class ProductListPresenterImpl implements ProductListPresenter {
           }
 
           @Override public void onNext(ProductList productList) {
-            ProductListPresenterImpl.this.productList = productList;
+            view.doDismiss();
           }
         });
 

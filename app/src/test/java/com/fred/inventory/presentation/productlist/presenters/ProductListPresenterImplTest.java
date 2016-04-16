@@ -123,4 +123,10 @@ public class ProductListPresenterImplTest {
 
     verify(rxSubscriptionPool).addSubscription(anyString(), anySubscription());
   }
+
+  @Test public void onDoneButtonClcked_shouldCallViewDismissMethod() {
+    presenter.onDoneButtonClicked();
+
+    verify(view).doDismiss();
+  }
 }

@@ -41,6 +41,12 @@ public class ListOfProductListsItemViewImpl extends RelativeLayout
     MainActivity.scoped(new ListOfProductListsItemModule(this)).inject(this);
   }
 
+  @Override protected void onAttachedToWindow() {
+    super.onAttachedToWindow();
+    if (isInEditMode()) return;
+    presenter.onAttachedToWindow();
+  }
+
   @Override public void displayProductListName(@NonNull String name) {
     productListName.setText(name);
   }

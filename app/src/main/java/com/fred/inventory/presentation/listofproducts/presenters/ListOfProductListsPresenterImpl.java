@@ -37,6 +37,7 @@ public class ListOfProductListsPresenterImpl implements ListOfProductListsPresen
         .subscribe(new ListOfProductListsSubscriber());
 
     rxSubscriptionPool.addSubscription(getClass().getCanonicalName(), subscription);
+    view.setAdapter(adapter);
   }
 
   @Override public void onDetachedFromWindow() {
@@ -69,7 +70,6 @@ public class ListOfProductListsPresenterImpl implements ListOfProductListsPresen
     @Override public void onNext(List<ProductList> productLists) {
       this.productLists = productLists;
       adapter.attachModel(productLists);
-      view.setAdapter(adapter);
       adapter.onNewData();
     }
   }
