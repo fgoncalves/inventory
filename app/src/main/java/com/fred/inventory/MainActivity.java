@@ -9,7 +9,6 @@ import android.view.WindowManager;
 import butterknife.ButterKnife;
 import com.fred.inventory.presentation.base.BaseScreen;
 import com.fred.inventory.presentation.listofproducts.ListOfProductListsScreen;
-import com.fred.inventory.presentation.navigation.NavigationListener;
 import com.fred.inventory.presentation.productlist.ProductListScreen;
 import com.fred.inventory.utils.path.PathManager;
 import dagger.ObjectGraph;
@@ -19,8 +18,10 @@ import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
+import timber.log.Timber;
 
-public class MainActivity extends AppCompatActivity implements NavigationListener {
+public class MainActivity extends AppCompatActivity {
+  private final ScreenSubscriber screenSubscriber = new ScreenSubscriber();
   @Inject PathManager pathManager;
 
   private static ObjectGraph objectGraph;
@@ -42,9 +43,11 @@ public class MainActivity extends AppCompatActivity implements NavigationListene
    */
   private void setStatusBarColor() {
     Window window = getWindow();
-    window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-    window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+      window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+    }
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+      window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
       window.setStatusBarColor(ContextCompat.getColor(this, R.color.colorPrimary));
     }
   }
@@ -68,48 +71,54 @@ public class MainActivity extends AppCompatActivity implements NavigationListene
     super.onBackPressed();
   }
 
-  @Override public void onAddProductListButtonClicked() {
-    final ProductListScreen screen = ProductListScreen.newInstance();
-    screen.addNavigationListener(this);
-    screen.lifeCycle()
-        .filter(new Func1<BaseScreen.LifeCycle, Boolean>() {
-          @Override public Boolean call(BaseScreen.LifeCycle lifeCycle) {
-            return lifeCycle == BaseScreen.LifeCycle.ON_RESUME;
-          }
-        })
-        .flatMap(new Func1<BaseScreen.LifeCycle, Observable<BaseScreen.ScreenEvent>>() {
-          @Override public Observable<BaseScreen.ScreenEvent> call(BaseScreen.LifeCycle lifeCycle) {
-            return screen.screenEvents();
-          }
-        })
+  private void addListOfProductListsScreen() {
+    final ListOfProductListsScreen screen = ListOfProductListsScreen.newInstance();
+    screen.screenEvents()
         .observeOn(Schedulers.computation())
         .subscribeOn(AndroidSchedulers.mainThread())
-        .subscribe(new Subscriber<BaseScreen.ScreenEvent>() {
-          @Override public void onCompleted() {
+        .subscribe(screenSubscriber);
 
-          }
-
-          @Override public void onError(Throwable e) {
-
-          }
-
-          @Override public void onNext(BaseScreen.ScreenEvent screenEvent) {
-            switch (screenEvent) {
-              case REMOVE:
-                pathManager.back();
-            }
-          }
-        });
-    pathManager.go(screen, R.id.main_container);
-  }
-
-  private void addListOfProductListsScreen() {
-    ListOfProductListsScreen screen = ListOfProductListsScreen.newInstance();
-    screen.addNavigationListener(this);
     pathManager.single(screen, R.id.main_container);
   }
 
   private void inject() {
     scoped(new MainActivityModule()).inject(this);
+  }
+
+  private class ScreenSubscriber extends Subscriber<BaseScreen.ScreenEvent> {
+    @Override public void onCompleted() {
+
+    }
+
+    @Override public void onError(Throwable e) {
+      Timber.d(e, "Failed to deal with screen event");
+    }
+
+    @Override public void onNext(BaseScreen.ScreenEvent screenEvent) {
+      switch (screenEvent) {
+        case ADD_PRODUCT_LIST_SCREEN:
+          final ProductListScreen screen = ProductListScreen.newInstance();
+          screen.lifeCycle()
+              .filter(new Func1<BaseScreen.LifeCycle, Boolean>() {
+                @Override public Boolean call(BaseScreen.LifeCycle lifeCycle) {
+                  return lifeCycle == BaseScreen.LifeCycle.ON_RESUME;
+                }
+              })
+              .flatMap(new Func1<BaseScreen.LifeCycle, Observable<BaseScreen.ScreenEvent>>() {
+                @Override
+                public Observable<BaseScreen.ScreenEvent> call(BaseScreen.LifeCycle lifeCycle) {
+                  return screen.screenEvents();
+                }
+              })
+              .observeOn(Schedulers.computation())
+              .subscribeOn(AndroidSchedulers.mainThread())
+              .subscribe(this);
+          pathManager.go(screen, R.id.main_container);
+          break;
+        case REMOVE_PRODUCT_LIST_SCREEN:
+          pathManager.back();
+          break;
+      }
+    }
   }
 }

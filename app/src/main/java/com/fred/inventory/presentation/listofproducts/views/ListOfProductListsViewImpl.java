@@ -12,17 +12,14 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import com.fred.inventory.MainActivity;
 import com.fred.inventory.R;
+import com.fred.inventory.presentation.listofproducts.adapters.ListOfProductListsAdapter;
 import com.fred.inventory.presentation.listofproducts.modules.ListOfProductListsModule;
 import com.fred.inventory.presentation.listofproducts.presenters.ListOfProductListsPresenter;
-import com.fred.inventory.presentation.listofproducts.adapters.ListOfProductListsAdapter;
-import java.util.ArrayList;
-import java.util.List;
 import javax.inject.Inject;
+import rx.Observable;
 
 public class ListOfProductListsViewImpl extends CoordinatorLayout
     implements ListOfProductListsView {
-  private final List<ListOfProductListsClickListener> clickListeners = new ArrayList<>();
-
   @Bind(R.id.empty_list_of_lists_recycler) View emptyView;
   @Bind(R.id.list_of_lists_recycler_view) RecyclerView recyclerView;
 
@@ -70,18 +67,8 @@ public class ListOfProductListsViewImpl extends CoordinatorLayout
     Toast.makeText(getContext(), R.string.something_went_wrong, Toast.LENGTH_SHORT).show();
   }
 
-  @Override
-  public void addListOfProductListsClickListener(ListOfProductListsClickListener listener) {
-    clickListeners.add(listener);
-  }
-
-  @Override
-  public void removeListOfProductListsClickListener(ListOfProductListsClickListener listener) {
-    clickListeners.remove(listener);
-  }
-
-  @Override public void notifyListenersOfAddButtonClick() {
-    for (ListOfProductListsClickListener listener : clickListeners) listener.onAddButtonClicked();
+  @Override public Observable<ListOfProductListsEvent> interactions() {
+    return presenter.interactions();
   }
 
   @OnClick(R.id.add_button) public void onAddButtonClicked() {

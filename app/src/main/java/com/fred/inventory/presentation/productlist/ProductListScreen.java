@@ -30,7 +30,7 @@ public class ProductListScreen extends BaseScreen {
           public ScreenEvent call(ProductListView.ViewInteractionType viewInteractionType) {
             switch (viewInteractionType) {
               case DISMISS:
-                return ScreenEvent.REMOVE;
+                return ScreenEvent.REMOVE_PRODUCT_LIST_SCREEN;
             }
             return ScreenEvent.NOOP;
           }

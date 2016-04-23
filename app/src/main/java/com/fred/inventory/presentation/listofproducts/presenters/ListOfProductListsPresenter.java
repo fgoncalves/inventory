@@ -1,5 +1,8 @@
 package com.fred.inventory.presentation.listofproducts.presenters;
 
+import com.fred.inventory.presentation.listofproducts.views.ListOfProductListsView;
+import rx.Observable;
+
 /**
  * Presenter for the list of products
  * <p/>
@@ -11,4 +14,6 @@ public interface ListOfProductListsPresenter {
   void onDetachedFromWindow();
 
   void onAddButtonClicked();
+
+  Observable<ListOfProductListsView.ListOfProductListsEvent> interactions();
 }

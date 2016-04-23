@@ -1,9 +1,6 @@
 package com.fred.inventory.presentation.base;
 
 import android.app.Fragment;
-import com.fred.inventory.presentation.navigation.NavigationListener;
-import java.util.ArrayList;
-import java.util.List;
 import rx.Observable;
 import rx.subjects.PublishSubject;
 
@@ -17,12 +14,11 @@ public abstract class BaseScreen extends Fragment {
   }
 
   public enum ScreenEvent {
-    REMOVE,
-    NOOP
+    REMOVE_PRODUCT_LIST_SCREEN,
+    ADD_PRODUCT_LIST_SCREEN, NOOP
   }
 
   private PublishSubject<LifeCycle> lifeCyclePublisher = PublishSubject.create();
-  protected List<NavigationListener> navigationListeners = new ArrayList<>();
 
   public Observable<LifeCycle> lifeCycle() {
     return lifeCyclePublisher;
@@ -31,24 +27,6 @@ public abstract class BaseScreen extends Fragment {
   @Override public void onResume() {
     super.onResume();
     lifeCyclePublisher.onNext(LifeCycle.ON_RESUME);
-  }
-
-  /**
-   * Add a given listener to the navigation listener list of this fragment.
-   *
-   * @param listener The listener to add
-   */
-  public void addNavigationListener(NavigationListener listener) {
-    navigationListeners.add(listener);
-  }
-
-  /**
-   * Remove the given listener from the navigation listeners of this fragment
-   *
-   * @param listener The listener to remove
-   */
-  public void removeNavigationListener(NavigationListener listener) {
-    navigationListeners.remove(listener);
   }
 
   /**

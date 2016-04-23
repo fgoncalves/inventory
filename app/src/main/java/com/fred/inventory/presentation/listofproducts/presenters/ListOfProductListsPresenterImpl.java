@@ -9,8 +9,10 @@ import com.fred.inventory.utils.rx.schedulers.SchedulerTransformer;
 import com.fred.inventory.utils.rx.schedulers.qualifiers.IOToUiSchedulerTransformer;
 import java.util.List;
 import javax.inject.Inject;
+import rx.Observable;
 import rx.Subscriber;
 import rx.Subscription;
+import rx.subjects.PublishSubject;
 import timber.log.Timber;
 
 public class ListOfProductListsPresenterImpl implements ListOfProductListsPresenter {
@@ -19,6 +21,8 @@ public class ListOfProductListsPresenterImpl implements ListOfProductListsPresen
   private final SchedulerTransformer ioToUiSchedulerTransformer;
   private final RxSubscriptionPool rxSubscriptionPool;
   private final ListOfProductListsAdapter adapter;
+  private final PublishSubject<ListOfProductListsView.ListOfProductListsEvent> interactions =
+      PublishSubject.create();
 
   @Inject public ListOfProductListsPresenterImpl(ListOfProductListsView view,
       ListAllProductListsUseCase listAllProductListsUseCase,
@@ -45,7 +49,12 @@ public class ListOfProductListsPresenterImpl implements ListOfProductListsPresen
   }
 
   @Override public void onAddButtonClicked() {
-    view.notifyListenersOfAddButtonClick();
+    interactions.onNext(ListOfProductListsView.ListOfProductListsEvent.ADD_BUTTON_CLICKED);
+    interactions.onCompleted();
+  }
+
+  @Override public Observable<ListOfProductListsView.ListOfProductListsEvent> interactions() {
+    return interactions.asObservable();
   }
 
   /**

@@ -97,10 +97,4 @@ public class ListOfProductListsPresenterImplTest {
 
     verify(rxSubscriptionPool).unsubscribeFrom(anyString());
   }
-
-  @Test public void onAddButtonClicked_shouldTellViewToNotifyListenersThatAddButtonWasClicked() {
-    presenter.onAddButtonClicked();
-
-    verify(view).notifyListenersOfAddButtonClick();
-  }
 }

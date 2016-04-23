@@ -9,10 +9,17 @@ import com.fred.inventory.R;
 import com.fred.inventory.presentation.base.BaseScreen;
 import com.fred.inventory.presentation.listofproducts.views.ListOfProductListsView;
 import com.fred.inventory.presentation.listofproducts.views.ListOfProductListsViewImpl;
-import com.fred.inventory.presentation.navigation.NavigationListener;
 import rx.Observable;
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Func1;
+import rx.schedulers.Schedulers;
+import rx.subjects.PublishSubject;
+import timber.log.Timber;
 
 public class ListOfProductListsScreen extends BaseScreen {
+  private PublishSubject<ScreenEvent> events = PublishSubject.create();
+
   public static ListOfProductListsScreen newInstance() {
     return new ListOfProductListsScreen();
   }
@@ -21,22 +28,37 @@ public class ListOfProductListsScreen extends BaseScreen {
       Bundle savedInstanceState) {
     ListOfProductListsViewImpl listOfProductListsView =
         (ListOfProductListsViewImpl) inflater.inflate(R.layout.list_of_products, null);
-    setClickListeners(listOfProductListsView);
+    setEventSubscribers(listOfProductListsView);
     return listOfProductListsView;
   }
 
-  private void setClickListeners(ListOfProductListsViewImpl listOfProductListsView) {
-    listOfProductListsView.addListOfProductListsClickListener(
-        new ListOfProductListsView.ListOfProductListsClickListener() {
-          @Override public void onAddButtonClicked() {
-            notifyNavigationListenersThatAddButtonWasClicked();
+  private void setEventSubscribers(ListOfProductListsViewImpl listOfProductListsView) {
+    listOfProductListsView.interactions()
+        .map(new Func1<ListOfProductListsView.ListOfProductListsEvent, ScreenEvent>() {
+          @Override public ScreenEvent call(
+              ListOfProductListsView.ListOfProductListsEvent listOfProductListsEvent) {
+            if (listOfProductListsEvent
+                == ListOfProductListsView.ListOfProductListsEvent.ADD_BUTTON_CLICKED) {
+              return ScreenEvent.ADD_PRODUCT_LIST_SCREEN;
+            }
+            return ScreenEvent.NOOP;
+          }
+        })
+        .subscribeOn(Schedulers.computation())
+        .observeOn(AndroidSchedulers.mainThread())
+        .subscribe(new Subscriber<ScreenEvent>() {
+          @Override public void onCompleted() {
+
+          }
+
+          @Override public void onError(Throwable e) {
+            Timber.e(e, "Failed to get events from screen");
+          }
+
+          @Override public void onNext(ScreenEvent screenEvent) {
+            events.onNext(screenEvent);
           }
         });
-  }
-
-  private void notifyNavigationListenersThatAddButtonWasClicked() {
-    for (NavigationListener listener : navigationListeners)
-      listener.onAddProductListButtonClicked();
   }
 
   @Override protected boolean handleBackPress() {
@@ -44,6 +66,6 @@ public class ListOfProductListsScreen extends BaseScreen {
   }
 
   @Override public Observable<ScreenEvent> screenEvents() {
-    return Observable.empty();
+    return events.asObservable();
   }
 }
