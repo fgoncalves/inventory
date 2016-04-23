@@ -2,8 +2,8 @@ package com.fred.inventory.presentation.listofproducts.views;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.support.v7.widget.CardView;
 import android.util.AttributeSet;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -14,9 +14,9 @@ import com.fred.inventory.presentation.listofproducts.modules.ListOfProductLists
 import com.fred.inventory.presentation.listofproducts.presenters.ListOfProductListsItemPresenter;
 import javax.inject.Inject;
 
-public class ListOfProductListsItemViewImpl extends RelativeLayout
-    implements ListOfProductListsItemView {
-  @Bind(R.id.product_list_name) TextView productListName;
+public class ListOfProductListsItemViewImpl extends CardView implements ListOfProductListsItemView {
+  @Bind(R.id.list_of_product_lists_title) TextView productListName;
+  @Bind(R.id.list_of_product_lists_info_text) TextView infoText;
 
   @Inject ListOfProductListsItemPresenter presenter;
 
@@ -49,6 +49,10 @@ public class ListOfProductListsItemViewImpl extends RelativeLayout
 
   @Override public void displayProductListName(@NonNull String name) {
     productListName.setText(name);
+  }
+
+  @Override public void displayNumberOfProducts(int items) {
+    infoText.setText(getContext().getString(R.string.number_of_items, items));
   }
 
   @Override public void displayProductList(@NonNull ProductList productList) {

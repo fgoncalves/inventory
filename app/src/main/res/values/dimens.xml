@@ -6,4 +6,11 @@
   <dimen name="item_container_list_margin_top">20dp</dimen>
   <dimen name="item_container_list_margin_left">10dp</dimen>
   <dimen name="item_container_list_margin_right">10dp</dimen>
+  <dimen name="list_of_product_lists_margin">15dp</dimen>
+  <dimen name="list_of_product_lists_container_padding_bottom">15dp</dimen>
+  <dimen name="list_of_product_lists_thumbnail_height">180dp</dimen>
+  <dimen name="list_of_product_lists_title_info_text_margin_top">10dp</dimen>
+  <dimen name="list_of_product_lists_title_text_margin_top">20dp</dimen>
+  <dimen name="list_of_product_lists_card_view_corner_radius">4dp</dimen>
+  <dimen name="list_of_product_lists__card_view_elevation">5dp</dimen>
 </resources>

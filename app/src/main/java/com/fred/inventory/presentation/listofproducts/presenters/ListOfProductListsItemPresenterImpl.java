@@ -19,5 +19,6 @@ public class ListOfProductListsItemPresenterImpl implements ListOfProductListsIt
 
   @Override public void onAttachedToWindow() {
     view.displayProductListName(StringUtils.valueOrDefault(productList.getName(), ""));
+    view.displayNumberOfProducts(productList.getProducts().size());
   }
 }

@@ -34,6 +34,13 @@ public class ListOfProductListsItemPresenterImplTest {
   }
 
   @Test
+  public void onAttachedToWindow_shouldTellViewToNumberOfProducts() {
+    presenter.onAttachedToWindow();
+
+    verify(view).displayNumberOfProducts(productList.getProducts().size());
+  }
+
+  @Test
   public void onAttachedToWindow_shouldTellViewToDisplayAnEmptyProductListNameIfOneIsNotPresent() {
     productList.setName(null);
     presenter.attachModel(productList);

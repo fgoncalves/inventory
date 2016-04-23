@@ -2,14 +2,51 @@
 <com.fred.inventory.presentation.listofproducts.views.ListOfProductListsItemViewImpl
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:padding="@dimen/list_of_product_lists_item_padding">
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_margin="@dimen/list_of_product_lists_margin"
+    android:background="@color/white"
+    card_view:cardUseCompatPadding="true"
+    card_view:cardPreventCornerOverlap="false"
+    card_view:cardCornerRadius="@dimen/list_of_product_lists_card_view_corner_radius"
+    card_view:cardElevation="@dimen/list_of_product_lists__card_view_elevation">
 
-  <TextView
-      android:id="@+id/product_list_name"
-      style="@style/ProductListName"
+  <RelativeLayout
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
-      tools:text="Cupboard supplies"/>
+      android:background="@color/white"
+      android:paddingBottom="@dimen/list_of_product_lists_container_padding_bottom">
+
+    <ImageView
+        android:id="@+id/list_of_product_lists_image"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/list_of_product_lists_thumbnail_height"
+        android:scaleType="centerCrop"
+        android:adjustViewBounds="true"
+        android:layout_alignParentTop="true"
+        android:src="@drawable/placeholder_groceries"/>
+
+    <TextView
+        android:id="@+id/list_of_product_lists_title"
+        style="@style/MainTitleText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/list_of_product_lists_image"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="@dimen/list_of_product_lists_title_text_margin_top"
+        tools:text="Groceries"/>
+
+    <TextView
+        android:id="@+id/list_of_product_lists_info_text"
+        style="@style/InfoText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/list_of_product_lists_title"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="@dimen/list_of_product_lists_title_info_text_margin_top"
+        tools:text="10 items"/>
+
+  </RelativeLayout>
 </com.fred.inventory.presentation.listofproducts.views.ListOfProductListsItemViewImpl>
+

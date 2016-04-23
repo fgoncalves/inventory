@@ -4,4 +4,5 @@
   <string name="empty_view">Nothing to show :(</string>
   <string name="something_went_wrong">Something unexpected happened</string>
   <string name="done">done</string>
+  <string name="number_of_items">%1$d items</string>
 </resources>

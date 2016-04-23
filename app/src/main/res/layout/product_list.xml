@@ -52,6 +52,8 @@
         android:id="@+id/product_list_recycler_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="@color/pale_grey"
+        tools:listitem="@layout/product_list_list_item"
         />
 
     <TextView

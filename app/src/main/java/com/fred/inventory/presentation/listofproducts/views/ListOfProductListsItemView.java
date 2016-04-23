@@ -10,4 +10,6 @@ public interface ListOfProductListsItemView {
   void displayProductListName(@NonNull String name);
 
   void displayProductList(@NonNull ProductList productList);
+
+  void displayNumberOfProducts(int items);
 }
