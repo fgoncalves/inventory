@@ -69,13 +69,13 @@ public class ClickToEditTextViewImpl extends ViewSwitcher implements ClickToEdit
   @Override public void showKeyboard() {
     editText.getViewTreeObserver()
         .addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-              @Override public void onGlobalLayout() {
-                editText.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-                InputMethodManager imm = (InputMethodManager) getContext().getSystemService(
-                    Context.INPUT_METHOD_SERVICE);
-                imm.showSoftInput(editText, InputMethodManager.SHOW_IMPLICIT);
-              }
-            });
+          @Override public void onGlobalLayout() {
+            editText.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+            InputMethodManager imm =
+                (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.showSoftInput(editText, InputMethodManager.SHOW_IMPLICIT);
+          }
+        });
   }
 
   @Override public void requestFocusOnEditText() {
@@ -96,6 +96,10 @@ public class ClickToEditTextViewImpl extends ViewSwitcher implements ClickToEdit
 
   @Override public void setText(@NonNull String text) {
     presenter.setText(text);
+  }
+
+  @Override public String getText() {
+    return editText.getText().toString();
   }
 
   private void createChildren(Context context, AttributeSet attrs) {

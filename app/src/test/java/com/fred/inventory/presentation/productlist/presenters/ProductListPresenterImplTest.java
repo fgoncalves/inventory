@@ -16,6 +16,7 @@ import static com.fred.inventory.testhelpers.matchers.SubscriptionMatchers.anySu
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -119,14 +120,26 @@ public class ProductListPresenterImplTest {
   }
 
   @Test public void onDoneButtonClicked_shouldAddSubscriptionToRxPool() {
+    presenter.onAttachedToWindow();
+
     presenter.onDoneButtonClicked();
 
-    verify(rxSubscriptionPool).addSubscription(anyString(), anySubscription());
+    verify(rxSubscriptionPool, times(2)).addSubscription(anyString(), anySubscription());
   }
 
-  @Test public void onDoneButtonClcked_shouldCallViewDismissMethod() {
+  @Test public void onDoneButtonClicked_shouldCallViewDismissMethod() {
+    presenter.onAttachedToWindow();
+
     presenter.onDoneButtonClicked();
 
     verify(view).doDismiss();
+  }
+
+  @Test public void onDoneButtonClicked_shouldAskViewForTheNameOfTheProduct() {
+    presenter.onAttachedToWindow();
+
+    presenter.onDoneButtonClicked();
+
+    verify(view).getProductListName();
   }
 }

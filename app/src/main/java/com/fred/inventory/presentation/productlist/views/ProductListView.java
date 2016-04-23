@@ -26,4 +26,6 @@ public interface ProductListView {
   void showProductList(@NonNull String productListId);
 
   Observable<ViewInteractionType> interactions();
+
+  String getProductListName();
 }

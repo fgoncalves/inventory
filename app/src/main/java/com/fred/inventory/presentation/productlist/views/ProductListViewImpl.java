@@ -88,4 +88,8 @@ public class ProductListViewImpl extends RelativeLayout implements ProductListVi
     interactions.onNext(ViewInteractionType.DISMISS);
     interactions.onCompleted();
   }
+
+  @Override public String getProductListName() {
+    return clickToEditTextView.getText();
+  }
 }

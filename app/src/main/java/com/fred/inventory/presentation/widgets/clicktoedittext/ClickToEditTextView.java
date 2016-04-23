@@ -23,6 +23,8 @@ public interface ClickToEditTextView extends View.OnClickListener {
 
   void setText(@NonNull String text);
 
+  String getText();
+
   void setEditTextText(@NonNull String text);
 
   void onShowKeyboardRequest();

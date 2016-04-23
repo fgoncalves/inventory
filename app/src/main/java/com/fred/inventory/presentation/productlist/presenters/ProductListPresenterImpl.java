@@ -58,6 +58,7 @@ public class ProductListPresenterImpl implements ProductListPresenter {
   }
 
   @Override public void onDoneButtonClicked() {
+    productList.setName(view.getProductListName());
     Subscription subscription = saveProductListInLocalStorageUseCase.save(productList)
         .compose(transformer.<ProductList>applySchedulers())
         .subscribe(new Subscriber<ProductList>() {
