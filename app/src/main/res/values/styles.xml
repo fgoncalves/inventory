@@ -35,12 +35,12 @@
   </style>
 
   <style name="MainTitleText">
-    <item name="android:textColor">@color/mid_grey_0</item>
+    <item name="android:textColor">@color/primaryText</item>
     <item name="android:textSize">27sp</item>
   </style>
 
   <style name="InfoText">
-    <item name="android:textColor">@color/mid_grey_39</item>
+    <item name="android:textColor">@color/secondaryText</item>
     <item name="android:textSize">13sp</item>
   </style>
 </resources>

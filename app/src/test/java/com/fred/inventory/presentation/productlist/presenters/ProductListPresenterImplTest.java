@@ -45,6 +45,7 @@ public class ProductListPresenterImplTest {
     when(getProductListUseCase.get(anyString())).thenReturn(Observable.just(productList));
     when(saveProductListInLocalStorageUseCase.save(any(ProductList.class))).thenReturn(
         Observable.just(productList));
+    when(view.getProductListName()).thenReturn(productList.getName());
   }
 
   @Test public void onAttachedToWindow_shouldAddSubscriptionToPool() {
@@ -141,5 +142,32 @@ public class ProductListPresenterImplTest {
     presenter.onDoneButtonClicked();
 
     verify(view).getProductListName();
+  }
+
+  @Test public void onDoneButtonClicked_shouldTellViewToDismissKeyboard() {
+    presenter.onAttachedToWindow();
+
+    presenter.onDoneButtonClicked();
+
+    verify(view).hideKeyboard();
+  }
+
+  @Test public void onDoneButtonClicked_shouldNotTryToSaveProductListIfThereIsNoName() {
+    when(view.getProductListName()).thenReturn("");
+    presenter.onAttachedToWindow();
+
+    presenter.onDoneButtonClicked();
+
+    verify(view, never()).hideKeyboard();
+    verify(saveProductListInLocalStorageUseCase, never()).save(any(ProductList.class));
+  }
+
+  @Test public void onDoneButtonClicked_shouldShowErrorMessageIfProductListNameIsEmpty() {
+    when(view.getProductListName()).thenReturn("");
+    presenter.onAttachedToWindow();
+
+    presenter.onDoneButtonClicked();
+
+    verify(view).showEmptyProductListNameErrorMessage();
   }
 }

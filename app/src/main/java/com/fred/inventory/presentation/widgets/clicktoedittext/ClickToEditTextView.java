@@ -30,4 +30,6 @@ public interface ClickToEditTextView extends View.OnClickListener {
   void onShowKeyboardRequest();
 
   boolean isEditable();
+
+  void onHideKeyboardRequest();
 }

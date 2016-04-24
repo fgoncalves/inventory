@@ -102,6 +102,18 @@ public class ClickToEditTextViewImpl extends ViewSwitcher implements ClickToEdit
     return editText.getText().toString();
   }
 
+  @Override public void onHideKeyboardRequest() {
+    editText.getViewTreeObserver()
+        .addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+          @Override public void onGlobalLayout() {
+            editText.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+            InputMethodManager imm =
+                (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(editText.getWindowToken(), 0);
+          }
+        });
+  }
+
   private void createChildren(Context context, AttributeSet attrs) {
     if (attrs == null) {
       text = new TextView(context);

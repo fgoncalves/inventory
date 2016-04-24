@@ -58,7 +58,13 @@ public class ProductListPresenterImpl implements ProductListPresenter {
   }
 
   @Override public void onDoneButtonClicked() {
-    productList.setName(view.getProductListName());
+    String name = view.getProductListName();
+    if (StringUtils.isBlank(name)) {
+      view.showEmptyProductListNameErrorMessage();
+      return;
+    }
+
+    productList.setName(name);
     Subscription subscription = saveProductListInLocalStorageUseCase.save(productList)
         .compose(transformer.<ProductList>applySchedulers())
         .subscribe(new Subscriber<ProductList>() {
@@ -71,6 +77,7 @@ public class ProductListPresenterImpl implements ProductListPresenter {
           }
 
           @Override public void onNext(ProductList productList) {
+            view.hideKeyboard();
             view.doDismiss();
           }
         });

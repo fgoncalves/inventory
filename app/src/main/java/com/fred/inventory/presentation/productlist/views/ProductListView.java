@@ -25,7 +25,11 @@ public interface ProductListView {
 
   void showProductList(@NonNull String productListId);
 
+  void hideKeyboard();
+
   Observable<ViewInteractionType> interactions();
 
   String getProductListName();
+
+  void showEmptyProductListNameErrorMessage();
 }

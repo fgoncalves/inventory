@@ -2,11 +2,12 @@ package com.fred.inventory.presentation.productlist.views;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.Snackbar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.view.View;
-import android.widget.RelativeLayout;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -19,7 +20,7 @@ import javax.inject.Inject;
 import rx.Observable;
 import rx.subjects.PublishSubject;
 
-public class ProductListViewImpl extends RelativeLayout implements ProductListView {
+public class ProductListViewImpl extends CoordinatorLayout implements ProductListView {
   @Bind(R.id.product_list_name) ClickToEditTextViewImpl clickToEditTextView;
   @Bind(R.id.product_list_recycler_view) RecyclerView recyclerView;
   @Bind(R.id.empty_product_list_recycler) View emptyView;
@@ -47,7 +48,7 @@ public class ProductListViewImpl extends RelativeLayout implements ProductListVi
     MainActivity.scoped(new ProductListModule(this)).inject(this);
   }
 
-  @Override protected void onAttachedToWindow() {
+  @Override public void onAttachedToWindow() {
     super.onAttachedToWindow();
     recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
@@ -76,6 +77,10 @@ public class ProductListViewImpl extends RelativeLayout implements ProductListVi
     clickToEditTextView.onShowKeyboardRequest();
   }
 
+  @Override public void hideKeyboard() {
+    clickToEditTextView.onHideKeyboardRequest();
+  }
+
   @OnClick(R.id.toolbar_done_button) public void onDoneButtonClicked() {
     presenter.onDoneButtonClicked();
   }
@@ -91,5 +96,9 @@ public class ProductListViewImpl extends RelativeLayout implements ProductListVi
 
   @Override public String getProductListName() {
     return clickToEditTextView.getText();
+  }
+
+  @Override public void showEmptyProductListNameErrorMessage() {
+    Snackbar.make(this, R.string.no_product_list_name_error_message, Snackbar.LENGTH_LONG).show();
   }
 }
