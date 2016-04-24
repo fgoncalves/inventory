@@ -10,7 +10,7 @@ import rx.Observable;
  */
 public interface ProductListView {
   enum ViewInteractionType {
-    DISMISS
+    ADD_PRODUCT_BUTTON_CLICKED, DISMISS
   }
 
   void doDismiss();

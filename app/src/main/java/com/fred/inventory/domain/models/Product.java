@@ -9,6 +9,7 @@ public class Product {
    * Same as the bar code
    */
   @PrimaryKey private String id;
+  private String name;
   private List<Image> images = new ArrayList<>();
   private List<Info> quantities = new ArrayList<>();
 
@@ -18,6 +19,14 @@ public class Product {
 
   public void setId(String id) {
     this.id = id;
+  }
+
+  public String getName() {
+    return name;
+  }
+
+  public void setName(String name) {
+    this.name = name;
   }
 
   public List<Image> getImages() {
@@ -34,5 +43,18 @@ public class Product {
 
   public void setQuantities(List<Info> quantities) {
     this.quantities = quantities;
+  }
+
+  @Override public boolean equals(Object o) {
+    if (this == o) return true;
+    if (!(o instanceof Product)) return false;
+
+    Product product = (Product) o;
+
+    return !(id != null ? !id.equals(product.id) : product.id != null);
+  }
+
+  @Override public int hashCode() {
+    return id != null ? id.hashCode() : 0;
   }
 }

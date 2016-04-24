@@ -29,6 +29,8 @@ public class ProductListScreen extends BaseScreen {
           @Override
           public ScreenEvent call(ProductListView.ViewInteractionType viewInteractionType) {
             switch (viewInteractionType) {
+              case ADD_PRODUCT_BUTTON_CLICKED:
+                return ScreenEvent.ADD_PRODUCT_SCREEN;
               case DISMISS:
                 return ScreenEvent.REMOVE_PRODUCT_LIST_SCREEN;
             }

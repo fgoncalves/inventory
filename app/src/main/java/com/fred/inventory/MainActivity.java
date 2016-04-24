@@ -8,6 +8,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import butterknife.ButterKnife;
 import com.fred.inventory.presentation.base.BaseScreen;
+import com.fred.inventory.presentation.items.ItemScreen;
 import com.fred.inventory.presentation.listofproducts.ListOfProductListsScreen;
 import com.fred.inventory.presentation.productlist.ProductListScreen;
 import com.fred.inventory.utils.path.PathManager;
@@ -96,6 +97,10 @@ public class MainActivity extends AppCompatActivity {
 
     @Override public void onNext(BaseScreen.ScreenEvent screenEvent) {
       switch (screenEvent) {
+        case ADD_PRODUCT_SCREEN:
+          final ItemScreen itemScreen = ItemScreen.newInstance();
+          pathManager.go(itemScreen, R.id.main_container);
+          break;
         case ADD_PRODUCT_LIST_SCREEN:
           final ProductListScreen screen = ProductListScreen.newInstance();
           screen.lifeCycle()

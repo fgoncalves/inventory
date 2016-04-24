@@ -101,4 +101,8 @@ public class ProductListViewImpl extends CoordinatorLayout implements ProductLis
   @Override public void showEmptyProductListNameErrorMessage() {
     Snackbar.make(this, R.string.no_product_list_name_error_message, Snackbar.LENGTH_LONG).show();
   }
+
+  @OnClick(R.id.add_button) public void onAddProductClicked() {
+    interactions.onNext(ViewInteractionType.ADD_PRODUCT_BUTTON_CLICKED);
+  }
 }

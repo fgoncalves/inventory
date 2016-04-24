@@ -15,7 +15,7 @@ public abstract class BaseScreen extends Fragment {
 
   public enum ScreenEvent {
     REMOVE_PRODUCT_LIST_SCREEN,
-    ADD_PRODUCT_LIST_SCREEN, NOOP
+    ADD_PRODUCT_LIST_SCREEN, ADD_PRODUCT_SCREEN, NOOP
   }
 
   private PublishSubject<LifeCycle> lifeCyclePublisher = PublishSubject.create();
