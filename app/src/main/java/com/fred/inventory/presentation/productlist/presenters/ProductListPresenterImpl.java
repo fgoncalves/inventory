@@ -85,6 +85,35 @@ public class ProductListPresenterImpl implements ProductListPresenter {
     rxSubscriptionPool.addSubscription(getClass().getCanonicalName(), subscription);
   }
 
+  @Override public void onAddProductButtonClicked() {
+    String name = view.getProductListName();
+    if (StringUtils.isBlank(name)) {
+      view.showEmptyProductListNameErrorMessage();
+      return;
+    }
+
+    productList.setName(name);
+    view.hideKeyboard();
+    Subscription subscription = saveProductListInLocalStorageUseCase.save(productList)
+        .compose(transformer.<ProductList>applySchedulers())
+        .subscribe(new Subscriber<ProductList>() {
+          @Override public void onCompleted() {
+
+          }
+
+          @Override public void onError(Throwable e) {
+
+          }
+
+          @Override public void onNext(ProductList productList) {
+            ProductListPresenterImpl.this.productList = productList;
+            view.showItemScreenForProductList(productList.getId());
+          }
+        });
+
+    rxSubscriptionPool.addSubscription(getClass().getCanonicalName(), subscription);
+  }
+
   private void initializeModel() {
     productList = new ProductList();
   }

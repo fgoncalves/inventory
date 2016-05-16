@@ -7,7 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import com.fred.inventory.R;
 import com.fred.inventory.presentation.base.BaseScreen;
-import com.fred.inventory.presentation.productlist.views.ProductListView;
+import com.fred.inventory.presentation.base.ViewInteraction;
 import com.fred.inventory.presentation.productlist.views.ProductListViewImpl;
 import rx.Observable;
 import rx.functions.Func1;
@@ -24,19 +24,21 @@ public class ProductListScreen extends BaseScreen {
     ProductListViewImpl listOfProductListsView =
         (ProductListViewImpl) inflater.inflate(R.layout.product_list, null);
 
-    events = listOfProductListsView.interactions()
-        .map(new Func1<ProductListView.ViewInteractionType, ScreenEvent>() {
-          @Override
-          public ScreenEvent call(ProductListView.ViewInteractionType viewInteractionType) {
-            switch (viewInteractionType) {
-              case ADD_PRODUCT_BUTTON_CLICKED:
-                return ScreenEvent.ADD_PRODUCT_SCREEN;
-              case DISMISS:
-                return ScreenEvent.REMOVE_PRODUCT_LIST_SCREEN;
-            }
-            return ScreenEvent.NOOP;
-          }
-        });
+    events = listOfProductListsView.interactions().map(new Func1<ViewInteraction, ScreenEvent>() {
+      @Override public ScreenEvent call(ViewInteraction viewInteraction) {
+        switch (viewInteraction.getType()) {
+          case ADD_PRODUCT_BUTTON_CLICKED:
+            ScreenEvent event = new ScreenEvent(ScreenEvent.Type.ADD_PRODUCT_SCREEN);
+            event.getMetadata()
+                .putString(ScreenEvent.PRODUCT_LIST_ID_METADATA_KEY, viewInteraction.getMetadata()
+                    .getString(ViewInteraction.PRODUCT_LIST_METADATA_KEY, ""));
+            return event;
+          case DISMISS:
+            return new ScreenEvent(ScreenEvent.Type.REMOVE_PRODUCT_LIST_SCREEN);
+        }
+        return new ScreenEvent(ScreenEvent.Type.NOOP);
+      }
+    });
 
     return listOfProductListsView;
   }

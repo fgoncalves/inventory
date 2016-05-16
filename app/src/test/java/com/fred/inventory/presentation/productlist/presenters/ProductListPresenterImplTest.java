@@ -170,4 +170,21 @@ public class ProductListPresenterImplTest {
 
     verify(view).showEmptyProductListNameErrorMessage();
   }
+
+  @Test public void onAddProductButtonClicked_shouldShowErrorMessageIfProductListNameIsEmpty() {
+    when(view.getProductListName()).thenReturn("");
+    presenter.onAttachedToWindow();
+
+    presenter.onAddProductButtonClicked();
+
+    verify(view).showEmptyProductListNameErrorMessage();
+  }
+
+  @Test public void onAddProductButtonClicked_shouldShowItemScreenForTheProductListId() {
+    presenter.onAttachedToWindow();
+
+    presenter.onAddProductButtonClicked();
+
+    verify(view).showItemScreenForProductList(productList.getId());
+  }
 }

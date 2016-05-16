@@ -12,6 +12,7 @@ import com.fred.inventory.utils.rx.schedulers.qualifiers.IOToUiSchedulerTransfor
 import javax.inject.Inject;
 import rx.Subscriber;
 import rx.Subscription;
+import timber.log.Timber;
 
 public class ItemPresenterImpl implements ItemPresenter {
   private final GetProductListUseCase getProductListUseCase;
@@ -76,10 +77,12 @@ public class ItemPresenterImpl implements ItemPresenter {
     @Override public void onCompleted() {
       ensureModelExists();
       view.displayProductName(StringUtils.valueOrDefault(product.getName(), ""));
+      if (StringUtils.isBlank(product.getName())) view.showKeyboardOnItemTitle();
     }
 
     @Override public void onError(Throwable e) {
-
+      Timber.e(e, "Failed to retrieve product list from local storage");
+      view.displayFailedToFetchProductListError();
     }
 
     @Override public void onNext(ProductList productList) {

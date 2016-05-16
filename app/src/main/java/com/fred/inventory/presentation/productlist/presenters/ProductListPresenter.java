@@ -13,4 +13,6 @@ public interface ProductListPresenter {
   void forProductList(String productListId);
 
   void onDoneButtonClicked();
+
+  void onAddProductButtonClicked();
 }

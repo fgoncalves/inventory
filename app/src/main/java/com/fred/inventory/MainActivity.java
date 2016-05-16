@@ -96,9 +96,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override public void onNext(BaseScreen.ScreenEvent screenEvent) {
-      switch (screenEvent) {
+      switch (screenEvent.getType()) {
         case ADD_PRODUCT_SCREEN:
-          final ItemScreen itemScreen = ItemScreen.newInstance();
+          final ItemScreen itemScreen = ItemScreen.newInstance(screenEvent.getMetadata()
+              .getString(BaseScreen.ScreenEvent.PRODUCT_LIST_ID_METADATA_KEY, ""));
           pathManager.go(itemScreen, R.id.main_container);
           break;
         case ADD_PRODUCT_LIST_SCREEN:

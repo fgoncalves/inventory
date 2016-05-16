@@ -1,6 +1,7 @@
 package com.fred.inventory.presentation.base;
 
 import android.app.Fragment;
+import android.os.Bundle;
 import rx.Observable;
 import rx.subjects.PublishSubject;
 
@@ -13,9 +14,29 @@ public abstract class BaseScreen extends Fragment {
     ON_RESUME
   }
 
-  public enum ScreenEvent {
-    REMOVE_PRODUCT_LIST_SCREEN,
-    ADD_PRODUCT_LIST_SCREEN, ADD_PRODUCT_SCREEN, NOOP
+  public static class ScreenEvent {
+    public static final String PRODUCT_LIST_ID_METADATA_KEY = "product.list.id";
+
+    public enum Type {
+      REMOVE_PRODUCT_LIST_SCREEN,
+      ADD_PRODUCT_LIST_SCREEN,
+      ADD_PRODUCT_SCREEN, NOOP
+    }
+
+    private final Type type;
+    private final Bundle metadata = new Bundle();
+
+    public ScreenEvent(Type type) {
+      this.type = type;
+    }
+
+    public Type getType() {
+      return type;
+    }
+
+    public Bundle getMetadata() {
+      return metadata;
+    }
   }
 
   private PublishSubject<LifeCycle> lifeCyclePublisher = PublishSubject.create();

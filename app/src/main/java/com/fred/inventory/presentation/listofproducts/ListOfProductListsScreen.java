@@ -39,9 +39,9 @@ public class ListOfProductListsScreen extends BaseScreen {
               ListOfProductListsView.ListOfProductListsEvent listOfProductListsEvent) {
             if (listOfProductListsEvent
                 == ListOfProductListsView.ListOfProductListsEvent.ADD_BUTTON_CLICKED) {
-              return ScreenEvent.ADD_PRODUCT_LIST_SCREEN;
+              return new ScreenEvent(ScreenEvent.Type.ADD_PRODUCT_LIST_SCREEN);
             }
-            return ScreenEvent.NOOP;
+            return new ScreenEvent(ScreenEvent.Type.NOOP);
           }
         })
         .subscribeOn(Schedulers.computation())

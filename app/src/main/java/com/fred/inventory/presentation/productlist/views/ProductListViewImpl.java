@@ -13,6 +13,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import com.fred.inventory.MainActivity;
 import com.fred.inventory.R;
+import com.fred.inventory.presentation.base.ViewInteraction;
 import com.fred.inventory.presentation.productlist.modules.ProductListModule;
 import com.fred.inventory.presentation.productlist.presenters.ProductListPresenter;
 import com.fred.inventory.presentation.widgets.clicktoedittext.ClickToEditTextViewImpl;
@@ -27,7 +28,7 @@ public class ProductListViewImpl extends CoordinatorLayout implements ProductLis
 
   @Inject ProductListPresenter presenter;
 
-  private PublishSubject<ViewInteractionType> interactions = PublishSubject.create();
+  private PublishSubject<ViewInteraction> interactions = PublishSubject.create();
 
   public ProductListViewImpl(Context context) {
     super(context);
@@ -85,12 +86,12 @@ public class ProductListViewImpl extends CoordinatorLayout implements ProductLis
     presenter.onDoneButtonClicked();
   }
 
-  @Override public Observable<ViewInteractionType> interactions() {
+  @Override public Observable<ViewInteraction> interactions() {
     return interactions;
   }
 
   @Override public void doDismiss() {
-    interactions.onNext(ViewInteractionType.DISMISS);
+    interactions.onNext(new ViewInteraction(ViewInteraction.ViewInteractionType.DISMISS));
     interactions.onCompleted();
   }
 
@@ -103,6 +104,13 @@ public class ProductListViewImpl extends CoordinatorLayout implements ProductLis
   }
 
   @OnClick(R.id.add_button) public void onAddProductClicked() {
-    interactions.onNext(ViewInteractionType.ADD_PRODUCT_BUTTON_CLICKED);
+    presenter.onAddProductButtonClicked();
+  }
+
+  @Override public void showItemScreenForProductList(String id) {
+    ViewInteraction viewInteraction =
+        new ViewInteraction(ViewInteraction.ViewInteractionType.ADD_PRODUCT_BUTTON_CLICKED);
+    viewInteraction.getMetadata().putString(ViewInteraction.PRODUCT_LIST_METADATA_KEY, id);
+    interactions.onNext(viewInteraction);
   }
 }
