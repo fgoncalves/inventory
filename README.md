@@ -8,3 +8,7 @@
 
 # inventory
 Keep your personal inventory up to date
+
+# Coverage Grid
+
+[![coverage grid](https://codecov.io/gh/fgoncalves/inventory/branch/master/graphs/tree.svg)](https://codecov.io/gh/fgoncalves/inventory/branch/master/graphs/tree.svg)
