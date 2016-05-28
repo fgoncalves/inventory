@@ -1,8 +1,9 @@
 package com.fred.inventory.data.db;
 
+import com.fred.inventory.data.db.models.Product;
 import com.fred.inventory.data.db.models.ProductList;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
@@ -88,7 +89,7 @@ public class ProductServiceImplTest {
     testSubscriber.assertValues(productList);
   }
 
-  @Test public void store_shouldSetARandomIdIfNoneIsGiven() {
+  @Test public void createOrUpdate_shouldSetARandomIdIfNoneIsGiven() {
     ProductList productList = mock(ProductList.class);
 
     service.createOrUpdate(productList);
@@ -96,7 +97,7 @@ public class ProductServiceImplTest {
     verify(productList).setId(anyString());
   }
 
-  @Test public void store_shouldStoreProductListToRealm() {
+  @Test public void createOrUpdate_shouldStoreProductListToRealm() {
     TestSubscriber<ProductList> testSubscriber = new TestSubscriber<>();
     ProductList productList = new ProductList();
     when(realmWrapper.store(any(ProductList.class))).thenReturn(productList);
@@ -108,6 +109,30 @@ public class ProductServiceImplTest {
 
     testSubscriber.assertCompleted();
     testSubscriber.assertNoErrors();
-    testSubscriber.assertReceivedOnNext(Arrays.asList(productList));
+    testSubscriber.assertReceivedOnNext(Collections.singletonList(productList));
+  }
+
+  @Test public void createOrUpdate_shouldAssignAnIdIfNoneIsGiven() {
+    Product product = mock(Product.class);
+
+    service.createOrUpdate(product);
+
+    verify(product).setId(anyString());
+  }
+
+  @Test public void createOrUpdate_shouldUpdateProductAndReturnIt() {
+    TestSubscriber<Product> testSubscriber = new TestSubscriber<>();
+    Product product = new Product();
+    product.setId("some id");
+    when(realmWrapper.store(any(Product.class))).thenReturn(product);
+
+    service.createOrUpdate(product)
+        .subscribeOn(Schedulers.immediate())
+        .observeOn(Schedulers.immediate())
+        .subscribe(testSubscriber);
+
+    testSubscriber.assertCompleted();
+    testSubscriber.assertNoErrors();
+    testSubscriber.assertReceivedOnNext(Collections.singletonList(product));
   }
 }

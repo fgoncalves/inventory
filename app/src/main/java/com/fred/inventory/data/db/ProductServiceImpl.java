@@ -1,5 +1,6 @@
 package com.fred.inventory.data.db;
 
+import com.fred.inventory.data.db.models.Product;
 import com.fred.inventory.data.db.models.ProductList;
 import com.fred.inventory.utils.StringUtils;
 import com.fred.inventory.utils.UniqueIdGenerator;
@@ -41,6 +42,17 @@ public class ProductServiceImpl implements ProductService {
     return Observable.create(new Observable.OnSubscribe<ProductList>() {
       @Override public void call(Subscriber<? super ProductList> subscriber) {
         subscriber.onNext(realmWrapper.store(productList));
+        subscriber.onCompleted();
+      }
+    });
+  }
+
+  @Override public Observable<Product> createOrUpdate(final Product product) {
+    if (StringUtils.isBlank(product.getId())) product.setId(UniqueIdGenerator.id());
+
+    return Observable.create(new Observable.OnSubscribe<Product>() {
+      @Override public void call(Subscriber<? super Product> subscriber) {
+        subscriber.onNext(realmWrapper.store(product));
         subscriber.onCompleted();
       }
     });
