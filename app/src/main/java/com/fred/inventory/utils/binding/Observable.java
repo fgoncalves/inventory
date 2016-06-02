@@ -9,10 +9,10 @@ import java.util.List;
  * Created by fred on 28.05.16.
  */
 public class Observable<T> {
-  private final List<Observer<T>> observers = new ArrayList<>();
-  private T value;
+  protected final List<Observer<T>> observers = new ArrayList<>();
+  protected T value;
 
-  private Observable() {
+  protected Observable() {
   }
 
   /**
@@ -62,5 +62,14 @@ public class Observable<T> {
   private void notifyObservers() {
     for (Observer<T> observer : observers)
       observer.update(value);
+  }
+
+  /**
+   * Get the current value of the observable
+   *
+   * @return The current value held by the observable
+   */
+  public T get() {
+    return value;
   }
 }

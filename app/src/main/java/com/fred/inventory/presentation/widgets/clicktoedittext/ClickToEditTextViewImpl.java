@@ -2,11 +2,7 @@ package com.fred.inventory.presentation.widgets.clicktoedittext;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.util.AttributeSet;
-import android.view.KeyEvent;
-import android.view.View;
 import android.view.ViewTreeObserver;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
@@ -14,13 +10,14 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.ViewSwitcher;
 import com.fred.inventory.MainActivity;
+import com.fred.inventory.utils.binding.Observer;
 import javax.inject.Inject;
 
 public class ClickToEditTextViewImpl extends ViewSwitcher implements ClickToEditTextView {
   private TextView text;
   private EditText editText;
 
-  @Inject ClickToEditTextPresenter presenter;
+  @Inject ClickToEditViewModel viewModel;
 
   public ClickToEditTextViewImpl(Context context) {
     super(context);
@@ -35,17 +32,11 @@ public class ClickToEditTextViewImpl extends ViewSwitcher implements ClickToEdit
   @Override protected void onFinishInflate() {
     super.onFinishInflate();
     addChildren();
-    setOnClickListener(this);
-    setOnEditorActionListener();
-    setTextChangeListeners();
 
     if (isInEditMode()) return;
 
     inject();
-  }
-
-  @Override public void onClick(View v) {
-    if (getCurrentView() == text) presenter.onTextViewClicked();
+    bindToViewModel();
   }
 
   @Override public void setTextViewText(@NonNull String text) {
@@ -60,13 +51,13 @@ public class ClickToEditTextViewImpl extends ViewSwitcher implements ClickToEdit
     showPrevious();
   }
 
-  @Override public void dismissKeyboard() {
+  public void dismissKeyboard() {
     InputMethodManager imm =
         (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
     imm.hideSoftInputFromWindow(editText.getWindowToken(), 0);
   }
 
-  @Override public void showKeyboard() {
+  public void showKeyboard() {
     editText.getViewTreeObserver()
         .addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
           @Override public void onGlobalLayout() {
@@ -78,16 +69,8 @@ public class ClickToEditTextViewImpl extends ViewSwitcher implements ClickToEdit
         });
   }
 
-  @Override public void requestFocusOnEditText() {
-    editText.requestFocus();
-  }
-
-  @Override public void setEditTextText(@NonNull String text) {
-    editText.setText(text);
-  }
-
   @Override public void onShowKeyboardRequest() {
-    presenter.onShowKeyboardRequest();
+    //presenter.onShowKeyboardRequest();
   }
 
   @Override public boolean isEditable() {
@@ -95,7 +78,7 @@ public class ClickToEditTextViewImpl extends ViewSwitcher implements ClickToEdit
   }
 
   @Override public void setText(@NonNull String text) {
-    presenter.setText(text);
+    //presenter.setText(text);
   }
 
   @Override public String getText() {
@@ -134,30 +117,43 @@ public class ClickToEditTextViewImpl extends ViewSwitcher implements ClickToEdit
   }
 
   private void inject() {
-    MainActivity.scoped(new ClickToEditTextModule(this)).inject(this);
+    MainActivity.scoped(new ClickToEditTextModule()).inject(this);
   }
 
-  private void setOnEditorActionListener() {
-    editText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-      @Override public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-        return presenter.onKeyboardKeyPressed(actionId);
+  private void bindToViewModel() {
+    viewModel.bindEditableTextObserver(new Observer<String>() {
+      @Override public void update(String value) {
+        editText.setText(value);
+        editText.setSelection(editText.length());
       }
     });
-  }
-
-  private void setTextChangeListeners() {
-    editText.addTextChangedListener(new TextWatcher() {
-      @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-      }
-
-      @Override public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-      }
-
-      @Override public void afterTextChanged(Editable s) {
-        presenter.onTextEntered(s.toString());
+    viewModel.bindTextObserver(new Observer<String>() {
+      @Override public void update(String value) {
+        text.setText(value);
       }
     });
+    viewModel.bindShowKeyboardObserver(new Observer<Boolean>() {
+      @Override public void update(Boolean value) {
+        editText.requestFocus();
+        if (value) {
+          showKeyboard();
+        } else {
+          dismissKeyboard();
+        }
+      }
+    });
+    viewModel.bindSwitchToEditTextViewObserver(new Observer<Void>() {
+      @Override public void update(Void value) {
+        showNext();
+      }
+    });
+    viewModel.bindSwitchToTextViewObserver(new Observer<Void>() {
+      @Override public void update(Void value) {
+        showPrevious();
+      }
+    });
+    editText.addTextChangedListener(viewModel.textWatcher());
+    editText.setOnEditorActionListener(viewModel.editorActionListener());
+    text.setOnClickListener(viewModel.textViewClickListener());
   }
 }

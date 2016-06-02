@@ -13,14 +13,14 @@ public class ClickToEditTextPresenterImpl implements ClickToEditTextPresenter {
 
   @Override public void onTextViewClicked() {
     makeEditableIfNotEditable();
-    view.requestFocusOnEditText();
-    view.showKeyboard();
+    //view.requestFocusOnEditText();
+    //view.showKeyboard();
   }
 
   @Override public boolean onKeyboardKeyPressed(int imeAction) {
     if (imeAction == EditorInfo.IME_ACTION_DONE) {
       makeUneditableIfEditable();
-      view.dismissKeyboard();
+      //view.dismissKeyboard();
       return true;
     }
     return false;
@@ -34,13 +34,13 @@ public class ClickToEditTextPresenterImpl implements ClickToEditTextPresenter {
     // Right now the implementation of this sets automatically the text in the text view as well,
     // because there's a text listener in the edit text. However, this is not known to the presenter
     // and seems wrong to have it not set in both views. I'm leaving this here now and fix it later.
-    view.setEditTextText(text);
+    //view.setEditTextText(text);
   }
 
   @Override public void onShowKeyboardRequest() {
     makeEditableIfNotEditable();
-    view.requestFocusOnEditText();
-    view.showKeyboard();
+    //view.requestFocusOnEditText();
+    //view.showKeyboard();
   }
 
   /**
