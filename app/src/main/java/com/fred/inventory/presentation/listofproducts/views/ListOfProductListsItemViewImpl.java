@@ -16,6 +16,16 @@ import com.fred.inventory.utils.binding.Observer;
 import javax.inject.Inject;
 
 public class ListOfProductListsItemViewImpl extends CardView implements ListOfProductListsItemView {
+  private final Observer<String> productListNameObserver = new Observer<String>() {
+    @Override public void update(String value) {
+      productListName.setText(value);
+    }
+  };
+  private final Observer<String> infoTextObserver = new Observer<String>() {
+    @Override public void update(String value) {
+      infoText.setText(value);
+    }
+  };
   @Bind(R.id.list_of_product_lists_title) TextView productListName;
   @Bind(R.id.list_of_product_lists_info_text) TextView infoText;
 
@@ -45,17 +55,14 @@ public class ListOfProductListsItemViewImpl extends CardView implements ListOfPr
   @Override protected void onAttachedToWindow() {
     super.onAttachedToWindow();
     if (isInEditMode()) return;
-    viewModel.bindProductListNameObserver(new Observer<String>() {
-      @Override public void update(String value) {
-        productListName.setText(value);
-      }
-    });
+    viewModel.bindProductListNameObserver(productListNameObserver);
+    viewModel.bindInfoTextObserver(infoTextObserver);
+  }
 
-    viewModel.bindInfoTextObserver(new Observer<String>() {
-      @Override public void update(String value) {
-        infoText.setText(value);
-      }
-    });
+  @Override protected void onDetachedFromWindow() {
+    super.onDetachedFromWindow();
+    viewModel.unbindProductListNameObserver(productListNameObserver);
+    viewModel.unbindInfoTextObserver(infoTextObserver);
   }
 
   @Override public void displayProductList(@NonNull ProductList productList) {

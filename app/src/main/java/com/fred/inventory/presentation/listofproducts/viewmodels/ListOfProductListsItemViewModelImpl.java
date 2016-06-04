@@ -33,4 +33,8 @@ public class ListOfProductListsItemViewModelImpl implements ListOfProductListsIt
   @Override public void unbindProductListNameObserver(Observer<String> observer) {
     productListNameObservable.unbind(observer);
   }
+
+  @Override public void unbindInfoTextObserver(Observer<String> observer) {
+    infoTextObservable.unbind(observer);
+  }
 }

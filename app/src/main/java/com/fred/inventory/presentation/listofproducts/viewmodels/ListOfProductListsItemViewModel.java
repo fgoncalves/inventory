@@ -17,4 +17,6 @@ public interface ListOfProductListsItemViewModel {
   void bindProductList(ProductList productList);
 
   void unbindProductListNameObserver(Observer<String> observer);
+
+  void unbindInfoTextObserver(Observer<String> observer);
 }

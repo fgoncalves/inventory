@@ -11,6 +11,7 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -50,7 +51,18 @@ public class ListOfProductListsItemViewModelImplTest {
     viewModel.unbindProductListNameObserver(productListNameObserver);
     viewModel.bindProductList(productList);
 
-    verify(productListNameObserver, never()).update(productList.getName());
+    verify(productListNameObserver, never()).update(anyString());
+  }
+
+  @Test public void unbindInfoTextObserver_shouldNotUpdateTheObserver() {
+    ProductList productList = emptyProductList();
+    when(context.getString(R.string.number_of_items, productList.getProducts().size())).thenReturn(
+        productList.getProducts().size() + " items");
+
+    viewModel.unbindInfoTextObserver(infoTextObserver);
+    viewModel.bindProductList(productList);
+
+    verify(infoTextObserver, never()).update(anyString());
   }
 
   /**
@@ -61,7 +73,6 @@ public class ListOfProductListsItemViewModelImplTest {
   private ProductList emptyProductList() {
     ProductList productList = new ProductList();
     String expectedName = "This is my list name";
-    String infoText = "0 items";
     productList.setName(expectedName);
     productList.setProducts(new ArrayList<Product>());
     return productList;
