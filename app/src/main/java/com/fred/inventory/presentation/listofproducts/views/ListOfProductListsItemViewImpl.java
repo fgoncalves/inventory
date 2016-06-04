@@ -11,14 +11,15 @@ import com.fred.inventory.MainActivity;
 import com.fred.inventory.R;
 import com.fred.inventory.domain.models.ProductList;
 import com.fred.inventory.presentation.listofproducts.modules.ListOfProductListsItemModule;
-import com.fred.inventory.presentation.listofproducts.presenters.ListOfProductListsItemPresenter;
+import com.fred.inventory.presentation.listofproducts.viewmodels.ListOfProductListsItemViewModel;
+import com.fred.inventory.utils.binding.Observer;
 import javax.inject.Inject;
 
 public class ListOfProductListsItemViewImpl extends CardView implements ListOfProductListsItemView {
   @Bind(R.id.list_of_product_lists_title) TextView productListName;
   @Bind(R.id.list_of_product_lists_info_text) TextView infoText;
 
-  @Inject ListOfProductListsItemPresenter presenter;
+  @Inject ListOfProductListsItemViewModel viewModel;
 
   public ListOfProductListsItemViewImpl(Context context) {
     super(context);
@@ -38,24 +39,26 @@ public class ListOfProductListsItemViewImpl extends CardView implements ListOfPr
 
     if (isInEditMode()) return;
 
-    MainActivity.scoped(new ListOfProductListsItemModule(this)).inject(this);
+    MainActivity.scoped(new ListOfProductListsItemModule()).inject(this);
   }
 
   @Override protected void onAttachedToWindow() {
     super.onAttachedToWindow();
     if (isInEditMode()) return;
-    presenter.onAttachedToWindow();
-  }
+    viewModel.bindProductListNameObserver(new Observer<String>() {
+      @Override public void update(String value) {
+        productListName.setText(value);
+      }
+    });
 
-  @Override public void displayProductListName(@NonNull String name) {
-    productListName.setText(name);
-  }
-
-  @Override public void displayNumberOfProducts(int items) {
-    infoText.setText(getContext().getString(R.string.number_of_items, items));
+    viewModel.bindInfoTextObserver(new Observer<String>() {
+      @Override public void update(String value) {
+        infoText.setText(value);
+      }
+    });
   }
 
   @Override public void displayProductList(@NonNull ProductList productList) {
-    presenter.attachModel(productList);
+    viewModel.bindProductList(productList);
   }
 }
