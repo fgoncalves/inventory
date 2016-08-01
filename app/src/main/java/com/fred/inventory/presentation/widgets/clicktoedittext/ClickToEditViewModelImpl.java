@@ -1,5 +1,6 @@
 package com.fred.inventory.presentation.widgets.clicktoedittext;
 
+import android.support.annotation.NonNull;
 import android.text.TextWatcher;
 import android.view.KeyEvent;
 import android.view.View;
@@ -40,8 +41,14 @@ public class ClickToEditViewModelImpl implements ClickToEditViewModel {
       showKeyBoardObservable.set(true);
     }
   };
+  private String model;
 
   @Inject public ClickToEditViewModelImpl() {
+  }
+
+  @Override public void onAttachToWindow() {
+    editableTextObservable.set(model);
+    textObservable.set(model);
   }
 
   @Override public void bindEditableTextObserver(Observer<String> observer) {
@@ -82,5 +89,9 @@ public class ClickToEditViewModelImpl implements ClickToEditViewModel {
 
   @Override public void bindSwitchToTextViewObserver(Observer<Void> observer) {
     switchToTextView.bind(observer);
+  }
+
+  @Override public void attachModel(@NonNull String text) {
+    this.model = text;
   }
 }

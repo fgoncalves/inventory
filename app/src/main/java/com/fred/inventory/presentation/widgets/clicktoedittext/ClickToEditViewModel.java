@@ -1,5 +1,6 @@
 package com.fred.inventory.presentation.widgets.clicktoedittext;
 
+import android.support.annotation.NonNull;
 import android.text.TextWatcher;
 import android.view.View;
 import android.widget.TextView;
@@ -30,4 +31,8 @@ public interface ClickToEditViewModel {
   View.OnClickListener textViewClickListener();
 
   void bindSwitchToTextViewObserver(Observer<Void> observer);
+
+  void attachModel(@NonNull String text);
+
+  void onAttachToWindow();
 }

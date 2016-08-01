@@ -110,4 +110,15 @@ public class ClickToEditViewModelImplTest {
 
     verify(switchToTextViewObserver).update(null);
   }
+
+  @Test
+  public void onAttachedToWindow_shouldUpdateTextObserver() {
+    String model = "foo";
+    clickToEditViewModel.attachModel(model);
+
+    clickToEditViewModel.onAttachToWindow();
+
+    verify(editableObserver).update(model);
+    verify(textObserver).update(model);
+  }
 }

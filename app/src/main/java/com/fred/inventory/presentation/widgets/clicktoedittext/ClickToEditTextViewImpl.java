@@ -39,6 +39,11 @@ public class ClickToEditTextViewImpl extends ViewSwitcher implements ClickToEdit
     bindToViewModel();
   }
 
+  @Override protected void onAttachedToWindow() {
+    super.onAttachedToWindow();
+    viewModel.onAttachToWindow();
+  }
+
   @Override public void setTextViewText(@NonNull String text) {
     this.text.setText(text);
   }
@@ -70,7 +75,15 @@ public class ClickToEditTextViewImpl extends ViewSwitcher implements ClickToEdit
   }
 
   @Override public void onShowKeyboardRequest() {
-    //presenter.onShowKeyboardRequest();
+    editText.getViewTreeObserver()
+        .addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+          @Override public void onGlobalLayout() {
+            editText.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+            InputMethodManager imm =
+                (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.showSoftInput(editText, 0);
+          }
+        });
   }
 
   @Override public boolean isEditable() {
@@ -78,7 +91,7 @@ public class ClickToEditTextViewImpl extends ViewSwitcher implements ClickToEdit
   }
 
   @Override public void setText(@NonNull String text) {
-    //presenter.setText(text);
+    viewModel.attachModel(text);
   }
 
   @Override public String getText() {
