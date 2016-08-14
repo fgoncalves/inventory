@@ -37,7 +37,7 @@ public class ClickToEditViewModelImplTest {
     clickToEditViewModel.bindSwitchToTextViewObserver(switchToTextViewObserver);
   }
 
-  @Test public void bindEditableTextObserver_shouldChangeUpdateTheTextObserverIfTextChanges() {
+  @Test public void bindEditableTextObserver_shouldUpdateTheTextObserverIfTextChanges() {
     TextWatcher textWatcher = clickToEditViewModel.textWatcher();
     String expected = "This would be the text on both views";
     Editable editable = mock(Editable.class);

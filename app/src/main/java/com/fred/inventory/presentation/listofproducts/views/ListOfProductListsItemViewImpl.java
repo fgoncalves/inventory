@@ -57,6 +57,8 @@ public class ListOfProductListsItemViewImpl extends CardView implements ListOfPr
     if (isInEditMode()) return;
     viewModel.bindProductListNameObserver(productListNameObserver);
     viewModel.bindInfoTextObserver(infoTextObserver);
+
+    viewModel.onAttachedToWindow();
   }
 
   @Override protected void onDetachedFromWindow() {
@@ -66,6 +68,6 @@ public class ListOfProductListsItemViewImpl extends CardView implements ListOfPr
   }
 
   @Override public void displayProductList(@NonNull ProductList productList) {
-    viewModel.bindProductList(productList);
+    viewModel.attachModel(productList);
   }
 }

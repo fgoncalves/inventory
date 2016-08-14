@@ -11,6 +11,7 @@ public class ListOfProductListsItemViewModelImpl implements ListOfProductListsIt
   private final Observable<String> productListNameObservable = Observable.create();
   private final Observable<String> infoTextObservable = Observable.create();
   private final Context context;
+  private ProductList productList;
 
   @Inject public ListOfProductListsItemViewModelImpl(Context context) {
     this.context = context;
@@ -24,10 +25,8 @@ public class ListOfProductListsItemViewModelImpl implements ListOfProductListsIt
     infoTextObservable.bind(observer);
   }
 
-  @Override public void bindProductList(ProductList productList) {
-    productListNameObservable.set(productList.getName());
-    infoTextObservable.set(
-        context.getString(R.string.number_of_items, productList.getProducts().size()));
+  @Override public void attachModel(ProductList productList) {
+    this.productList = productList;
   }
 
   @Override public void unbindProductListNameObserver(Observer<String> observer) {
@@ -36,5 +35,11 @@ public class ListOfProductListsItemViewModelImpl implements ListOfProductListsIt
 
   @Override public void unbindInfoTextObserver(Observer<String> observer) {
     infoTextObservable.unbind(observer);
+  }
+
+  @Override public void onAttachedToWindow() {
+    productListNameObservable.set(productList.getName());
+    infoTextObservable.set(
+        context.getString(R.string.number_of_items, productList.getProducts().size()));
   }
 }

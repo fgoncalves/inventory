@@ -32,12 +32,13 @@ public class ListOfProductListsItemViewModelImplTest {
     viewModel.bindInfoTextObserver(infoTextObserver);
   }
 
-  @Test public void bindProductList_shouldUpdateObserversWithCorrectModelData() {
+  @Test public void onAttachedToWindow_shouldUpdateObserverWithCorrectModelData() {
     ProductList productList = emptyProductList();
     when(context.getString(R.string.number_of_items, productList.getProducts().size())).thenReturn(
         productList.getProducts().size() + " items");
+    viewModel.attachModel(productList);
 
-    viewModel.bindProductList(productList);
+    viewModel.onAttachedToWindow();
 
     verify(productListNameObserver).update(productList.getName());
     verify(infoTextObserver).update("0 items");
@@ -47,9 +48,10 @@ public class ListOfProductListsItemViewModelImplTest {
     ProductList productList = emptyProductList();
     when(context.getString(R.string.number_of_items, productList.getProducts().size())).thenReturn(
         productList.getProducts().size() + " items");
+    viewModel.attachModel(productList);
 
     viewModel.unbindProductListNameObserver(productListNameObserver);
-    viewModel.bindProductList(productList);
+    viewModel.onAttachedToWindow();
 
     verify(productListNameObserver, never()).update(anyString());
   }
@@ -58,9 +60,10 @@ public class ListOfProductListsItemViewModelImplTest {
     ProductList productList = emptyProductList();
     when(context.getString(R.string.number_of_items, productList.getProducts().size())).thenReturn(
         productList.getProducts().size() + " items");
+    viewModel.attachModel(productList);
 
     viewModel.unbindInfoTextObserver(infoTextObserver);
-    viewModel.bindProductList(productList);
+    viewModel.onAttachedToWindow();
 
     verify(infoTextObserver, never()).update(anyString());
   }

@@ -14,9 +14,11 @@ public interface ListOfProductListsItemViewModel {
 
   void bindInfoTextObserver(Observer<String> observer);
 
-  void bindProductList(ProductList productList);
+  void attachModel(ProductList productList);
 
   void unbindProductListNameObserver(Observer<String> observer);
 
   void unbindInfoTextObserver(Observer<String> observer);
+
+  void onAttachedToWindow();
 }
