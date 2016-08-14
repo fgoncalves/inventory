@@ -10,26 +10,9 @@ import rx.Observable;
  * Created by fred on 29.03.16.
  */
 public interface ProductListView {
-
-  void doDismiss();
-
-  void displayProductListName(@NonNull String name);
-
-  void showEmptyProductList();
-
-  void hideEmptyProductList();
+  void showProductList(@NonNull String productListId);
 
   void showKeyboardOnProductListName();
 
-  void showProductList(@NonNull String productListId);
-
-  void hideKeyboard();
-
   Observable<ViewInteraction> interactions();
-
-  String getProductListName();
-
-  void showEmptyProductListNameErrorMessage();
-
-  void showItemScreenForProductList(String id);
 }

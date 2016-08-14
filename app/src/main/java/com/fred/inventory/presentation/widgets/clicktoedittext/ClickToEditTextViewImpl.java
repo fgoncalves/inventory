@@ -2,6 +2,7 @@ package com.fred.inventory.presentation.widgets.clicktoedittext;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.text.TextWatcher;
 import android.util.AttributeSet;
 import android.view.ViewTreeObserver;
 import android.view.inputmethod.EditorInfo;
@@ -44,16 +45,8 @@ public class ClickToEditTextViewImpl extends ViewSwitcher implements ClickToEdit
     viewModel.onAttachToWindow();
   }
 
-  @Override public void setTextViewText(@NonNull String text) {
-    this.text.setText(text);
-  }
-
-  @Override public void becomeEditable() {
-    showNext();
-  }
-
-  @Override public void becomeUneditable() {
-    showPrevious();
+  @Override public void setTextWatcher(TextWatcher textWatcher) {
+    editText.addTextChangedListener(textWatcher);
   }
 
   public void dismissKeyboard() {
@@ -84,10 +77,6 @@ public class ClickToEditTextViewImpl extends ViewSwitcher implements ClickToEdit
             imm.showSoftInput(editText, 0);
           }
         });
-  }
-
-  @Override public boolean isEditable() {
-    return getCurrentView() == editText;
   }
 
   @Override public void setText(@NonNull String text) {

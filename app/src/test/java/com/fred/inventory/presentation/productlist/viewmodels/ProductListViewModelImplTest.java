@@ -4,6 +4,7 @@ import android.view.View;
 import com.fred.inventory.domain.models.ProductList;
 import com.fred.inventory.domain.usecases.GetProductListUseCase;
 import com.fred.inventory.domain.usecases.SaveProductListInLocalStorageUseCase;
+import com.fred.inventory.presentation.productlist.models.Error;
 import com.fred.inventory.testhelpers.ImmediateToImmediateTransformer;
 import com.fred.inventory.utils.binding.Observer;
 import com.fred.inventory.utils.rx.RxSubscriptionPool;
@@ -18,6 +19,7 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -29,6 +31,8 @@ import static org.mockito.Mockito.when;
 public class ProductListViewModelImplTest {
   @Mock Observer<Integer> emptyViewVisibilityObserver;
   @Mock Observer<Boolean> showKeyboardObserver;
+  @Mock Observer<String> productNameObserver;
+  @Mock Observer<Error> errorObserver;
   @Mock GetProductListUseCase getProductListUseCase;
   @Mock SaveProductListInLocalStorageUseCase saveProductListInLocalStorageUseCase;
   @Mock RxSubscriptionPool rxSubscriptionPool;
@@ -45,6 +49,8 @@ public class ProductListViewModelImplTest {
 
     viewModel.bindEmptyViewVisibilityObserver(emptyViewVisibilityObserver);
     viewModel.bindShowKeyboardObserver(showKeyboardObserver);
+    viewModel.bindProductNameObserver(productNameObserver);
+    viewModel.bindErrorObserver(errorObserver);
 
     productList = new ProductList();
     productList.setName("Some name would go here");
@@ -116,9 +122,37 @@ public class ProductListViewModelImplTest {
   }
 
   @Test
-  public void onDetachedFromWindow_shouldUnsubscribeAllSubscriptions() {
+  public void unbindProductNameObserver_shouldUnbindTheObserverInAWayThatItWontUpdateTheObserver() {
+    viewModel.unbindProductNameObserver(productNameObserver);
+
+    viewModel.onAttachedToWindow();
+
+    verify(productNameObserver, never()).update(anyString());
+  }
+
+  @Test public void onDetachedFromWindow_shouldUnsubscribeAllSubscriptions() {
     viewModel.onDetachedFromWindow();
 
     verify(rxSubscriptionPool).unsubscribeFrom(anyString());
+  }
+
+  @Test public void onAttachedToWindow_shouldUpdateProductListName() {
+    viewModel.onAttachedToWindow();
+
+    verify(productNameObserver).update(productList.getName());
+  }
+
+  @Test public void doneButtonClickListener_shouldTellViewToShowErrorIfProductListNameIsEmpty() {
+    viewModel.doneButtonClickListener().onClick(mock(View.class));
+
+    verify(saveProductListInLocalStorageUseCase, never()).save(any(ProductList.class));
+    verify(errorObserver).update(Error.EMPTY_PRODUCT_LIST_NAME);
+  }
+
+  @Test public void addButtonClickListener_shouldTellViewToShowErrorIfProductListNameIsEmpty() {
+    viewModel.addButtonClickListener().onClick(mock(View.class));
+
+    verify(saveProductListInLocalStorageUseCase, never()).save(any(ProductList.class));
+    verify(errorObserver).update(Error.EMPTY_PRODUCT_LIST_NAME);
   }
 }
