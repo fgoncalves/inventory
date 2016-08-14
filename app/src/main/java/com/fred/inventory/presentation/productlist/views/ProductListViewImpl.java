@@ -15,18 +15,29 @@ import com.fred.inventory.MainActivity;
 import com.fred.inventory.R;
 import com.fred.inventory.presentation.base.ViewInteraction;
 import com.fred.inventory.presentation.productlist.modules.ProductListModule;
-import com.fred.inventory.presentation.productlist.presenters.ProductListPresenter;
+import com.fred.inventory.presentation.productlist.viewmodels.ProductListViewModel;
 import com.fred.inventory.presentation.widgets.clicktoedittext.ClickToEditTextViewImpl;
+import com.fred.inventory.utils.binding.Observer;
 import javax.inject.Inject;
 import rx.Observable;
 import rx.subjects.PublishSubject;
 
 public class ProductListViewImpl extends CoordinatorLayout implements ProductListView {
+  private final Observer<Integer> emptyViewVisibilityObserver = new Observer<Integer>() {
+    @Override public void update(Integer value) {
+      emptyView.setVisibility(value);
+    }
+  };
+  private final Observer<Boolean> showKeyboardObserver = new Observer<Boolean>() {
+    @Override public void update(Boolean value) {
+      showKeyboardOnProductListName();
+    }
+  };
   @Bind(R.id.product_list_name) ClickToEditTextViewImpl clickToEditTextView;
   @Bind(R.id.product_list_recycler_view) RecyclerView recyclerView;
   @Bind(R.id.empty_product_list_recycler) View emptyView;
 
-  @Inject ProductListPresenter presenter;
+  @Inject ProductListViewModel viewModel;
 
   private PublishSubject<ViewInteraction> interactions = PublishSubject.create();
 
@@ -46,7 +57,7 @@ public class ProductListViewImpl extends CoordinatorLayout implements ProductLis
     super.onFinishInflate();
     ButterKnife.bind(this);
     if (isInEditMode()) return;
-    MainActivity.scoped(new ProductListModule(this)).inject(this);
+    MainActivity.scoped(new ProductListModule()).inject(this);
   }
 
   @Override public void onAttachedToWindow() {
@@ -55,11 +66,17 @@ public class ProductListViewImpl extends CoordinatorLayout implements ProductLis
 
     if (isInEditMode()) return;
 
-    presenter.onAttachedToWindow();
+    bindToViewModel();
+    viewModel.onAttachedToWindow();
+  }
+
+  @Override public void onDetachedFromWindow() {
+    super.onDetachedFromWindow();
+    unbindFromViewModel();
   }
 
   @Override public void showProductList(@NonNull String productListId) {
-    presenter.forProductList(productListId);
+    viewModel.forProductList(productListId);
   }
 
   @Override public void displayProductListName(@NonNull String name) {
@@ -83,7 +100,7 @@ public class ProductListViewImpl extends CoordinatorLayout implements ProductLis
   }
 
   @OnClick(R.id.toolbar_done_button) public void onDoneButtonClicked() {
-    presenter.onDoneButtonClicked();
+    viewModel.onDoneButtonClicked();
   }
 
   @Override public Observable<ViewInteraction> interactions() {
@@ -104,7 +121,7 @@ public class ProductListViewImpl extends CoordinatorLayout implements ProductLis
   }
 
   @OnClick(R.id.add_button) public void onAddProductClicked() {
-    presenter.onAddProductButtonClicked();
+    viewModel.onAddProductButtonClicked();
   }
 
   @Override public void showItemScreenForProductList(String id) {
@@ -112,5 +129,15 @@ public class ProductListViewImpl extends CoordinatorLayout implements ProductLis
         new ViewInteraction(ViewInteraction.ViewInteractionType.ADD_PRODUCT_BUTTON_CLICKED);
     viewInteraction.getMetadata().putString(ViewInteraction.PRODUCT_LIST_METADATA_KEY, id);
     interactions.onNext(viewInteraction);
+  }
+
+  private void unbindFromViewModel() {
+    viewModel.unbindEmptyViewVisibilityObserver(emptyViewVisibilityObserver);
+    viewModel.unbindShowKeyboardObserver(showKeyboardObserver);
+  }
+
+  private void bindToViewModel() {
+    viewModel.bindEmptyViewVisibilityObserver(emptyViewVisibilityObserver);
+    viewModel.bindShowKeyboardObserver(showKeyboardObserver);
   }
 }
