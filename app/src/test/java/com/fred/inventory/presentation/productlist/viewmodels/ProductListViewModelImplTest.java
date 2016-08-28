@@ -1,24 +1,27 @@
 package com.fred.inventory.presentation.productlist.viewmodels;
 
+import android.text.Editable;
 import android.view.View;
 import com.fred.inventory.domain.models.ProductList;
 import com.fred.inventory.domain.usecases.GetProductListUseCase;
 import com.fred.inventory.domain.usecases.SaveProductListInLocalStorageUseCase;
 import com.fred.inventory.presentation.productlist.models.Error;
+import com.fred.inventory.presentation.productlist.models.ProductListScreenState;
 import com.fred.inventory.testhelpers.ImmediateToImmediateTransformer;
 import com.fred.inventory.utils.binding.Observer;
 import com.fred.inventory.utils.rx.RxSubscriptionPool;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import rx.Observable;
 
 import static com.fred.inventory.testhelpers.matchers.SubscriptionMatchers.anySubscription;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyBoolean;
-import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
@@ -29,10 +32,8 @@ import static org.mockito.Mockito.when;
  * Created by fred on 09.07.16.
  */
 public class ProductListViewModelImplTest {
-  @Mock Observer<Integer> emptyViewVisibilityObserver;
-  @Mock Observer<Boolean> showKeyboardObserver;
   @Mock Observer<String> productNameObserver;
-  @Mock Observer<Error> errorObserver;
+  @Mock Observer<ProductListScreenState> screenStateObserver;
   @Mock GetProductListUseCase getProductListUseCase;
   @Mock SaveProductListInLocalStorageUseCase saveProductListInLocalStorageUseCase;
   @Mock RxSubscriptionPool rxSubscriptionPool;
@@ -47,10 +48,8 @@ public class ProductListViewModelImplTest {
         new ProductListViewModelImpl(getProductListUseCase, saveProductListInLocalStorageUseCase,
             new ImmediateToImmediateTransformer(), rxSubscriptionPool);
 
-    viewModel.bindEmptyViewVisibilityObserver(emptyViewVisibilityObserver);
-    viewModel.bindShowKeyboardObserver(showKeyboardObserver);
     viewModel.bindProductNameObserver(productNameObserver);
-    viewModel.bindErrorObserver(errorObserver);
+    viewModel.bindProductListScreenStateObserver(screenStateObserver);
 
     productList = new ProductList();
     productList.setName("Some name would go here");
@@ -64,21 +63,17 @@ public class ProductListViewModelImplTest {
   }
 
   @Test
-  public void onAttachedToWindow_shouldUpdateEmptyViewVisibilityToVisibleWhenProductListIdIsNotGiven() {
+  public void onAttachedToWindow_shouldUpdateEmptyViewVisibilityToVisibleWhenProductListIdIsNotGivenAndShowKeyboard() {
     viewModel.forProductList(null);
 
     viewModel.onAttachedToWindow();
 
-    verify(emptyViewVisibilityObserver).update(View.VISIBLE);
-  }
-
-  @Test
-  public void onAttachedToWindow_shouldUpdateShowKeyboardObserverWithTrueWhenProductListIdIsNotGiven() {
-    viewModel.forProductList(null);
-
-    viewModel.onAttachedToWindow();
-
-    verify(showKeyboardObserver).update(true);
+    ArgumentCaptor<ProductListScreenState> captor =
+        ArgumentCaptor.forClass(ProductListScreenState.class);
+    verify(screenStateObserver).update(captor.capture());
+    ProductListScreenState screenState = captor.getValue();
+    assertThat(screenState.emptyViewVisibility()).isEqualTo(View.VISIBLE);
+    assertThat(screenState.showKeyboard()).isTrue();
   }
 
   @Test public void onAttachedToWindow_shouldNotTryToGetAnyProductWhenProductListIdIsNotGiven() {
@@ -102,23 +97,13 @@ public class ProductListViewModelImplTest {
   }
 
   @Test
-  public void unbindEmptyViewVisibilityObserver_shouldUnbindTheObserverInAWayThatItWontUpdateTheObserver() {
-    viewModel.unbindEmptyViewVisibilityObserver(emptyViewVisibilityObserver);
+  public void unbindProductListScreenStateObserver_shouldUnbindTheObserverInAWayThatItWontUpdateTheObserver() {
+    viewModel.unbindProductListScreenStateObserver(screenStateObserver);
     viewModel.forProductList(null);
 
     viewModel.onAttachedToWindow();
 
-    verify(emptyViewVisibilityObserver, never()).update(anyInt());
-  }
-
-  @Test
-  public void unbindShowKeyboardObserver_shouldUnbindTheObserverInAWayThatItWontUpdateTheObserver() {
-    viewModel.unbindShowKeyboardObserver(showKeyboardObserver);
-    viewModel.forProductList(null);
-
-    viewModel.onAttachedToWindow();
-
-    verify(showKeyboardObserver, never()).update(anyBoolean());
+    verify(screenStateObserver, never()).update(any(ProductListScreenState.class));
   }
 
   @Test
@@ -143,16 +128,48 @@ public class ProductListViewModelImplTest {
   }
 
   @Test public void doneButtonClickListener_shouldTellViewToShowErrorIfProductListNameIsEmpty() {
+    viewModel.forProductList(null);
+    viewModel.onAttachedToWindow();
+
     viewModel.doneButtonClickListener().onClick(mock(View.class));
 
     verify(saveProductListInLocalStorageUseCase, never()).save(any(ProductList.class));
-    verify(errorObserver).update(Error.EMPTY_PRODUCT_LIST_NAME);
+    ArgumentCaptor<ProductListScreenState> captor =
+        ArgumentCaptor.forClass(ProductListScreenState.class);
+    verify(screenStateObserver, atLeastOnce()).update(captor.capture());
+    assertThat(captor.getValue().error()).isEqualTo(Error.EMPTY_PRODUCT_LIST_NAME);
   }
 
   @Test public void addButtonClickListener_shouldTellViewToShowErrorIfProductListNameIsEmpty() {
+    viewModel.forProductList(null);
+    viewModel.onAttachedToWindow();
+
     viewModel.addButtonClickListener().onClick(mock(View.class));
 
     verify(saveProductListInLocalStorageUseCase, never()).save(any(ProductList.class));
-    verify(errorObserver).update(Error.EMPTY_PRODUCT_LIST_NAME);
+    ArgumentCaptor<ProductListScreenState> captor =
+        ArgumentCaptor.forClass(ProductListScreenState.class);
+    verify(screenStateObserver, atLeastOnce()).update(captor.capture());
+    assertThat(captor.getValue().error()).isEqualTo(Error.EMPTY_PRODUCT_LIST_NAME);
+  }
+
+  @Test public void doneButtonClickListener_shouldDismissKeyboardWhenProductListWasSaved() {
+    Editable editable = mock(Editable.class);
+    when(editable.toString()).thenReturn("some text");
+    viewModel.productNameTextWatcher().afterTextChanged(editable);
+    when(saveProductListInLocalStorageUseCase.save(any(ProductList.class))).thenReturn(
+        Observable.just(new ProductList()));
+    viewModel.forProductList(null);
+    viewModel.onAttachedToWindow();
+
+    viewModel.doneButtonClickListener().onClick(mock(View.class));
+
+    ArgumentCaptor<ProductListScreenState> captor =
+        ArgumentCaptor.forClass(ProductListScreenState.class);
+
+    verify(screenStateObserver, atLeastOnce()).update(captor.capture());
+    ProductListScreenState screenState = captor.getAllValues().get(1);
+    assertThat(screenState.showKeyboard()).isFalse();
+    assertThat(screenState.dismissed()).isTrue();
   }
 }

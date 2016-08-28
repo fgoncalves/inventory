@@ -14,6 +14,7 @@ import com.fred.inventory.MainActivity;
 import com.fred.inventory.R;
 import com.fred.inventory.presentation.base.ViewInteraction;
 import com.fred.inventory.presentation.productlist.models.Error;
+import com.fred.inventory.presentation.productlist.models.ProductListScreenState;
 import com.fred.inventory.presentation.productlist.modules.ProductListModule;
 import com.fred.inventory.presentation.productlist.viewmodels.ProductListViewModel;
 import com.fred.inventory.presentation.widgets.clicktoedittext.ClickToEditTextViewImpl;
@@ -23,25 +24,28 @@ import rx.Observable;
 import rx.subjects.PublishSubject;
 
 public class ProductListViewImpl extends CoordinatorLayout implements ProductListView {
-  private final Observer<Integer> emptyViewVisibilityObserver = new Observer<Integer>() {
-    @Override public void update(Integer value) {
-      emptyView.setVisibility(value);
+  private final Observer<String> productListNameObserver = new Observer<String>() {
+    @Override public void update(String value) {
+      clickToEditTextView.setText(value);
     }
   };
-  private final Observer<Boolean> showKeyboardObserver = new Observer<Boolean>() {
-    @Override public void update(Boolean value) {
-      showKeyboardOnProductListName();
-    }
-  };
-  private final Observer<Error> errorObserver = new Observer<Error>() {
-    @Override public void update(Error value) {
-      switch (value) {
-        case EMPTY_PRODUCT_LIST_NAME:
-          showEmptyProductListNameErrorMessage();
-          break;
-      }
-    }
-  };
+  private final Observer<ProductListScreenState> stateObserver =
+      new Observer<ProductListScreenState>() {
+        @Override public void update(ProductListScreenState value) {
+          Error error = value.error();
+          if (error != null) {
+            switch (error) {
+              case EMPTY_PRODUCT_LIST_NAME:
+                showEmptyProductListNameErrorMessage();
+                return;
+            }
+          }
+
+          if (value.showKeyboard()) showKeyboardOnProductListName();
+
+          emptyView.setVisibility(value.emptyViewVisibility());
+        }
+      };
   @Bind(R.id.product_list_name) ClickToEditTextViewImpl clickToEditTextView;
   @Bind(R.id.product_list_recycler_view) RecyclerView recyclerView;
   @Bind(R.id.empty_product_list_recycler) View emptyView;
@@ -115,17 +119,15 @@ public class ProductListViewImpl extends CoordinatorLayout implements ProductLis
   //}
 
   private void unbindFromViewModel() {
-    viewModel.unbindEmptyViewVisibilityObserver(emptyViewVisibilityObserver);
-    viewModel.unbindShowKeyboardObserver(showKeyboardObserver);
-    viewModel.unbindErrorObserver(errorObserver);
+    viewModel.unbindProductListScreenStateObserver(stateObserver);
+    viewModel.unbindProductNameObserver(productListNameObserver);
   }
 
   private void bindToViewModel() {
-    viewModel.bindEmptyViewVisibilityObserver(emptyViewVisibilityObserver);
-    viewModel.bindShowKeyboardObserver(showKeyboardObserver);
-    viewModel.bindErrorObserver(errorObserver);
     doneButton.setOnClickListener(viewModel.doneButtonClickListener());
     addButton.setOnClickListener(viewModel.addButtonClickListener());
     clickToEditTextView.setTextWatcher(viewModel.productNameTextWatcher());
+    viewModel.bindProductListScreenStateObserver(stateObserver);
+    viewModel.bindProductNameObserver(productListNameObserver);
   }
 }
