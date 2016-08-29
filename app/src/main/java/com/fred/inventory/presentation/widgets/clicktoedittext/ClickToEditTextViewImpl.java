@@ -49,13 +49,15 @@ public class ClickToEditTextViewImpl extends ViewSwitcher implements ClickToEdit
     editText.addTextChangedListener(textWatcher);
   }
 
-  public void dismissKeyboard() {
+  private void dismissKeyboard() {
+    editText.requestFocus();
     InputMethodManager imm =
         (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
     imm.hideSoftInputFromWindow(editText.getWindowToken(), 0);
   }
 
-  public void showKeyboard() {
+  private void showKeyboard() {
+    editText.requestFocus();
     editText.getViewTreeObserver()
         .addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
           @Override public void onGlobalLayout() {
@@ -68,15 +70,8 @@ public class ClickToEditTextViewImpl extends ViewSwitcher implements ClickToEdit
   }
 
   @Override public void onShowKeyboardRequest() {
-    editText.getViewTreeObserver()
-        .addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-          @Override public void onGlobalLayout() {
-            editText.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-            InputMethodManager imm =
-                (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
-            imm.showSoftInput(editText, 0);
-          }
-        });
+    showNext();
+    showKeyboard();
   }
 
   @Override public void setText(@NonNull String text) {
@@ -88,15 +83,8 @@ public class ClickToEditTextViewImpl extends ViewSwitcher implements ClickToEdit
   }
 
   @Override public void onHideKeyboardRequest() {
-    editText.getViewTreeObserver()
-        .addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-          @Override public void onGlobalLayout() {
-            editText.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-            InputMethodManager imm =
-                (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
-            imm.hideSoftInputFromWindow(editText.getWindowToken(), 0);
-          }
-        });
+    showPrevious();
+    dismissKeyboard();
   }
 
   private void createChildren(Context context, AttributeSet attrs) {
