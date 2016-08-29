@@ -44,6 +44,8 @@ public class ProductListViewImpl extends CoordinatorLayout implements ProductLis
           if (value.showKeyboard()) showKeyboardOnProductListName();
 
           emptyView.setVisibility(value.emptyViewVisibility());
+
+          if (value.dismissed()) doDismiss();
         }
       };
   @Bind(R.id.product_list_name) ClickToEditTextViewImpl clickToEditTextView;
@@ -102,10 +104,10 @@ public class ProductListViewImpl extends CoordinatorLayout implements ProductLis
     return interactions;
   }
 
-  //@Override public void doDismiss() {
-  //interactions.onNext(new ViewInteraction(ViewInteraction.ViewInteractionType.DISMISS));
-  //interactions.onCompleted();
-  //}
+  private void doDismiss() {
+    interactions.onNext(new ViewInteraction(ViewInteraction.ViewInteractionType.DISMISS));
+    interactions.onCompleted();
+  }
 
   private void showEmptyProductListNameErrorMessage() {
     Snackbar.make(this, R.string.no_product_list_name_error_message, Snackbar.LENGTH_LONG).show();
