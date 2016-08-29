@@ -12,7 +12,5 @@ import rx.Observable;
 public interface ProductListView {
   void showProductList(@NonNull String productListId);
 
-  void showKeyboardOnProductListName();
-
   Observable<ViewInteraction> interactions();
 }

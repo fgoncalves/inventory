@@ -29,6 +29,10 @@ public interface ProductListViewModel {
 
   void unbindProductNameObserver(Observer<String> observer);
 
+  void bindShowAddProductScreenObservable(Observer<String> observer);
+
+  void unbindShowAddProductScreenObservable(Observer<String> observer);
+
   void onDetachedFromWindow();
 
   TextWatcher productNameTextWatcher();

@@ -22,6 +22,7 @@ import timber.log.Timber;
 
 public class ProductListViewModelImpl implements ProductListViewModel {
   private final Observable<ProductListScreenState> screenStateObservable = Observable.create();
+  private final Observable<String> showAddProductScreenObservable = Observable.create();
   private final ObservableTextWatcher productNameTextWatcher = ObservableTextWatcher.create();
   private final GetProductListUseCase getProductListUseCase;
   private final SaveProductListInLocalStorageUseCase saveProductListInLocalStorageUseCase;
@@ -31,11 +32,7 @@ public class ProductListViewModelImpl implements ProductListViewModel {
     @Override public void onClick(View v) {
       final String name = productNameTextWatcher.get();
       if (StringUtils.isBlank(name)) {
-        ProductListScreenState newState = ImmutableProductListScreenState.builder()
-            .error(Error.EMPTY_PRODUCT_LIST_NAME)
-            .productList(screenStateObservable.get().productList())
-            .build();
-        screenStateObservable.set(newState);
+        emptyListNameError();
         return;
       }
 
@@ -51,6 +48,7 @@ public class ProductListViewModelImpl implements ProductListViewModel {
 
                 @Override public void onError(Throwable e) {
                   Timber.d(e, "Failed to save product list");
+                  // TODO: Update state with error
                 }
 
                 @Override public void onNext(ProductList productList) {
@@ -65,21 +63,23 @@ public class ProductListViewModelImpl implements ProductListViewModel {
       rxSubscriptionPool.addSubscription(getClass().getCanonicalName(), subscription);
     }
   };
+
   private final View.OnClickListener addButtonClickListener = new View.OnClickListener() {
     @Override public void onClick(View v) {
       String name = productNameTextWatcher.get();
       if (StringUtils.isBlank(name)) {
-        ProductListScreenState newState = ImmutableProductListScreenState.builder()
-            .error(Error.EMPTY_PRODUCT_LIST_NAME)
-            .productList(screenStateObservable.get().productList())
-            .build();
-        screenStateObservable.set(newState);
+        emptyListNameError();
         return;
       }
 
       ProductListScreenState currentState = screenStateObservable.get();
       currentState.productList().setName(name);
-      //view.hideKeyboard();
+      ProductListScreenState newState = ImmutableProductListScreenState.builder()
+          .showKeyboard(false)
+          .productList(currentState.productList())
+          .build();
+      screenStateObservable.set(newState);
+
       Subscription subscription =
           saveProductListInLocalStorageUseCase.save(currentState.productList())
               .compose(transformer.<ProductList>applySchedulers())
@@ -89,12 +89,12 @@ public class ProductListViewModelImpl implements ProductListViewModel {
                 }
 
                 @Override public void onError(Throwable e) {
-
+                  Timber.d(e, "Failed to save product list");
+                  // TODO: Update state with error
                 }
 
                 @Override public void onNext(ProductList productList) {
-                  //ProductListPresenterImpl.this.productList = productList;
-                  //view.showItemScreenForProductList(productList.getId());
+                  showAddProductScreenObservable.set(productList.getId());
                 }
               });
 
@@ -153,6 +153,14 @@ public class ProductListViewModelImpl implements ProductListViewModel {
     productNameTextWatcher.unbind(observer);
   }
 
+  @Override public void bindShowAddProductScreenObservable(Observer<String> observer) {
+    showAddProductScreenObservable.bind(observer);
+  }
+
+  @Override public void unbindShowAddProductScreenObservable(Observer<String> observer) {
+    showAddProductScreenObservable.unbind(observer);
+  }
+
   @Override public View.OnClickListener doneButtonClickListener() {
     return doneButtonClickListener;
   }
@@ -191,5 +199,13 @@ public class ProductListViewModelImpl implements ProductListViewModel {
       screenStateObservable.set(newState);
       productNameTextWatcher.set(productList.getName());
     }
+  }
+
+  private void emptyListNameError() {
+    ProductListScreenState newState = ImmutableProductListScreenState.builder()
+        .error(Error.EMPTY_PRODUCT_LIST_NAME)
+        .productList(screenStateObservable.get().productList())
+        .build();
+    screenStateObservable.set(newState);
   }
 }

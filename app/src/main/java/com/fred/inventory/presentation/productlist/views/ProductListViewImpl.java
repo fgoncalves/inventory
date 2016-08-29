@@ -29,6 +29,11 @@ public class ProductListViewImpl extends CoordinatorLayout implements ProductLis
       clickToEditTextView.setText(value);
     }
   };
+  private final Observer<String> showAddProductScreenObserver = new Observer<String>() {
+    @Override public void update(String value) {
+      showItemScreenForProductList(value);
+    }
+  };
   private final Observer<ProductListScreenState> stateObserver =
       new Observer<ProductListScreenState>() {
         @Override public void update(ProductListScreenState value) {
@@ -41,7 +46,11 @@ public class ProductListViewImpl extends CoordinatorLayout implements ProductLis
             }
           }
 
-          if (value.showKeyboard()) showKeyboardOnProductListName();
+          if (value.showKeyboard()) {
+            showKeyboardOnProductListName();
+          } else {
+            hideKeyboardOnProductListName();
+          }
 
           emptyView.setVisibility(value.emptyViewVisibility());
 
@@ -96,12 +105,16 @@ public class ProductListViewImpl extends CoordinatorLayout implements ProductLis
     viewModel.forProductList(productListId);
   }
 
-  @Override public void showKeyboardOnProductListName() {
+  @Override public Observable<ViewInteraction> interactions() {
+    return interactions;
+  }
+
+  private void showKeyboardOnProductListName() {
     clickToEditTextView.onShowKeyboardRequest();
   }
 
-  @Override public Observable<ViewInteraction> interactions() {
-    return interactions;
+  private void hideKeyboardOnProductListName() {
+    clickToEditTextView.onHideKeyboardRequest();
   }
 
   private void doDismiss() {
@@ -113,16 +126,17 @@ public class ProductListViewImpl extends CoordinatorLayout implements ProductLis
     Snackbar.make(this, R.string.no_product_list_name_error_message, Snackbar.LENGTH_LONG).show();
   }
 
-  //@Override public void showItemScreenForProductList(String id) {
-  //  ViewInteraction viewInteraction =
-  //      new ViewInteraction(ViewInteraction.ViewInteractionType.ADD_PRODUCT_BUTTON_CLICKED);
-  //  viewInteraction.getMetadata().putString(ViewInteraction.PRODUCT_LIST_METADATA_KEY, id);
-  //  interactions.onNext(viewInteraction);
-  //}
+  private void showItemScreenForProductList(String id) {
+    ViewInteraction viewInteraction =
+        new ViewInteraction(ViewInteraction.ViewInteractionType.ADD_PRODUCT_BUTTON_CLICKED);
+    viewInteraction.getMetadata().putString(ViewInteraction.PRODUCT_LIST_METADATA_KEY, id);
+    interactions.onNext(viewInteraction);
+  }
 
   private void unbindFromViewModel() {
     viewModel.unbindProductListScreenStateObserver(stateObserver);
     viewModel.unbindProductNameObserver(productListNameObserver);
+    viewModel.unbindShowAddProductScreenObservable(showAddProductScreenObserver);
   }
 
   private void bindToViewModel() {
@@ -131,5 +145,6 @@ public class ProductListViewImpl extends CoordinatorLayout implements ProductLis
     clickToEditTextView.setTextWatcher(viewModel.productNameTextWatcher());
     viewModel.bindProductListScreenStateObserver(stateObserver);
     viewModel.bindProductNameObserver(productListNameObserver);
+    viewModel.bindShowAddProductScreenObservable(showAddProductScreenObserver);
   }
 }
