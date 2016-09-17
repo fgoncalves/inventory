@@ -10,13 +10,13 @@ import butterknife.ButterKnife;
 import com.fred.inventory.MainActivity;
 import com.fred.inventory.R;
 import com.fred.inventory.presentation.items.modules.ItemViewModule;
-import com.fred.inventory.presentation.items.presenters.ItemPresenter;
+import com.fred.inventory.presentation.items.viewmodels.ItemViewModel;
 import com.fred.inventory.presentation.widgets.clicktoedittext.ClickToEditTextViewImpl;
 import javax.inject.Inject;
 
 public class ItemViewImpl extends CoordinatorLayout implements ItemView {
   @Bind(R.id.product_name) ClickToEditTextViewImpl productName;
-  @Inject ItemPresenter presenter;
+  @Inject ItemViewModel viewModel;
 
   public ItemViewImpl(Context context) {
     super(context);
@@ -34,22 +34,22 @@ public class ItemViewImpl extends CoordinatorLayout implements ItemView {
     super.onFinishInflate();
     if (isInEditMode()) return;
     ButterKnife.bind(this);
-    MainActivity.scoped(new ItemViewModule(this)).inject(this);
+    MainActivity.scoped(new ItemViewModule()).inject(this);
   }
 
   @Override public void onAttachedToWindow() {
     super.onAttachedToWindow();
     if (isInEditMode()) return;
-    presenter.onAttachedToWindow();
+    viewModel.onAttachedToWindow();
   }
 
   @Override public void onDetachedFromWindow() {
     super.onDetachedFromWindow();
-    presenter.onDetachedFromWindow();
+    viewModel.onDetachedFromWindow();
   }
 
   @Override public void displayForProductList(@NonNull String productListId) {
-    presenter.forProductList(productListId);
+    viewModel.forProductList(productListId);
   }
 
   @Override public void displayProductName(String name) {

@@ -13,6 +13,7 @@ import com.fred.inventory.utils.binding.Observer;
 import com.fred.inventory.utils.binding.widgets.ObservableTextWatcher;
 import com.fred.inventory.utils.rx.RxSubscriptionPool;
 import com.fred.inventory.utils.rx.schedulers.SchedulerTransformer;
+import com.fred.inventory.utils.rx.schedulers.qualifiers.IOToUiSchedulerTransformer;
 import javax.inject.Inject;
 import rx.Subscriber;
 import rx.Subscription;
@@ -34,7 +35,8 @@ public class ItemViewModelImpl implements ItemViewModel {
 
   @Inject public ItemViewModelImpl(GetProductListUseCase getProductListUseCase,
       SaveProductListInLocalStorageUseCase saveProductListInLocalStorageUseCase,
-      SchedulerTransformer transformer, RxSubscriptionPool rxSubscriptionPool) {
+      @IOToUiSchedulerTransformer SchedulerTransformer transformer,
+      RxSubscriptionPool rxSubscriptionPool) {
     this.getProductListUseCase = getProductListUseCase;
     this.saveProductListInLocalStorageUseCase = saveProductListInLocalStorageUseCase;
     this.transformer = transformer;
