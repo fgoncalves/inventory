@@ -42,6 +42,7 @@ public class ClickToEditTextViewImpl extends ViewSwitcher implements ClickToEdit
 
   @Override protected void onAttachedToWindow() {
     super.onAttachedToWindow();
+    if (isInEditMode()) return;
     viewModel.onAttachToWindow();
   }
 

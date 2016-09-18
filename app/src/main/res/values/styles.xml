@@ -43,4 +43,9 @@
     <item name="android:textColor">@color/secondary_text</item>
     <item name="android:textSize">13sp</item>
   </style>
+
+  <style name="SecondaryText" parent="InfoText">
+    <item name="android:singleLine">true</item>
+    <item name="android:textSize">18sp</item>
+  </style>
 </resources>

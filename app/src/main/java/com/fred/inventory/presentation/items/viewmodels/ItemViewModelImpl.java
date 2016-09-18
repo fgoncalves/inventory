@@ -1,5 +1,6 @@
 package com.fred.inventory.presentation.items.viewmodels;
 
+import android.app.DatePickerDialog;
 import com.fred.inventory.domain.models.Product;
 import com.fred.inventory.domain.models.ProductList;
 import com.fred.inventory.domain.usecases.GetProductListUseCase;
@@ -10,10 +11,12 @@ import com.fred.inventory.presentation.items.models.ItemScreenModel;
 import com.fred.inventory.utils.StringUtils;
 import com.fred.inventory.utils.binding.Observable;
 import com.fred.inventory.utils.binding.Observer;
+import com.fred.inventory.utils.binding.widgets.ObservableOnSetDateSetListener;
 import com.fred.inventory.utils.binding.widgets.ObservableTextWatcher;
 import com.fred.inventory.utils.rx.RxSubscriptionPool;
 import com.fred.inventory.utils.rx.schedulers.SchedulerTransformer;
 import com.fred.inventory.utils.rx.schedulers.qualifiers.IOToUiSchedulerTransformer;
+import java.util.Date;
 import javax.inject.Inject;
 import rx.Subscriber;
 import rx.Subscription;
@@ -23,6 +26,8 @@ public class ItemViewModelImpl implements ItemViewModel {
   private final ObservableTextWatcher productNameObservableTextWatcher =
       ObservableTextWatcher.create();
   private final Observable<ItemScreenModel> itemScreenModelObservable = Observable.create();
+  private final ObservableOnSetDateSetListener onDateSetListener =
+      ObservableOnSetDateSetListener.create();
   private final GetProductListUseCase getProductListUseCase;
   private final SaveProductListInLocalStorageUseCase saveProductListInLocalStorageUseCase;
   private final SchedulerTransformer transformer;
@@ -71,12 +76,24 @@ public class ItemViewModelImpl implements ItemViewModel {
     itemScreenModelObservable.unbind(observer);
   }
 
+  @Override public void bindExpirationDateObserver(Observer<Date> observer) {
+    onDateSetListener.bind(observer);
+  }
+
+  @Override public void unbindExpirationDateObserver(Observer<Date> observer) {
+    onDateSetListener.unbind(observer);
+  }
+
   @Override public void forProductList(String productListId) {
     this.productListId = productListId;
   }
 
   @Override public void forProduct(String productId) {
     this.productId = productId;
+  }
+
+  @Override public DatePickerDialog.OnDateSetListener onDateSetListener() {
+    return onDateSetListener;
   }
 
   /**
