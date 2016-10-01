@@ -3,6 +3,9 @@ apply plugin: 'com.neenbedankt.android-apt'
 apply plugin: 'jacoco'
 
 android {
+  dataBinding {
+    enabled = true
+  }
   packagingOptions {
     exclude 'META-INF/services/javax.annotation.processing.Processor'
   }
@@ -42,6 +45,7 @@ dependencies {
   compile 'com.jakewharton:butterknife:7.0.1'
   compile 'com.jakewharton.timber:timber:4.1.1'
   compile 'io.realm:realm-android:0.87.5'
+  compile 'com.android.support.constraint:constraint-layout:1.0.0-alpha9'
 
   testCompile 'junit:junit:4.12'
   testCompile 'org.mockito:mockito-core:2.0.39-beta'

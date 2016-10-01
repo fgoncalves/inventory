@@ -1,115 +1,84 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.fred.inventory.presentation.items.views.ItemViewImpl
+<layout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/listOfProducts"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:fitsSystemWindows="true"
-    tools:context="com.fred.inventory.MainActivity"
     >
-
-  <android.support.design.widget.AppBarLayout
-      android:id="@+id/app_bar"
-      android:layout_width="match_parent"
-      android:layout_height="@dimen/app_bar_height"
-      android:fitsSystemWindows="true"
-      android:theme="@style/AppTheme.AppBarOverlay"
-      >
-
-    <android.support.design.widget.CollapsingToolbarLayout
-        android:id="@+id/toolbar_layout"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:fitsSystemWindows="true"
-        app:contentScrim="?attr/colorPrimary"
-        app:layout_scrollFlags="scroll|exitUntilCollapsed"
-        >
-
-      <ImageView
-          android:id="@+id/main_backdrop"
-          android:layout_width="match_parent"
-          android:layout_height="match_parent"
-          android:fitsSystemWindows="true"
-          android:scaleType="centerCrop"
-          android:src="@drawable/placeholder_groceries"
-          app:layout_collapseMode="parallax"
-          />
-
-      <View
-          android:layout_width="match_parent"
-          android:layout_height="match_parent"
-          android:background="@color/black_alpha_50"
-          app:layout_collapseMode="parallax"
-          />
-
-      <android.support.v7.widget.Toolbar
-          android:id="@+id/toolbar"
-          android:layout_width="match_parent"
-          android:layout_height="?attr/actionBarSize"
-          app:layout_collapseMode="pin"
-          app:popupTheme="@style/AppTheme.PopupOverlay"
-          >
-
-        <com.fred.inventory.presentation.widgets.clicktoedittext.ClickToEditTextViewImpl
-            android:id="@+id/product_name"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            app:layout_collapseMode="pin"
-            app:popupTheme="@style/AppTheme.PopupOverlay"
-            style="@style/MainToolbarClickToEdit"
-            />
-      </android.support.v7.widget.Toolbar>
-
-    </android.support.design.widget.CollapsingToolbarLayout>
-  </android.support.design.widget.AppBarLayout>
-
-  <RelativeLayout
+  <android.support.constraint.ConstraintLayout
       android:layout_width="match_parent"
       android:layout_height="match_parent"
-      android:layout_marginEnd="10dp"
-      android:layout_marginLeft="10dp"
-      android:layout_marginRight="10dp"
-      android:layout_marginStart="10dp"
-      android:orientation="vertical"
-      app:layout_behavior="@string/appbar_scrolling_view_behavior"
+      android:fitsSystemWindows="true"
       tools:context="com.fred.inventory.MainActivity"
-      tools:showIn="@layout/item"
       >
 
-    <SeekBar
-        android:id="@+id/item_quantity_seekbar"
-        android:layout_width="match_parent"
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_marginBottom="20dp"
-        android:layout_marginTop="20dp"
+        android:adjustViewBounds="true"
+        android:cropToPadding="false"
+        android:scaleType="centerCrop"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/placeholder_groceries"
+        />
+    <View
+        android:id="@+id/view"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="@drawable/black_gradient"
+        app:layout_constraintBottom_toBottomOf="@+id/imageView"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintLeft_toLeftOf="@+id/imageView"
+        app:layout_constraintRight_toRightOf="@+id/imageView"
+        app:layout_constraintTop_toTopOf="@+id/imageView"
+        app:layout_constraintVertical_bias="1.0"
+        />
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginStart="16dp"
+        android:textColor="@color/white"
+        app:layout_constraintBottom_toBottomOf="@+id/imageView"
+        app:layout_constraintHorizontal_bias="0.93"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        tools:text="Olive oil"
+        style="@style/MainTitleText"
         />
 
     <TextView
-        android:id="@+id/item_expiration_date"
-        android:layout_width="match_parent"
+        android:id="@+id/textView2"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/item_quantity_seekbar"
-        android:layout_toLeftOf="@+id/item_edit_expiration_date"
-        android:layout_toStartOf="@+id/item_edit_expiration_date"
-        android:hint="@string/expiration_date_hint"
-        tools:text="20.12.16"
-        style="@style/SecondaryText"
+        android:layout_marginLeft="16dp"
+        android:layout_marginStart="16dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        tools:text="20.09.1988"
+        style="@style/InfoText"
+        app:layout_constraintTop_toBottomOf="@+id/view"
+        android:layout_marginTop="24dp"
+        app:layout_constraintRight_toLeftOf="@+id/imageView2"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
         />
-
     <ImageView
-        android:id="@+id/item_edit_expiration_date"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/item_expiration_date"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"
-        android:src="@drawable/ic_edit"
-        android:tint="@color/primary"
+        app:srcCompat="@drawable/ic_edit"
+        android:id="@+id/imageView2"
+        android:layout_marginEnd="16dp"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginRight="16dp"
+        android:layout_marginTop="24dp"
+        app:layout_constraintTop_toBottomOf="@+id/view"
         />
 
-  </RelativeLayout>
-
-</com.fred.inventory.presentation.items.views.ItemViewImpl>
+  </android.support.constraint.ConstraintLayout>
+</layout>
