@@ -18,5 +18,9 @@ public interface ItemViewModel {
 
   void onEditExpireDateButtonClick(View view);
 
+  void onDoneButtonClick(View view);
+
   ObservableField<Date> expirationDateObservable();
+
+  ObservableField<String> itemNameObservable();
 }

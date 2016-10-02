@@ -2,6 +2,7 @@ package com.fred.inventory.presentation.items;
 
 import android.databinding.BindingConversion;
 import android.databinding.ObservableField;
+import com.fred.inventory.utils.StringUtils;
 import java.text.DateFormat;
 import java.util.Date;
 
@@ -16,5 +17,10 @@ public class ItemBindingConversions {
   @BindingConversion public static String convertDateToString(ObservableField<Date> date) {
     if (date.get() == null) return "";
     return DATE_FORMAT.format(date.get());
+  }
+
+  @BindingConversion
+  public static String convertStringObservableToString(ObservableField<String> str) {
+    return StringUtils.isBlank(str.get()) ? "" : str.get();
   }
 }

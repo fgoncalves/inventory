@@ -22,6 +22,7 @@ import timber.log.Timber;
 
 public class ItemViewModelImpl implements ItemViewModel {
   private final ObservableField<Date> expirationDate = new ObservableField<>();
+  private final ObservableField<String> itemName = new ObservableField<>();
 
   private final Context context;
   private final GetProductListUseCase getProductListUseCase;
@@ -94,6 +95,7 @@ public class ItemViewModelImpl implements ItemViewModel {
   private class ProductListSubscriber extends Subscriber<ProductList> {
     @Override public void onCompleted() {
       String name = (product == null) ? "" : StringUtils.valueOrDefault(product.getName(), "");
+      itemName.set(name);
       //productNameObservableTextWatcher.set(name);
       //if (StringUtils.isBlank(product.getName())) view.showKeyboardOnItemTitle();
     }
@@ -125,5 +127,14 @@ public class ItemViewModelImpl implements ItemViewModel {
 
   @Override public ObservableField<Date> expirationDateObservable() {
     return expirationDate;
+  }
+
+  @Override public ObservableField<String> itemNameObservable() {
+    return itemName;
+  }
+
+  @Override public void onDoneButtonClick(View view) {
+    // TODO: Save the item with the name + quantity and expiration date
+    // TODO: Dismiss view
   }
 }
