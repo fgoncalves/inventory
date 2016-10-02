@@ -73,6 +73,7 @@
         app:layout_constraintRight_toLeftOf="@+id/imageView2"
         app:layout_constraintTop_toBottomOf="@+id/view"
         tools:text="20.09.1988"
+        android:text="@{viewModel.expirationDateObservable()}"
         style="@style/InfoText"
         />
 

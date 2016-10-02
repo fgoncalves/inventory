@@ -2,32 +2,42 @@ package com.fred.inventory.presentation.items.viewmodels;
 
 import android.app.DatePickerDialog;
 import android.content.Context;
+import android.databinding.ObservableField;
 import android.view.View;
+import android.widget.DatePicker;
 import com.fred.inventory.domain.models.Product;
 import com.fred.inventory.domain.models.ProductList;
 import com.fred.inventory.domain.usecases.GetProductListUseCase;
 import com.fred.inventory.domain.usecases.SaveProductListInLocalStorageUseCase;
-import com.fred.inventory.presentation.items.models.Error;
-import com.fred.inventory.presentation.items.models.ImmutableItemScreenModel;
-import com.fred.inventory.presentation.items.models.ItemScreenModel;
 import com.fred.inventory.utils.StringUtils;
 import com.fred.inventory.utils.rx.RxSubscriptionPool;
 import com.fred.inventory.utils.rx.schedulers.SchedulerTransformer;
 import com.fred.inventory.utils.rx.schedulers.qualifiers.IOToUiSchedulerTransformer;
-import java.text.DateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import javax.inject.Inject;
 import rx.Subscriber;
 import rx.Subscription;
 import timber.log.Timber;
 
 public class ItemViewModelImpl implements ItemViewModel {
-  private static final DateFormat DATE_FORMAT = DateFormat.getDateInstance();
+  private final ObservableField<Date> expirationDate = new ObservableField<>();
+
   private final Context context;
   private final GetProductListUseCase getProductListUseCase;
   private final SaveProductListInLocalStorageUseCase saveProductListInLocalStorageUseCase;
   private final SchedulerTransformer transformer;
   private final RxSubscriptionPool rxSubscriptionPool;
+  private final DatePickerDialog.OnDateSetListener dateSetListener =
+      new DatePickerDialog.OnDateSetListener() {
+        @Override
+        public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+          Calendar calendar = Calendar.getInstance();
+          calendar.clear();
+          calendar.set(year, monthOfYear, dayOfMonth);
+          expirationDate.set(calendar.getTime());
+        }
+      };
 
   private String productListId;
   private String productId;
@@ -90,8 +100,8 @@ public class ItemViewModelImpl implements ItemViewModel {
 
     @Override public void onError(Throwable e) {
       Timber.e(e, "Failed to retrieve product list from local storage");
-      ItemScreenModel model =
-          ImmutableItemScreenModel.builder().error(Error.FAILED_TO_FIND_ITEM).build();
+      //ItemScreenModel model =
+      //    ImmutableItemScreenModel.builder().error(Error.FAILED_TO_FIND_ITEM).build();
       //itemScreenModelObservable.set(model);
     }
 
@@ -102,9 +112,18 @@ public class ItemViewModelImpl implements ItemViewModel {
   }
 
   @Override public void onEditExpireDateButtonClick(View view) {
-    int year = Calendar.getInstance().get(Calendar.YEAR);
-    int month = Calendar.getInstance().get(Calendar.MONTH);
-    int dayOfMonth = Calendar.getInstance().get(Calendar.DAY_OF_MONTH);
-    new DatePickerDialog(context, null, year, month, dayOfMonth).show();
+    Calendar calendar = Calendar.getInstance();
+    if (expirationDate.get() != null) {
+      calendar.clear();
+      calendar.setTime(expirationDate.get());
+    }
+    int year = calendar.get(Calendar.YEAR);
+    int month = calendar.get(Calendar.MONTH);
+    int dayOfMonth = calendar.get(Calendar.DAY_OF_MONTH);
+    new DatePickerDialog(context, dateSetListener, year, month, dayOfMonth).show();
+  }
+
+  @Override public ObservableField<Date> expirationDateObservable() {
+    return expirationDate;
   }
 }
