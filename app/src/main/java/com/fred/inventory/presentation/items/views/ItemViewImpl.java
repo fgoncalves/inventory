@@ -1,24 +1,16 @@
 package com.fred.inventory.presentation.items.views;
 
-import android.app.DatePickerDialog;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.Snackbar;
 import android.util.AttributeSet;
-import android.widget.SeekBar;
-import android.widget.TextView;
-import butterknife.Bind;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
 import com.fred.inventory.MainActivity;
 import com.fred.inventory.R;
 import com.fred.inventory.presentation.items.modules.ItemViewModule;
 import com.fred.inventory.presentation.items.viewmodels.ItemViewModel;
-import com.fred.inventory.presentation.widgets.clicktoedittext.ClickToEditTextViewImpl;
 import com.fred.inventory.utils.binding.Observer;
 import java.text.DateFormat;
-import java.util.Calendar;
 import java.util.Date;
 import javax.inject.Inject;
 
@@ -29,10 +21,6 @@ public class ItemViewImpl extends ConstraintLayout implements ItemView {
       //expirationDate.setText(DATE_FORMAT.format(value));
     }
   };
-
-  //@Bind(R.id.product_name) ClickToEditTextViewImpl productName;
-  //@Bind(R.id.item_expiration_date) TextView expirationDate;
-  //@Bind(R.id.item_quantity_seekbar) SeekBar itemSeekbar;
 
   @Inject ItemViewModel viewModel;
 
@@ -51,7 +39,6 @@ public class ItemViewImpl extends ConstraintLayout implements ItemView {
   @Override protected void onFinishInflate() {
     super.onFinishInflate();
     if (isInEditMode()) return;
-    ButterKnife.bind(this);
     MainActivity.scoped(new ItemViewModule()).inject(this);
   }
 

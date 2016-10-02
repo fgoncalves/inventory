@@ -1,6 +1,8 @@
 package com.fred.inventory.presentation.items.viewmodels;
 
 import android.app.DatePickerDialog;
+import android.content.Context;
+import android.view.View;
 import com.fred.inventory.domain.models.Product;
 import com.fred.inventory.domain.models.ProductList;
 import com.fred.inventory.domain.usecases.GetProductListUseCase;
@@ -16,6 +18,8 @@ import com.fred.inventory.utils.binding.widgets.ObservableTextWatcher;
 import com.fred.inventory.utils.rx.RxSubscriptionPool;
 import com.fred.inventory.utils.rx.schedulers.SchedulerTransformer;
 import com.fred.inventory.utils.rx.schedulers.qualifiers.IOToUiSchedulerTransformer;
+import java.text.DateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import javax.inject.Inject;
 import rx.Subscriber;
@@ -23,11 +27,13 @@ import rx.Subscription;
 import timber.log.Timber;
 
 public class ItemViewModelImpl implements ItemViewModel {
+  private static final DateFormat DATE_FORMAT = DateFormat.getDateInstance();
   private final ObservableTextWatcher productNameObservableTextWatcher =
       ObservableTextWatcher.create();
   private final Observable<ItemScreenModel> itemScreenModelObservable = Observable.create();
   private final ObservableOnSetDateSetListener onDateSetListener =
       ObservableOnSetDateSetListener.create();
+  private final Context context;
   private final GetProductListUseCase getProductListUseCase;
   private final SaveProductListInLocalStorageUseCase saveProductListInLocalStorageUseCase;
   private final SchedulerTransformer transformer;
@@ -38,10 +44,11 @@ public class ItemViewModelImpl implements ItemViewModel {
   private ProductList productList;
   private Product product;
 
-  @Inject public ItemViewModelImpl(GetProductListUseCase getProductListUseCase,
+  @Inject public ItemViewModelImpl(Context context, GetProductListUseCase getProductListUseCase,
       SaveProductListInLocalStorageUseCase saveProductListInLocalStorageUseCase,
       @IOToUiSchedulerTransformer SchedulerTransformer transformer,
       RxSubscriptionPool rxSubscriptionPool) {
+    this.context = context;
     this.getProductListUseCase = getProductListUseCase;
     this.saveProductListInLocalStorageUseCase = saveProductListInLocalStorageUseCase;
     this.transformer = transformer;
@@ -130,5 +137,12 @@ public class ItemViewModelImpl implements ItemViewModel {
       ItemViewModelImpl.this.productList = productList;
       ItemViewModelImpl.this.product = findProduct(productList);
     }
+  }
+
+  public void onEditExpireDateButtonClick(View view) {
+    int year = Calendar.getInstance().get(Calendar.YEAR);
+    int month = Calendar.getInstance().get(Calendar.MONTH);
+    int dayOfMonth = Calendar.getInstance().get(Calendar.DAY_OF_MONTH);
+    new DatePickerDialog(context, onDateSetListener, year, month, dayOfMonth).show();
   }
 }

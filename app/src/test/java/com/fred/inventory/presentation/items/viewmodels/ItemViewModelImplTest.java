@@ -37,7 +37,7 @@ public class ItemViewModelImplTest {
   @Before public void setUp() throws Exception {
     MockitoAnnotations.initMocks(this);
 
-    viewModel = new ItemViewModelImpl(getProductListUseCase, saveProductListInLocalStorageUseCase,
+    viewModel = new ItemViewModelImpl(context, getProductListUseCase, saveProductListInLocalStorageUseCase,
         new ImmediateToImmediateTransformer(), rxSubscriptionPool);
     viewModel.bindProductNameObserver(productNameObserver);
     viewModel.bindItemScreenModelObserver(itemScreenModelObserver);
