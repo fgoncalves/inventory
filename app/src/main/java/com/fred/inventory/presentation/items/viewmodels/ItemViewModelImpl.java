@@ -11,16 +11,11 @@ import com.fred.inventory.presentation.items.models.Error;
 import com.fred.inventory.presentation.items.models.ImmutableItemScreenModel;
 import com.fred.inventory.presentation.items.models.ItemScreenModel;
 import com.fred.inventory.utils.StringUtils;
-import com.fred.inventory.utils.binding.Observable;
-import com.fred.inventory.utils.binding.Observer;
-import com.fred.inventory.utils.binding.widgets.ObservableOnSetDateSetListener;
-import com.fred.inventory.utils.binding.widgets.ObservableTextWatcher;
 import com.fred.inventory.utils.rx.RxSubscriptionPool;
 import com.fred.inventory.utils.rx.schedulers.SchedulerTransformer;
 import com.fred.inventory.utils.rx.schedulers.qualifiers.IOToUiSchedulerTransformer;
 import java.text.DateFormat;
 import java.util.Calendar;
-import java.util.Date;
 import javax.inject.Inject;
 import rx.Subscriber;
 import rx.Subscription;
@@ -28,11 +23,6 @@ import timber.log.Timber;
 
 public class ItemViewModelImpl implements ItemViewModel {
   private static final DateFormat DATE_FORMAT = DateFormat.getDateInstance();
-  private final ObservableTextWatcher productNameObservableTextWatcher =
-      ObservableTextWatcher.create();
-  private final Observable<ItemScreenModel> itemScreenModelObservable = Observable.create();
-  private final ObservableOnSetDateSetListener onDateSetListener =
-      ObservableOnSetDateSetListener.create();
   private final Context context;
   private final GetProductListUseCase getProductListUseCase;
   private final SaveProductListInLocalStorageUseCase saveProductListInLocalStorageUseCase;
@@ -67,40 +57,12 @@ public class ItemViewModelImpl implements ItemViewModel {
     rxSubscriptionPool.unsubscribeFrom(getClass().getCanonicalName());
   }
 
-  @Override public void bindProductNameObserver(Observer<String> observer) {
-    productNameObservableTextWatcher.bind(observer);
-  }
-
-  @Override public void bindItemScreenModelObserver(Observer<ItemScreenModel> observer) {
-    itemScreenModelObservable.bind(observer);
-  }
-
-  @Override public void unbindProductNameObserver(Observer<String> observer) {
-    productNameObservableTextWatcher.unbind(observer);
-  }
-
-  @Override public void unbindItemScreenModelObserver(Observer<ItemScreenModel> observer) {
-    itemScreenModelObservable.unbind(observer);
-  }
-
-  @Override public void bindExpirationDateObserver(Observer<Date> observer) {
-    onDateSetListener.bind(observer);
-  }
-
-  @Override public void unbindExpirationDateObserver(Observer<Date> observer) {
-    onDateSetListener.unbind(observer);
-  }
-
   @Override public void forProductList(String productListId) {
     this.productListId = productListId;
   }
 
   @Override public void forProduct(String productId) {
     this.productId = productId;
-  }
-
-  @Override public DatePickerDialog.OnDateSetListener onDateSetListener() {
-    return onDateSetListener;
   }
 
   /**
@@ -122,7 +84,7 @@ public class ItemViewModelImpl implements ItemViewModel {
   private class ProductListSubscriber extends Subscriber<ProductList> {
     @Override public void onCompleted() {
       String name = (product == null) ? "" : StringUtils.valueOrDefault(product.getName(), "");
-      productNameObservableTextWatcher.set(name);
+      //productNameObservableTextWatcher.set(name);
       //if (StringUtils.isBlank(product.getName())) view.showKeyboardOnItemTitle();
     }
 
@@ -130,7 +92,7 @@ public class ItemViewModelImpl implements ItemViewModel {
       Timber.e(e, "Failed to retrieve product list from local storage");
       ItemScreenModel model =
           ImmutableItemScreenModel.builder().error(Error.FAILED_TO_FIND_ITEM).build();
-      itemScreenModelObservable.set(model);
+      //itemScreenModelObservable.set(model);
     }
 
     @Override public void onNext(ProductList productList) {
@@ -139,10 +101,10 @@ public class ItemViewModelImpl implements ItemViewModel {
     }
   }
 
-  public void onEditExpireDateButtonClick(View view) {
+  @Override public void onEditExpireDateButtonClick(View view) {
     int year = Calendar.getInstance().get(Calendar.YEAR);
     int month = Calendar.getInstance().get(Calendar.MONTH);
     int dayOfMonth = Calendar.getInstance().get(Calendar.DAY_OF_MONTH);
-    new DatePickerDialog(context, onDateSetListener, year, month, dayOfMonth).show();
+    new DatePickerDialog(context, null, year, month, dayOfMonth).show();
   }
 }
