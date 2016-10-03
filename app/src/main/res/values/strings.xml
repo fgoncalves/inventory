@@ -9,4 +9,5 @@
   <string name="no_product_list_found_error_message">Unable to find the product list for this item</string>
   <string name="expiration_date_hint"><i>(Expiration date)</i></string>
   <string name="lists">Lists</string>
+  <string name="name_hint"><i>(Name)</i></string>
 </resources>

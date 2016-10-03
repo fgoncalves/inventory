@@ -3,6 +3,7 @@ package com.fred.inventory.presentation.items.viewmodels;
 import android.app.DatePickerDialog;
 import android.content.Context;
 import android.databinding.ObservableField;
+import android.databinding.ObservableInt;
 import android.view.View;
 import android.widget.DatePicker;
 import com.fred.inventory.domain.models.Product;
@@ -23,6 +24,9 @@ import timber.log.Timber;
 public class ItemViewModelImpl implements ItemViewModel {
   private final ObservableField<Date> expirationDate = new ObservableField<>();
   private final ObservableField<String> itemName = new ObservableField<>();
+  private final ObservableInt quantitySeekbarVisibility = new ObservableInt(View.VISIBLE);
+  private final ObservableInt quantityPickerVisibility = new ObservableInt(View.GONE);
+  private final ObservableInt quantity = new ObservableInt(0);
 
   private final Context context;
   private final GetProductListUseCase getProductListUseCase;
@@ -95,9 +99,14 @@ public class ItemViewModelImpl implements ItemViewModel {
   private class ProductListSubscriber extends Subscriber<ProductList> {
     @Override public void onCompleted() {
       String name = (product == null) ? "" : StringUtils.valueOrDefault(product.getName(), "");
+
+      if (StringUtils.isBlank(name)) {
+        setupLayoutForEmptyItem();
+        return;
+      }
+
       itemName.set(name);
-      //productNameObservableTextWatcher.set(name);
-      //if (StringUtils.isBlank(product.getName())) view.showKeyboardOnItemTitle();
+      quantity.set(product.getQuantities().get(0).getQuantity());
     }
 
     @Override public void onError(Throwable e) {
@@ -133,8 +142,27 @@ public class ItemViewModelImpl implements ItemViewModel {
     return itemName;
   }
 
+  @Override public ObservableInt quantitySeekbarVisibilityObservable() {
+    return quantitySeekbarVisibility;
+  }
+
+  @Override public ObservableInt quantityPickerVisibilityObservable() {
+    return quantityPickerVisibility;
+  }
+
+  @Override public ObservableInt quantityObservable() {
+    return quantity;
+  }
+
   @Override public void onDoneButtonClick(View view) {
+    //if (product == null) product = new Product();
+
     // TODO: Save the item with the name + quantity and expiration date
     // TODO: Dismiss view
+  }
+
+  private void setupLayoutForEmptyItem() {
+    quantityPickerVisibility.set(View.GONE);
+    quantitySeekbarVisibility.set(View.VISIBLE);
   }
 }

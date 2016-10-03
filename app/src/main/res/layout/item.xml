@@ -1,8 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    >
+<layout>
   <data>
     <variable
         name="viewModel"
@@ -46,7 +43,6 @@
         />
 
     <com.fred.inventory.presentation.widgets.clicktoedittext.ClickToEditTextViewImpl
-        android:id="@+id/textView"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"
@@ -54,18 +50,20 @@
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"
         android:layout_marginStart="16dp"
+        android:hint="@string/name_hint"
         android:textColor="@color/white"
+        android:textColorHint="@color/white"
         app:layout_constraintBottom_toBottomOf="@+id/imageView"
         app:layout_constraintHorizontal_bias="0.93"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        tools:text="Olive oil"
         app:text="@{viewModel.itemNameObservable()}"
+        tools:text="Olive oil"
         style="@style/MainTitleText"
         />
 
     <TextView
-        android:id="@+id/textView2"
+        android:id="@+id/item_expiration_date"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
@@ -73,40 +71,69 @@
         android:layout_marginRight="8dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="24dp"
+        android:hint="@string/expiration_date_hint"
+        android:text="@{viewModel.expirationDateObservable()}"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toLeftOf="@+id/imageView2"
+        app:layout_constraintRight_toLeftOf="@+id/expiration_date_edit_button"
         app:layout_constraintTop_toBottomOf="@+id/view"
         tools:text="20.09.1988"
-        android:text="@{viewModel.expirationDateObservable()}"
         style="@style/InfoText"
         />
 
     <ImageView
-        android:id="@+id/imageView2"
+        android:id="@+id/expiration_date_edit_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="16dp"
         android:layout_marginRight="16dp"
         android:layout_marginTop="24dp"
+        android:onClick="@{viewModel::onEditExpireDateButtonClick}"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/view"
-        android:onClick="@{viewModel::onEditExpireDateButtonClick}"
         app:srcCompat="@drawable/ic_edit"
         />
 
     <android.support.design.widget.FloatingActionButton
+        android:id="@+id/item_done_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:clickable="true"
-        app:fabSize="mini"
-        app:srcCompat="@drawable/ic_done"
-        android:id="@+id/floatingActionButton"
-        android:layout_marginEnd="16dp"
-        app:layout_constraintRight_toRightOf="parent"
-        android:layout_marginRight="16dp"
-        app:layout_constraintBottom_toBottomOf="parent"
         android:layout_marginBottom="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginRight="16dp"
+        android:clickable="true"
         android:onClick="@{viewModel::onDoneButtonClick}"
+        app:fabSize="mini"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:srcCompat="@drawable/ic_done"
+        />
+
+    <SeekBar
+        android:id="@+id/item_quantity_seekbar"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="24dp"
+        android:visibility="@{viewModel.quantitySeekbarVisibilityObservable()}"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/item_expiration_date"
+        />
+
+    <NumberPicker
+        android:id="@+id/item_quantity_picker"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="24dp"
+        android:visibility="@{viewModel.quantityPickerVisibilityObservable()}"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/item_expiration_date"
+        app:value="@{viewModel.quantityObservable()}"
         />
   </android.support.constraint.ConstraintLayout>
 </layout>
