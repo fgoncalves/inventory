@@ -18,7 +18,7 @@ public class ProductToDBProductTranslatorTest {
     MockitoAnnotations.initMocks(this);
 
     translator =
-        new ProductToDBProductTranslator(imageToDBImageTranslator, infoToDBInfoTranslator);
+        new ProductToDBProductTranslator(imageToDBImageTranslator);
   }
 
   @Test public void translate_shouldCreateADBProductModelWithTheCorrectData() {

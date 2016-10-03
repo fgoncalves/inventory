@@ -2,6 +2,7 @@ package com.fred.inventory;
 
 import android.app.Application;
 import com.fred.inventory.utils.timber.CrashReportingTree;
+import io.realm.Realm;
 import timber.log.Timber;
 
 /**
@@ -13,6 +14,7 @@ public class SuppliesApplication extends Application {
   @Override public void onCreate() {
     super.onCreate();
     setupTimber();
+    Realm.init(this);
   }
 
   /**

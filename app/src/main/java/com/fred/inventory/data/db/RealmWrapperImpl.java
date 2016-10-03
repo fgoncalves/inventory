@@ -1,46 +1,34 @@
 package com.fred.inventory.data.db;
 
-import android.content.Context;
 import io.realm.Realm;
+import io.realm.RealmConfiguration;
 import io.realm.RealmObject;
 import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Inject;
 
 public class RealmWrapperImpl implements RealmWrapper {
-  private final Context context;
+  private final RealmConfiguration realmConfiguration;
 
-  @Inject public RealmWrapperImpl(Context context) {
-    this.context = context;
+  @Inject public RealmWrapperImpl(RealmConfiguration realmConfiguration) {
+    this.realmConfiguration = realmConfiguration;
   }
 
   @Override public <T extends RealmObject> List<T> all(Class<T> clazz) {
-    Realm realm = Realm.getInstance(context);
-    //try {
-    return new ArrayList<>(realm.allObjects(clazz));
-    //} finally {
-    //  realm.close();
-    //}
+    Realm realm = Realm.getInstance(realmConfiguration);
+    return new ArrayList<>(realm.where(clazz).findAll());
   }
 
   @Override public <T extends RealmObject> T get(Class<T> clazz, String id) {
-    Realm realm = Realm.getInstance(context);
-    //try {
+    Realm realm = Realm.getInstance(realmConfiguration);
     return realm.where(clazz).equalTo("id", id).findFirst();
-    //} finally {
-    //  realm.close();
-    //}
   }
 
   @Override public <T extends RealmObject> T store(T object) {
-    Realm realm = Realm.getInstance(context);
-    //try {
+    Realm realm = Realm.getInstance(realmConfiguration);
     realm.beginTransaction();
     T result = realm.copyToRealmOrUpdate(object);
     realm.commitTransaction();
     return result;
-    //} finally {
-    //  realm.close();
-    //}
   }
 }

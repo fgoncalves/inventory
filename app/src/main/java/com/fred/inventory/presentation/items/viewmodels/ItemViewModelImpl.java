@@ -106,7 +106,7 @@ public class ItemViewModelImpl implements ItemViewModel {
       }
 
       itemName.set(name);
-      quantity.set(product.getQuantities().get(0).getQuantity());
+      quantity.set(product.getQuantity());
     }
 
     @Override public void onError(Throwable e) {
