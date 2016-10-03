@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    >
+<layout>
   <data>
     <variable
         name="viewModel"
         type="com.fred.inventory.presentation.items.viewmodels.ItemViewModel"
         />
+    <variable
+        name="known_quantity"
+        type="int"/>
   </data>
 
   <android.support.constraint.ConstraintLayout
@@ -46,6 +46,7 @@
         />
 
     <com.fred.inventory.presentation.widgets.clicktoedittext.ClickToEditTextViewImpl
+        android:id="@+id/clickToEditTextViewImpl"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"
@@ -111,50 +112,25 @@
         app:srcCompat="@drawable/ic_done"
         />
 
-    <SeekBar
-        android:id="@+id/item_quantity_seekbar"
+    <include
+        layout="@layout/quantity_view_switcher"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="8dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="24dp"
-        android:visibility="@{viewModel.quantitySeekbarVisibilityObservable()}"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toLeftOf="@+id/item_unit_spinner"
-        app:layout_constraintTop_toBottomOf="@+id/item_expiration_date"
-        />
-
-    <NumberPicker
-        android:id="@+id/item_quantity_picker"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="16dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="24dp"
-        android:visibility="@{viewModel.quantityPickerVisibilityObservable()}"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/item_expiration_date"
-        app:value="@{viewModel.quantityObservable()}"
-        />
-
-    <Spinner
-        android:id="@+id/item_unit_spinner"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
+        android:layout_marginBottom="8dp"
         android:layout_marginEnd="16dp"
+        android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"
+        android:layout_marginStart="16dp"
         android:layout_marginTop="24dp"
-        android:visibility="@{viewModel.quantitySeekbarVisibilityObservable()}"
+        app:known_quantity="@{viewModel.knownQuantityObservable()}"
+        app:layout_constraintBottom_toTopOf="@+id/item_done_button"
+        app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/item_expiration_date"
-        />
-    <ViewSwitcher
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        tools:layout_editor_absoluteY="400dp"
-        tools:layout_editor_absoluteX="16dp"
+        app:uncertain_quantity_maximum="@{viewModel.uncertainQuantityMaximumObservable()}"
+        app:uncertain_quantity_unit="@{viewModel.uncertainQuantityUnitObservable()}"
+        app:viewSwitcherOnTouchListener="@{viewModel.viewSwitcherOnTouchListener()}"
+        app:view_switcher_displayed_child="@{viewModel.viewSwitcherDisplayedChildObservable()}"
         />
   </android.support.constraint.ConstraintLayout>
 </layout>

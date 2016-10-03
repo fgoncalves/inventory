@@ -4,6 +4,9 @@ import android.app.DatePickerDialog;
 import android.content.Context;
 import android.databinding.ObservableField;
 import android.databinding.ObservableInt;
+import android.support.v4.view.GestureDetectorCompat;
+import android.view.GestureDetector;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.DatePicker;
 import com.fred.inventory.domain.models.Product;
@@ -22,11 +25,36 @@ import rx.Subscription;
 import timber.log.Timber;
 
 public class ItemViewModelImpl implements ItemViewModel {
+  private class ViewSwitcherGestureDetector extends GestureDetector.SimpleOnGestureListener {
+    @Override
+    public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
+
+      // Swipe left (next)
+      if (e1.getX() > e2.getX()) {
+        //mViewSwitcher.setInAnimation(GestureActivity.this, R.anim.left_in);
+        //mViewSwitcher.setOutAnimation(GestureActivity.this, R.anim.left_out);
+
+        viewSwitcherDisplayedChild.set(1);
+      }
+
+      // Swipe right (previous)
+      if (e1.getX() < e2.getX()) {
+        //mViewSwitcher.setInAnimation(GestureActivity.this, R.anim.right_in);
+        //mViewSwitcher.setOutAnimation(GestureActivity.this, R.anim.right_out);
+
+        viewSwitcherDisplayedChild.set(0);
+      }
+
+      return super.onFling(e1, e2, velocityX, velocityY);
+    }
+  }
+
   private final ObservableField<Date> expirationDate = new ObservableField<>();
   private final ObservableField<String> itemName = new ObservableField<>();
-  private final ObservableInt quantitySeekbarVisibility = new ObservableInt(View.VISIBLE);
-  private final ObservableInt quantityPickerVisibility = new ObservableInt(View.GONE);
   private final ObservableInt quantity = new ObservableInt(0);
+  private final ObservableInt uncertainQuantityMaximum = new ObservableInt(1);
+  private final ObservableField<String> uncertainQuantityUnit = new ObservableField<>();
+  private final ObservableInt viewSwitcherDisplayedChild = new ObservableInt(0);
 
   private final Context context;
   private final GetProductListUseCase getProductListUseCase;
@@ -43,7 +71,7 @@ public class ItemViewModelImpl implements ItemViewModel {
           expirationDate.set(calendar.getTime());
         }
       };
-
+  private final GestureDetectorCompat gestureDetectorCompat;
   private String productListId;
   private String productId;
   private ProductList productList;
@@ -58,6 +86,8 @@ public class ItemViewModelImpl implements ItemViewModel {
     this.saveProductListInLocalStorageUseCase = saveProductListInLocalStorageUseCase;
     this.transformer = transformer;
     this.rxSubscriptionPool = rxSubscriptionPool;
+    this.gestureDetectorCompat =
+        new GestureDetectorCompat(context, new ViewSwitcherGestureDetector());
   }
 
   @Override public void onAttachedToWindow() {
@@ -142,16 +172,24 @@ public class ItemViewModelImpl implements ItemViewModel {
     return itemName;
   }
 
-  @Override public ObservableInt quantitySeekbarVisibilityObservable() {
-    return quantitySeekbarVisibility;
+  @Override public ObservableInt knownQuantityObservable() {
+    return quantity;
   }
 
-  @Override public ObservableInt quantityPickerVisibilityObservable() {
-    return quantityPickerVisibility;
+  @Override public ObservableInt uncertainQuantityMaximumObservable() {
+    return uncertainQuantityMaximum;
+  }
+
+  @Override public ObservableField<String> uncertainQuantityUnitObservable() {
+    return uncertainQuantityUnit;
   }
 
   @Override public ObservableInt quantityObservable() {
     return quantity;
+  }
+
+  @Override public ObservableInt viewSwitcherDisplayedChildObservable() {
+    return viewSwitcherDisplayedChild;
   }
 
   @Override public void onDoneButtonClick(View view) {
@@ -161,8 +199,15 @@ public class ItemViewModelImpl implements ItemViewModel {
     // TODO: Dismiss view
   }
 
+  @Override public View.OnTouchListener viewSwitcherOnTouchListener() {
+    return new View.OnTouchListener() {
+      @Override public boolean onTouch(View view, MotionEvent motionEvent) {
+        return gestureDetectorCompat.onTouchEvent(motionEvent);
+      }
+    };
+  }
+
   private void setupLayoutForEmptyItem() {
-    quantityPickerVisibility.set(View.GONE);
-    quantitySeekbarVisibility.set(View.VISIBLE);
+    // TODO: Set first view of view switcher
   }
 }

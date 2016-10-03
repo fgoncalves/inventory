@@ -25,9 +25,15 @@ public interface ItemViewModel {
 
   ObservableField<String> itemNameObservable();
 
-  ObservableInt quantitySeekbarVisibilityObservable();
-
-  ObservableInt quantityPickerVisibilityObservable();
-
   ObservableInt quantityObservable();
+
+  ObservableInt knownQuantityObservable();
+
+  ObservableInt uncertainQuantityMaximumObservable();
+
+  ObservableInt viewSwitcherDisplayedChildObservable();
+
+  ObservableField<String> uncertainQuantityUnitObservable();
+
+  View.OnTouchListener viewSwitcherOnTouchListener();
 }
