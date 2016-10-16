@@ -5,9 +5,6 @@
         name="viewModel"
         type="com.fred.inventory.presentation.items.viewmodels.ItemViewModel"
         />
-    <variable
-        name="known_quantity"
-        type="int"/>
   </data>
 
   <android.support.constraint.ConstraintLayout
@@ -122,15 +119,11 @@
         android:layout_marginRight="16dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="24dp"
-        app:known_quantity="@{viewModel.knownQuantityObservable()}"
         app:layout_constraintBottom_toTopOf="@+id/item_done_button"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/item_expiration_date"
-        app:uncertain_quantity_maximum="@{viewModel.uncertainQuantityMaximumObservable()}"
-        app:uncertain_quantity_unit="@{viewModel.uncertainQuantityUnitObservable()}"
-        app:viewSwitcherOnTouchListener="@{viewModel.viewSwitcherOnTouchListener()}"
-        app:view_switcher_displayed_child="@{viewModel.viewSwitcherDisplayedChildObservable()}"
+        app:viewModel="@{viewModel}"
         />
   </android.support.constraint.ConstraintLayout>
 </layout>

@@ -1,13 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout>
   <data>
+    <import type="com.fred.inventory.utils.binding.BindingConversionHelpers"/>
     <variable
-        name="quantityMaximum"
-        type="int"
-        />
-    <variable
-        name="quantityUnit"
-        type="String"
+        name="viewModel"
+        type="com.fred.inventory.presentation.items.viewmodels.ItemViewModel"
         />
   </data>
 
@@ -26,8 +23,11 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        app:max="@{viewModel.uncertainQuantityMaximumObservable()}"
+        app:progress="@{viewModel.quantityObservable()}"
         />
-    <EditText
+
+    <TextView
         android:id="@+id/max_quantity"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -37,13 +37,14 @@
         android:gravity="center"
         android:inputType="number"
         android:maxLines="1"
-        android:text="@{quantityMaximum}"
+        android:text="@{viewModel.uncertainQuantityMaximumObservable()}"
         android:textStyle="bold"
         app:layout_constraintRight_toLeftOf="@+id/quantity_unit"
         app:layout_constraintTop_toBottomOf="@+id/seekBar"
         tools:text="200"
         style="@style/MainTitleText"
         />
+
     <EditText
         android:id="@+id/quantity_unit"
         android:layout_width="wrap_content"
@@ -51,7 +52,7 @@
         android:layout_marginTop="24dp"
         android:gravity="center"
         android:maxLines="1"
-        android:text="@{quantityUnit}"
+        android:text="@{viewModel.uncertainQuantityUnitObservable()}"
         android:textStyle="bold"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/seekBar"

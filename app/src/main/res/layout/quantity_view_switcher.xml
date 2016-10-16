@@ -2,24 +2,8 @@
 <layout>
   <data>
     <variable
-        name="known_quantity"
-        type="int"
-        />
-    <variable
-        name="uncertain_quantity_maximum"
-        type="int"
-        />
-    <variable
-        name="uncertain_quantity_unit"
-        type="String"
-        />
-    <variable
-        name="viewSwitcherOnTouchListener"
-        type="android.view.View.OnTouchListener"
-        />
-    <variable
-        name="view_switcher_displayed_child"
-        type="int"
+        name="viewModel"
+        type="com.fred.inventory.presentation.items.viewmodels.ItemViewModel"
         />
   </data>
 
@@ -30,19 +14,18 @@
       android:layout_height="match_parent"
       android:inAnimation="@android:anim/slide_in_left"
       android:outAnimation="@android:anim/slide_out_right"
-      app:displayedChild="@{view_switcher_displayed_child}"
-      app:onTouchListener="@{viewSwitcherOnTouchListener}"
+      app:displayedChild="@{viewModel.viewSwitcherDisplayedChildObservable()}"
+      app:onTouchListener="@{viewModel.viewSwitcherOnTouchListener()}"
       >
     <include
         layout="@layout/uncertain_quantity"
-        app:quantityMaximum="@{uncertain_quantity_maximum}"
-        app:quantityUnit="@{uncertain_quantity_unit}"
+        app:viewModel="@{viewModel}"
         />
 
     <NumberPicker
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:value="@{known_quantity}"
+        app:value="@{viewModel.knownQuantityObservable()}"
         />
   </ViewSwitcher>
 </layout>
