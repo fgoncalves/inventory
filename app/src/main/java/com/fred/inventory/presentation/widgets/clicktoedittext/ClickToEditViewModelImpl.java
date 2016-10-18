@@ -17,6 +17,8 @@ public class ClickToEditViewModelImpl implements ClickToEditViewModel {
   private final Observable<Boolean> showKeyBoardObservable = Observable.create();
   private final Observable<Void> switchToEditTextView = Observable.create();
   private final Observable<Void> switchToTextView = Observable.create();
+  private final Observable<ClickToEditTextView.ClickToEditTextViewState> stateObservable =
+      Observable.create();
   private final ObservableTextWatcher textWatcher =
       (ObservableTextWatcher) ObservableTextWatcher.create().bind(new Observer<String>() {
         @Override public void update(String value) {
@@ -28,7 +30,7 @@ public class ClickToEditViewModelImpl implements ClickToEditViewModel {
       new TextView.OnEditorActionListener() {
         @Override public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
           if (actionId == EditorInfo.IME_ACTION_DONE) {
-            switchToTextView.set(null);
+            stateObservable.set(ClickToEditTextView.ClickToEditTextViewState.NON_EDITABLE);
             showKeyBoardObservable.set(false);
             return true;
           }
@@ -37,10 +39,23 @@ public class ClickToEditViewModelImpl implements ClickToEditViewModel {
       };
   private final View.OnClickListener textClickListener = new View.OnClickListener() {
     @Override public void onClick(View v) {
-      switchToEditTextView.set(null);
+      stateObservable.set(ClickToEditTextView.ClickToEditTextViewState.EDITABLE);
       showKeyBoardObservable.set(true);
     }
   };
+  // This one is simply internal
+  private final Observer<ClickToEditTextView.ClickToEditTextViewState> stateObserver =
+      new Observer<ClickToEditTextView.ClickToEditTextViewState>() {
+        @Override public void update(ClickToEditTextView.ClickToEditTextViewState value) {
+          switch (value) {
+            case NON_EDITABLE:
+              switchToTextView.set(null);
+              break;
+            case EDITABLE:
+              switchToEditTextView.set(null);
+          }
+        }
+      };
   private String model;
 
   @Inject public ClickToEditViewModelImpl() {
@@ -49,6 +64,8 @@ public class ClickToEditViewModelImpl implements ClickToEditViewModel {
   @Override public void onAttachToWindow() {
     editableTextObservable.set(model);
     textObservable.set(model);
+    stateObservable.set(ClickToEditTextView.ClickToEditTextViewState.NON_EDITABLE);
+    stateObservable.bind(stateObserver);
   }
 
   @Override public void bindEditableTextObserver(Observer<String> observer) {
@@ -93,5 +110,9 @@ public class ClickToEditViewModelImpl implements ClickToEditViewModel {
 
   @Override public void attachModel(@NonNull String text) {
     this.model = text;
+  }
+
+  @Override public void setState(ClickToEditTextView.ClickToEditTextViewState state) {
+    stateObservable.set(state);
   }
 }

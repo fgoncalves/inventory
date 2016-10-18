@@ -35,4 +35,6 @@ public interface ClickToEditViewModel {
   void attachModel(@NonNull String text);
 
   void onAttachToWindow();
+
+  void setState(ClickToEditTextView.ClickToEditTextViewState state);
 }

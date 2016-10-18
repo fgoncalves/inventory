@@ -15,6 +15,7 @@ import com.fred.inventory.domain.models.Product;
 import com.fred.inventory.domain.models.ProductList;
 import com.fred.inventory.domain.usecases.GetProductListUseCase;
 import com.fred.inventory.domain.usecases.SaveProductListInLocalStorageUseCase;
+import com.fred.inventory.presentation.widgets.clicktoedittext.ClickToEditTextView;
 import com.fred.inventory.utils.StringUtils;
 import com.fred.inventory.utils.rx.RxSubscriptionPool;
 import com.fred.inventory.utils.rx.schedulers.SchedulerTransformer;
@@ -52,6 +53,9 @@ public class ItemViewModelImpl implements ItemViewModel {
   }
 
   private final ObservableField<Date> expirationDate = new ObservableField<>();
+  private final ObservableField<ClickToEditTextView.ClickToEditTextViewState>
+      uncertainQuantityUnitState =
+      new ObservableField<>();
   private final ObservableField<String> itemName = new ObservableField<>();
   private final ObservableInt quantity = new ObservableInt(0);
   private final ObservableInt uncertainQuantityMaximum = new ObservableInt(1);
@@ -111,7 +115,7 @@ public class ItemViewModelImpl implements ItemViewModel {
         new GestureDetectorCompat(context, new ViewSwitcherGestureDetector());
   }
 
-  @Override public void onAttachedToWindow() {
+  @Override public void onResume() {
     Subscription subscription = getProductListUseCase.get(productListId)
         .compose(transformer.<ProductList>applySchedulers())
         .subscribe(new ProductListSubscriber());
@@ -119,7 +123,7 @@ public class ItemViewModelImpl implements ItemViewModel {
     rxSubscriptionPool.addSubscription(getClass().getCanonicalName(), subscription);
   }
 
-  @Override public void onDetachedFromWindow() {
+  @Override public void onPause() {
     rxSubscriptionPool.unsubscribeFrom(getClass().getCanonicalName());
   }
 
@@ -145,32 +149,6 @@ public class ItemViewModelImpl implements ItemViewModel {
       if (product.getId().equals(productId)) return product;
 
     return null;
-  }
-
-  private class ProductListSubscriber extends Subscriber<ProductList> {
-    @Override public void onCompleted() {
-      String name = (product == null) ? "" : StringUtils.valueOrDefault(product.getName(), "");
-
-      if (StringUtils.isBlank(name)) {
-        setupLayoutForEmptyItem();
-        return;
-      }
-
-      itemName.set(name);
-      quantity.set(product.getQuantity());
-    }
-
-    @Override public void onError(Throwable e) {
-      Timber.e(e, "Failed to retrieve product list from local storage");
-      //ItemScreenModel model =
-      //    ImmutableItemScreenModel.builder().error(Error.FAILED_TO_FIND_ITEM).build();
-      //itemScreenModelObservable.set(model);
-    }
-
-    @Override public void onNext(ProductList productList) {
-      ItemViewModelImpl.this.productList = productList;
-      ItemViewModelImpl.this.product = findProduct(productList);
-    }
   }
 
   @Override public void onEditExpireDateButtonClick(View view) {
@@ -199,6 +177,11 @@ public class ItemViewModelImpl implements ItemViewModel {
 
   @Override public ObservableInt uncertainQuantityMaximumObservable() {
     return uncertainQuantityMaximum;
+  }
+
+  @Override
+  public ObservableField<ClickToEditTextView.ClickToEditTextViewState> uncertainQuantityObservable() {
+    return uncertainQuantityUnitState;
   }
 
   @Override public ObservableField<String> uncertainQuantityUnitObservable() {
@@ -234,5 +217,32 @@ public class ItemViewModelImpl implements ItemViewModel {
 
   private void setupLayoutForEmptyItem() {
     // TODO: Set first view of view switcher
+    uncertainQuantityUnitState.set(ClickToEditTextView.ClickToEditTextViewState.EDITABLE);
+  }
+
+  private class ProductListSubscriber extends Subscriber<ProductList> {
+    @Override public void onCompleted() {
+      String name = (product == null) ? "" : StringUtils.valueOrDefault(product.getName(), "");
+
+      if (StringUtils.isBlank(name)) {
+        setupLayoutForEmptyItem();
+        return;
+      }
+
+      itemName.set(name);
+      quantity.set(product.getQuantity());
+    }
+
+    @Override public void onError(Throwable e) {
+      Timber.e(e, "Failed to retrieve product list from local storage");
+      //ItemScreenModel model =
+      //    ImmutableItemScreenModel.builder().error(Error.FAILED_TO_FIND_ITEM).build();
+      //itemScreenModelObservable.set(model);
+    }
+
+    @Override public void onNext(ProductList productList) {
+      ItemViewModelImpl.this.productList = productList;
+      ItemViewModelImpl.this.product = findProduct(productList);
+    }
   }
 }

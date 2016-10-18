@@ -50,19 +50,19 @@ public class ItemViewModelImplTest {
   }
 
   @Test public void onAttachedToWindow_shouldGetTheProductListFromLocalStorage() {
-    viewModel.onAttachedToWindow();
+    viewModel.onResume();
 
     verify(getProductListUseCase).get(productList.getId());
   }
 
   @Test public void onDetachedFromWindow_shouldUnsubscribeAll() {
-    viewModel.onDetachedFromWindow();
+    viewModel.onPause();
 
     verify(rxSubscriptionPool).unsubscribeFrom(anyString());
   }
 
   @Test public void onAttachedToWindow_shouldTellViewToShowProductsName() {
-    viewModel.onAttachedToWindow();
+    viewModel.onResume();
 
     verify(productNameObserver).update("");
   }
@@ -75,7 +75,7 @@ public class ItemViewModelImplTest {
     productList.getProducts().add(product);
     viewModel.forProduct(product.getId());
 
-    viewModel.onAttachedToWindow();
+    viewModel.onResume();
 
     verify(productNameObserver).update(product.getName());
   }
@@ -84,7 +84,7 @@ public class ItemViewModelImplTest {
     when(getProductListUseCase.get(productList.getId())).thenReturn(
         Observable.<ProductList>error(new Exception()));
 
-    viewModel.onAttachedToWindow();
+    viewModel.onResume();
 
     ArgumentCaptor<ItemScreenModel> argumentCaptor = ArgumentCaptor.forClass(ItemScreenModel.class);
 
@@ -96,7 +96,7 @@ public class ItemViewModelImplTest {
   }
 
   @Test public void onAttachedToWindow_shouldTellViewToRequestFocusOnItemTitleIfItemTitleIsEmpty() {
-    viewModel.onAttachedToWindow();
+    viewModel.onResume();
 
     //verify(view).showKeyboardOnItemTitle();
   }
@@ -109,7 +109,7 @@ public class ItemViewModelImplTest {
     when(productList.getProducts().get(anyInt())).thenReturn(product);
     viewModel.forProduct(product.getId());
 
-    viewModel.onAttachedToWindow();
+    viewModel.onResume();
 
     //verify(view, never()).showKeyboardOnItemTitle();
   }

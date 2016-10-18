@@ -2,6 +2,7 @@ package com.fred.inventory.presentation.widgets.clicktoedittext;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.support.design.widget.TextInputLayout;
 import android.text.TextWatcher;
 import android.util.AttributeSet;
 import android.view.ViewTreeObserver;
@@ -17,6 +18,7 @@ import javax.inject.Inject;
 public class ClickToEditTextViewImpl extends ViewSwitcher implements ClickToEditTextView {
   private TextView text;
   private EditText editText;
+  private TextInputLayout editTextInputLayout;
 
   @Inject ClickToEditViewModel viewModel;
 
@@ -48,6 +50,10 @@ public class ClickToEditTextViewImpl extends ViewSwitcher implements ClickToEdit
 
   @Override public void addTextChangedListener(TextWatcher textWatcher) {
     editText.addTextChangedListener(textWatcher);
+  }
+
+  @Override public void setState(ClickToEditTextViewState state) {
+    viewModel.setState(state);
   }
 
   private void dismissKeyboard() {
@@ -92,19 +98,22 @@ public class ClickToEditTextViewImpl extends ViewSwitcher implements ClickToEdit
     if (attrs == null) {
       text = new TextView(context);
       editText = new EditText(context);
+      editTextInputLayout = new TextInputLayout(context);
     } else {
       text = new TextView(context, attrs);
       editText = new EditText(context, attrs);
+      editTextInputLayout = new TextInputLayout(context, attrs);
     }
 
     text.setSingleLine();
     editText.setSingleLine();
     editText.setImeOptions(EditorInfo.IME_ACTION_DONE);
+    editTextInputLayout.addView(editText);
   }
 
   private void addChildren() {
     addView(text);
-    addView(editText);
+    addView(editTextInputLayout);
   }
 
   private void inject() {

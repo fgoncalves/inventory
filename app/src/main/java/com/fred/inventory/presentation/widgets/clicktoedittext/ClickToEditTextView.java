@@ -9,7 +9,14 @@ import android.text.TextWatcher;
  * Created by fred on 20.03.16.
  */
 public interface ClickToEditTextView {
+  enum ClickToEditTextViewState {
+    EDITABLE,
+    NON_EDITABLE
+  }
+
   void setText(@NonNull String text);
+
+  void setState(ClickToEditTextViewState state);
 
   String getText();
 

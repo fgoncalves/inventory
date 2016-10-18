@@ -111,7 +111,7 @@
         />
 
     <include
-        layout="@layout/quantity_view_switcher"
+        layout="@layout/uncertain_quantity"
         android:id="@+id/include"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
