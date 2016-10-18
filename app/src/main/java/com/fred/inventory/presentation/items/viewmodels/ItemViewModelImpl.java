@@ -68,7 +68,10 @@ public class ItemViewModelImpl implements ItemViewModel {
 
     @Override public void afterTextChanged(Editable s) {
       String text = s.toString();
-      if (text.isEmpty()) uncertainQuantityMaximum.set(1);
+      if (text.isEmpty()) {
+        uncertainQuantityMaximum.set(1);
+        return;
+      }
 
       uncertainQuantityMaximum.set(Integer.parseInt(s.toString()));
     }

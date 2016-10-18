@@ -142,7 +142,7 @@ public class ProductListViewImpl extends CoordinatorLayout implements ProductLis
   private void bindToViewModel() {
     doneButton.setOnClickListener(viewModel.doneButtonClickListener());
     addButton.setOnClickListener(viewModel.addButtonClickListener());
-    clickToEditTextView.setTextWatcher(viewModel.productNameTextWatcher());
+    clickToEditTextView.addTextChangedListener(viewModel.productNameTextWatcher());
     viewModel.bindProductListScreenStateObserver(stateObserver);
     viewModel.bindProductNameObserver(productListNameObserver);
     viewModel.bindShowAddProductScreenObservable(showAddProductScreenObserver);

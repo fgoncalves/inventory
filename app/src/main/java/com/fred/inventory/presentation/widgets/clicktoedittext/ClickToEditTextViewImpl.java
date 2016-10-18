@@ -46,7 +46,7 @@ public class ClickToEditTextViewImpl extends ViewSwitcher implements ClickToEdit
     viewModel.onAttachToWindow();
   }
 
-  @Override public void setTextWatcher(TextWatcher textWatcher) {
+  @Override public void addTextChangedListener(TextWatcher textWatcher) {
     editText.addTextChangedListener(textWatcher);
   }
 

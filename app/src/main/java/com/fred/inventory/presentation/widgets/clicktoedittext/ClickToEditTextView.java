@@ -17,5 +17,5 @@ public interface ClickToEditTextView {
 
   void onHideKeyboardRequest();
 
-  void setTextWatcher(TextWatcher textWatcher);
+  void addTextChangedListener(TextWatcher textWatcher);
 }
