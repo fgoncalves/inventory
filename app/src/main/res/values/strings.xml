@@ -12,4 +12,5 @@
   <string name="name_hint">Name</string>
   <string name="total_quantity_text_hint">Total quantity</string>
   <string name="quantity_unit_text_hint">Unit</string>
+  <string name="mandatory_field">Mandatory</string>
 </resources>

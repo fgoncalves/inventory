@@ -8,6 +8,7 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
 import android.widget.DatePicker;
+import com.fred.inventory.R;
 import com.fred.inventory.domain.models.Product;
 import com.fred.inventory.domain.models.ProductList;
 import com.fred.inventory.domain.usecases.GetProductListUseCase;
@@ -27,8 +28,9 @@ public class ItemViewModelImpl implements ItemViewModel {
   private final ObservableField<Date> expirationDate = new ObservableField<>();
   private final ObservableField<String> itemName = new ObservableField<>();
   private final ObservableInt quantity = new ObservableInt(0);
-  private final ObservableInt uncertainQuantityMaximum = new ObservableInt(1);
+  private final ObservableInt uncertainQuantityMaximum = new ObservableInt(0);
   private final ObservableField<String> uncertainQuantityUnit = new ObservableField<>();
+  private final ObservableField<String> maxQuantityError = new ObservableField<>();
   private final TextWatcher watcher = new TextWatcher() {
     @Override public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 
@@ -157,26 +159,43 @@ public class ItemViewModelImpl implements ItemViewModel {
   }
 
   @Override public void onDoneButtonClick(View view) {
-    //if (product == null) product = new Product();
+    if (!checkInput()) return;
+
+    if (product == null) product = new Product();
+
+    fillProductFromInput(product);
 
     // TODO: Save the item with the name + quantity and expiration date
     // TODO: Dismiss view
   }
 
-  private void setupLayoutForEmptyItem() {
-    // TODO: ...
+  @Override public ObservableField<String> maxQuantityErrorObservable() {
+    return maxQuantityError;
+  }
+
+  private boolean checkInput() {
+    if (StringUtils.isBlank(itemName.get())) {
+      // TODO: set item name error
+    }
+    if (uncertainQuantityMaximum.get() == 0) {
+      maxQuantityError.set(context.getString(R.string.mandatory_field));
+    }
+    return true;
+  }
+
+  private void fillProductFromInput(Product product) {
+    product.setName(itemName.get());
+    product.setExpirationDate(expirationDate.get());
+    product.setQuantity(quantity.get());
+    // TODO: This shit!!
+    //product.setQuantityUnit(uncertainQuantityMaximum);
   }
 
   private class ProductListSubscriber extends Subscriber<ProductList> {
     @Override public void onCompleted() {
-      String name = (product == null) ? "" : StringUtils.valueOrDefault(product.getName(), "");
+      if (product == null) return;
 
-      if (StringUtils.isBlank(name)) {
-        setupLayoutForEmptyItem();
-        return;
-      }
-
-      itemName.set(name);
+      itemName.set(product.getName());
       quantity.set(product.getQuantity());
     }
 
