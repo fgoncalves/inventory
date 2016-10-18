@@ -79,7 +79,7 @@
         app:layout_constraintRight_toLeftOf="@+id/expiration_date_edit_button"
         app:layout_constraintTop_toBottomOf="@+id/include"
         tools:text="20.09.1988"
-        style="@style/InfoText"
+        style="@style/MainTitleText"
         />
 
     <ImageView
