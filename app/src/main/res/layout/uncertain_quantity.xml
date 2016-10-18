@@ -44,6 +44,7 @@
         app:layout_constraintTop_toTopOf="@+id/quantity_unit"
         tools:text="200"
         style="@style/MainTitleText"
+        android:hint="@string/total_quantity_text_hint"
         />
 
     <com.fred.inventory.presentation.widgets.clicktoedittext.ClickToEditTextViewImpl
@@ -60,6 +61,7 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/seekBar"
         tools:text="Kg"
+        android:hint="@string/quantity_unit_text_hint"
         style="@style/MainTitleText"
         />
   </android.support.constraint.ConstraintLayout>

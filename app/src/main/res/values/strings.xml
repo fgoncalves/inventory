@@ -10,4 +10,6 @@
   <string name="expiration_date_hint"><i>(Expiration date)</i></string>
   <string name="lists">Lists</string>
   <string name="name_hint"><i>(Name)</i></string>
+  <string name="total_quantity_text_hint">(Total quantity)</string>
+  <string name="quantity_unit_text_hint">(Unit)</string>
 </resources>
