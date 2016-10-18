@@ -5,6 +5,8 @@ import android.content.Context;
 import android.databinding.ObservableField;
 import android.databinding.ObservableInt;
 import android.support.v4.view.GestureDetectorCompat;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
@@ -55,6 +57,22 @@ public class ItemViewModelImpl implements ItemViewModel {
   private final ObservableInt uncertainQuantityMaximum = new ObservableInt(1);
   private final ObservableField<String> uncertainQuantityUnit = new ObservableField<>();
   private final ObservableInt viewSwitcherDisplayedChild = new ObservableInt(0);
+  private final TextWatcher watcher = new TextWatcher() {
+    @Override public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+    }
+
+    @Override public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+    }
+
+    @Override public void afterTextChanged(Editable s) {
+      String text = s.toString();
+      if (text.isEmpty()) uncertainQuantityMaximum.set(1);
+
+      uncertainQuantityMaximum.set(Integer.parseInt(s.toString()));
+    }
+  };
 
   private final Context context;
   private final GetProductListUseCase getProductListUseCase;
@@ -190,6 +208,10 @@ public class ItemViewModelImpl implements ItemViewModel {
 
   @Override public ObservableInt viewSwitcherDisplayedChildObservable() {
     return viewSwitcherDisplayedChild;
+  }
+
+  @Override public TextWatcher uncertainQuantityMaximumTextWatcher() {
+    return watcher;
   }
 
   @Override public void onDoneButtonClick(View view) {

@@ -2,6 +2,7 @@ package com.fred.inventory.presentation.items.viewmodels;
 
 import android.databinding.ObservableField;
 import android.databinding.ObservableInt;
+import android.text.TextWatcher;
 import android.view.View;
 import java.util.Date;
 
@@ -36,4 +37,6 @@ public interface ItemViewModel {
   ObservableField<String> uncertainQuantityUnitObservable();
 
   View.OnTouchListener viewSwitcherOnTouchListener();
+
+  TextWatcher uncertainQuantityMaximumTextWatcher();
 }

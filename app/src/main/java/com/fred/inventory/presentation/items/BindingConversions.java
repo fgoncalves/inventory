@@ -12,7 +12,7 @@ import java.util.Date;
  * <p/>
  * Created by fred on 02.10.16.
  */
-public class ItemBindingConversions {
+public class BindingConversions {
   private static final DateFormat DATE_FORMAT = DateFormat.getDateInstance();
 
   @BindingConversion public static String convertDateToString(ObservableField<Date> date) {
