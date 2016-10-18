@@ -4,18 +4,14 @@ import android.app.DatePickerDialog;
 import android.content.Context;
 import android.databinding.ObservableField;
 import android.databinding.ObservableInt;
-import android.support.v4.view.GestureDetectorCompat;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.view.GestureDetector;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.DatePicker;
 import com.fred.inventory.domain.models.Product;
 import com.fred.inventory.domain.models.ProductList;
 import com.fred.inventory.domain.usecases.GetProductListUseCase;
 import com.fred.inventory.domain.usecases.SaveProductListInLocalStorageUseCase;
-import com.fred.inventory.presentation.widgets.clicktoedittext.ClickToEditTextView;
 import com.fred.inventory.utils.StringUtils;
 import com.fred.inventory.utils.rx.RxSubscriptionPool;
 import com.fred.inventory.utils.rx.schedulers.SchedulerTransformer;
@@ -28,39 +24,11 @@ import rx.Subscription;
 import timber.log.Timber;
 
 public class ItemViewModelImpl implements ItemViewModel {
-  private class ViewSwitcherGestureDetector extends GestureDetector.SimpleOnGestureListener {
-    @Override
-    public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
-
-      // Swipe left (next)
-      if (e1.getX() > e2.getX()) {
-        //mViewSwitcher.setInAnimation(GestureActivity.this, R.anim.left_in);
-        //mViewSwitcher.setOutAnimation(GestureActivity.this, R.anim.left_out);
-
-        viewSwitcherDisplayedChild.set(1);
-      }
-
-      // Swipe right (previous)
-      if (e1.getX() < e2.getX()) {
-        //mViewSwitcher.setInAnimation(GestureActivity.this, R.anim.right_in);
-        //mViewSwitcher.setOutAnimation(GestureActivity.this, R.anim.right_out);
-
-        viewSwitcherDisplayedChild.set(0);
-      }
-
-      return super.onFling(e1, e2, velocityX, velocityY);
-    }
-  }
-
   private final ObservableField<Date> expirationDate = new ObservableField<>();
-  private final ObservableField<ClickToEditTextView.ClickToEditTextViewState>
-      uncertainQuantityUnitState =
-      new ObservableField<>();
   private final ObservableField<String> itemName = new ObservableField<>();
   private final ObservableInt quantity = new ObservableInt(0);
   private final ObservableInt uncertainQuantityMaximum = new ObservableInt(1);
   private final ObservableField<String> uncertainQuantityUnit = new ObservableField<>();
-  private final ObservableInt viewSwitcherDisplayedChild = new ObservableInt(0);
   private final TextWatcher watcher = new TextWatcher() {
     @Override public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 
@@ -96,7 +64,6 @@ public class ItemViewModelImpl implements ItemViewModel {
           expirationDate.set(calendar.getTime());
         }
       };
-  private final GestureDetectorCompat gestureDetectorCompat;
   private String productListId;
   private String productId;
   private ProductList productList;
@@ -111,8 +78,6 @@ public class ItemViewModelImpl implements ItemViewModel {
     this.saveProductListInLocalStorageUseCase = saveProductListInLocalStorageUseCase;
     this.transformer = transformer;
     this.rxSubscriptionPool = rxSubscriptionPool;
-    this.gestureDetectorCompat =
-        new GestureDetectorCompat(context, new ViewSwitcherGestureDetector());
   }
 
   @Override public void onResume() {
@@ -179,21 +144,12 @@ public class ItemViewModelImpl implements ItemViewModel {
     return uncertainQuantityMaximum;
   }
 
-  @Override
-  public ObservableField<ClickToEditTextView.ClickToEditTextViewState> uncertainQuantityObservable() {
-    return uncertainQuantityUnitState;
-  }
-
   @Override public ObservableField<String> uncertainQuantityUnitObservable() {
     return uncertainQuantityUnit;
   }
 
   @Override public ObservableInt quantityObservable() {
     return quantity;
-  }
-
-  @Override public ObservableInt viewSwitcherDisplayedChildObservable() {
-    return viewSwitcherDisplayedChild;
   }
 
   @Override public TextWatcher uncertainQuantityMaximumTextWatcher() {
@@ -207,17 +163,8 @@ public class ItemViewModelImpl implements ItemViewModel {
     // TODO: Dismiss view
   }
 
-  @Override public View.OnTouchListener viewSwitcherOnTouchListener() {
-    return new View.OnTouchListener() {
-      @Override public boolean onTouch(View view, MotionEvent motionEvent) {
-        return gestureDetectorCompat.onTouchEvent(motionEvent);
-      }
-    };
-  }
-
   private void setupLayoutForEmptyItem() {
-    // TODO: Set first view of view switcher
-    uncertainQuantityUnitState.set(ClickToEditTextView.ClickToEditTextViewState.EDITABLE);
+    // TODO: ...
   }
 
   private class ProductListSubscriber extends Subscriber<ProductList> {

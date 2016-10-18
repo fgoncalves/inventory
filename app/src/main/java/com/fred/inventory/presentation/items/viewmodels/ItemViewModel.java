@@ -4,7 +4,6 @@ import android.databinding.ObservableField;
 import android.databinding.ObservableInt;
 import android.text.TextWatcher;
 import android.view.View;
-import com.fred.inventory.presentation.widgets.clicktoedittext.ClickToEditTextView;
 import java.util.Date;
 
 /**
@@ -33,13 +32,7 @@ public interface ItemViewModel {
 
   ObservableInt uncertainQuantityMaximumObservable();
 
-  ObservableInt viewSwitcherDisplayedChildObservable();
-
-  ObservableField<ClickToEditTextView.ClickToEditTextViewState> uncertainQuantityObservable();
-
   ObservableField<String> uncertainQuantityUnitObservable();
-
-  View.OnTouchListener viewSwitcherOnTouchListener();
 
   TextWatcher uncertainQuantityMaximumTextWatcher();
 }
