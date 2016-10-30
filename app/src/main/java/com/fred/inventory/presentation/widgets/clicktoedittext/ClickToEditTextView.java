@@ -9,6 +9,8 @@ import android.text.TextWatcher;
  * Created by fred on 20.03.16.
  */
 public interface ClickToEditTextView {
+  void setError(String error);
+
   enum ClickToEditTextViewState {
     EDITABLE,
     NON_EDITABLE

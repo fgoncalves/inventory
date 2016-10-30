@@ -37,4 +37,6 @@ public interface ItemViewModel {
   TextWatcher uncertainQuantityMaximumTextWatcher();
 
   ObservableField<String> maxQuantityErrorObservable();
+
+  ObservableField<String> itemNameError();
 }

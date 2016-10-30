@@ -94,6 +94,11 @@ public class ClickToEditTextViewImpl extends ViewSwitcher implements ClickToEdit
     dismissKeyboard();
   }
 
+  @Override public void setError(String error) {
+    editTextInputLayout.setError(error);
+    if (editTextInputLayout.getVisibility() != VISIBLE) showNext();
+  }
+
   private void createChildren(Context context, AttributeSet attrs) {
     if (attrs == null) {
       text = new TextView(context);

@@ -14,6 +14,7 @@ import com.fred.inventory.domain.models.ProductList;
 import com.fred.inventory.domain.usecases.GetProductListUseCase;
 import com.fred.inventory.domain.usecases.SaveProductListInLocalStorageUseCase;
 import com.fred.inventory.utils.StringUtils;
+import com.fred.inventory.utils.path.PathManager;
 import com.fred.inventory.utils.rx.RxSubscriptionPool;
 import com.fred.inventory.utils.rx.schedulers.SchedulerTransformer;
 import com.fred.inventory.utils.rx.schedulers.qualifiers.IOToUiSchedulerTransformer;
@@ -27,6 +28,7 @@ import timber.log.Timber;
 public class ItemViewModelImpl implements ItemViewModel {
   private final ObservableField<Date> expirationDate = new ObservableField<>();
   private final ObservableField<String> itemName = new ObservableField<>();
+  private final ObservableField<String> itemNameError = new ObservableField<>();
   private final ObservableInt quantity = new ObservableInt(0);
   private final ObservableInt uncertainQuantityMaximum = new ObservableInt(0);
   private final ObservableField<String> uncertainQuantityUnit = new ObservableField<>();
@@ -66,6 +68,7 @@ public class ItemViewModelImpl implements ItemViewModel {
           expirationDate.set(calendar.getTime());
         }
       };
+  private final PathManager pathManager;
   private String productListId;
   private String productId;
   private ProductList productList;
@@ -74,12 +77,13 @@ public class ItemViewModelImpl implements ItemViewModel {
   @Inject public ItemViewModelImpl(Context context, GetProductListUseCase getProductListUseCase,
       SaveProductListInLocalStorageUseCase saveProductListInLocalStorageUseCase,
       @IOToUiSchedulerTransformer SchedulerTransformer transformer,
-      RxSubscriptionPool rxSubscriptionPool) {
+      RxSubscriptionPool rxSubscriptionPool, PathManager pathManager) {
     this.context = context;
     this.getProductListUseCase = getProductListUseCase;
     this.saveProductListInLocalStorageUseCase = saveProductListInLocalStorageUseCase;
     this.transformer = transformer;
     this.rxSubscriptionPool = rxSubscriptionPool;
+    this.pathManager = pathManager;
   }
 
   @Override public void onResume() {
@@ -165,22 +169,43 @@ public class ItemViewModelImpl implements ItemViewModel {
 
     fillProductFromInput(product);
 
-    // TODO: Save the item with the name + quantity and expiration date
-    // TODO: Dismiss view
+    productList.getProducts().add(product);
+    saveProductListInLocalStorageUseCase.save(productList)
+        .compose(transformer.<ProductList>applySchedulers())
+        .subscribe(new Subscriber<ProductList>() {
+          @Override public void onCompleted() {
+
+          }
+
+          @Override public void onError(Throwable e) {
+            //TODO: show some error
+          }
+
+          @Override public void onNext(ProductList productList) {
+            pathManager.back();
+          }
+        });
   }
 
   @Override public ObservableField<String> maxQuantityErrorObservable() {
     return maxQuantityError;
   }
 
+  @Override public ObservableField<String> itemNameError() {
+    return itemNameError;
+  }
+
   private boolean checkInput() {
+    boolean valid = true;
     if (StringUtils.isBlank(itemName.get())) {
-      // TODO: set item name error
+      itemNameError.set(context.getString(R.string.mandatory_field));
+      valid = false;
     }
     if (uncertainQuantityMaximum.get() == 0) {
       maxQuantityError.set(context.getString(R.string.mandatory_field));
+      valid = false;
     }
-    return true;
+    return valid;
   }
 
   private void fillProductFromInput(Product product) {
