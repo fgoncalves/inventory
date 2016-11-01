@@ -15,7 +15,7 @@ android {
 
   defaultConfig {
     applicationId "com.fred.inventory"
-    minSdkVersion 16
+    minSdkVersion 17
     targetSdkVersion 24
     versionCode 1
     versionName "1.0"

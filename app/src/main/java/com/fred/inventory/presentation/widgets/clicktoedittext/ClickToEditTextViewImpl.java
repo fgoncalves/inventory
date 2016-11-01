@@ -5,6 +5,7 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.TextInputLayout;
 import android.text.TextWatcher;
 import android.util.AttributeSet;
+import android.view.View;
 import android.view.ViewTreeObserver;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
@@ -109,6 +110,10 @@ public class ClickToEditTextViewImpl extends ViewSwitcher implements ClickToEdit
       editText = new EditText(context, attrs);
       editTextInputLayout = new TextInputLayout(context, attrs);
     }
+
+    text.setId(View.generateViewId());
+    editText.setId(View.generateViewId());
+    editTextInputLayout.setId(View.generateViewId());
 
     text.setSingleLine();
     editText.setSingleLine();
