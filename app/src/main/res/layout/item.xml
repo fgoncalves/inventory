@@ -46,6 +46,7 @@
     <android.support.design.widget.TextInputLayout
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        app:error="@{viewModel.itemNameError()}"
         app:layout_constraintBottom_toBottomOf="@+id/imageView"
         app:layout_constraintHorizontal_bias="0.93"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -63,9 +64,9 @@
           android:layout_marginStart="16dp"
           android:hint="@string/name_hint"
           android:text="@{viewModel.itemNameObservable()}"
+          android:addTextChangedListener="@{viewModel.itemNameTextWatcher()}"
           android:textColor="@color/white"
           android:textColorHint="@color/white"
-          app:error="@{viewModel.itemNameError()}"
           tools:text="Olive oil"
           style="@style/MainTitleText"
           />

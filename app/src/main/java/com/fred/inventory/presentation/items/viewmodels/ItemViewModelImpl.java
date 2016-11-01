@@ -14,6 +14,7 @@ import com.fred.inventory.domain.models.ProductList;
 import com.fred.inventory.domain.usecases.GetProductListUseCase;
 import com.fred.inventory.domain.usecases.SaveProductListInLocalStorageUseCase;
 import com.fred.inventory.utils.StringUtils;
+import com.fred.inventory.utils.binding.widgets.OneTimeTextWatcher;
 import com.fred.inventory.utils.path.PathManager;
 import com.fred.inventory.utils.rx.RxSubscriptionPool;
 import com.fred.inventory.utils.rx.schedulers.SchedulerTransformer;
@@ -33,7 +34,7 @@ public class ItemViewModelImpl implements ItemViewModel {
   private final ObservableInt uncertainQuantityMaximum = new ObservableInt(0);
   private final ObservableField<String> uncertainQuantityUnit = new ObservableField<>();
   private final ObservableField<String> maxQuantityError = new ObservableField<>();
-  private final TextWatcher watcher = new TextWatcher() {
+  private final TextWatcher uncertainQuantityMaximumWatcher = new TextWatcher() {
     @Override public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 
     }
@@ -45,6 +46,7 @@ public class ItemViewModelImpl implements ItemViewModel {
     @Override public void afterTextChanged(Editable s) {
       String text = s.toString();
       if (text.isEmpty()) {
+        // TODO: Ugly as shit!
         uncertainQuantityMaximum.set(1);
         return;
       }
@@ -52,6 +54,7 @@ public class ItemViewModelImpl implements ItemViewModel {
       uncertainQuantityMaximum.set(Integer.parseInt(s.toString()));
     }
   };
+  private final TextWatcher itemNameTextwatcher = new OneTimeTextWatcher(itemNameObservable());
 
   private final Context context;
   private final GetProductListUseCase getProductListUseCase;
@@ -159,7 +162,7 @@ public class ItemViewModelImpl implements ItemViewModel {
   }
 
   @Override public TextWatcher uncertainQuantityMaximumTextWatcher() {
-    return watcher;
+    return uncertainQuantityMaximumWatcher;
   }
 
   @Override public void onDoneButtonClick(View view) {
@@ -193,6 +196,10 @@ public class ItemViewModelImpl implements ItemViewModel {
 
   @Override public ObservableField<String> itemNameError() {
     return itemNameError;
+  }
+
+  @Override public TextWatcher itemNameTextWatcher() {
+    return itemNameTextwatcher;
   }
 
   private boolean checkInput() {
