@@ -54,7 +54,7 @@ public class ItemViewModelImpl implements ItemViewModel {
       uncertainQuantityMaximum.set(Integer.parseInt(s.toString()));
     }
   };
-  private final TextWatcher itemNameTextwatcher = new OneTimeTextWatcher(itemNameObservable());
+  private final TextWatcher itemNameTextWatcher = new OneTimeTextWatcher(itemNameObservable());
 
   private final Context context;
   private final GetProductListUseCase getProductListUseCase;
@@ -200,7 +200,7 @@ public class ItemViewModelImpl implements ItemViewModel {
   }
 
   @Override public TextWatcher itemNameTextWatcher() {
-    return itemNameTextwatcher;
+    return itemNameTextWatcher;
   }
 
   private boolean checkInput() {
