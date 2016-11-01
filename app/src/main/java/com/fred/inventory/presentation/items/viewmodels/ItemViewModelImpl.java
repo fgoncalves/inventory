@@ -172,6 +172,7 @@ public class ItemViewModelImpl implements ItemViewModel {
 
     fillProductFromInput(product);
 
+    // TODO: Product list is null... I thought I was getting it in onAttachedToWindow
     productList.getProducts().add(product);
     saveProductListInLocalStorageUseCase.save(productList)
         .compose(transformer.<ProductList>applySchedulers())
