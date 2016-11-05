@@ -32,6 +32,7 @@ android {
 dependencies {
   apt 'com.squareup.dagger:dagger-compiler:1.2.2'
   apt 'org.immutables:value:2.2.12'
+  apt 'com.github.frankiesardo:icepick-processor:2.3.6'
 
   provided 'org.immutables:value:2.2.12'
 
@@ -46,7 +47,8 @@ dependencies {
   compile 'com.squareup.dagger:dagger:1.2.2'
   compile 'com.jakewharton:butterknife:7.0.1'
   compile 'com.jakewharton.timber:timber:4.1.1'
-  compile 'com.android.support.constraint:constraint-layout:1.0.0-beta2'
+  compile 'com.android.support.constraint:constraint-layout:1.0.0-beta3'
+  compile 'com.github.frankiesardo:icepick:2.3.6'
 
   testCompile 'junit:junit:4.12'
   testCompile 'org.mockito:mockito-core:2.0.39-beta'

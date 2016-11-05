@@ -1,6 +1,7 @@
 package com.fred.inventory.presentation.productlist.views;
 
 import android.content.Context;
+import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
@@ -19,6 +20,8 @@ import com.fred.inventory.presentation.productlist.modules.ProductListModule;
 import com.fred.inventory.presentation.productlist.viewmodels.ProductListViewModel;
 import com.fred.inventory.presentation.widgets.clicktoedittext.ClickToEditTextViewImpl;
 import com.fred.inventory.utils.binding.Observer;
+import icepick.Icepick;
+import icepick.Icicle;
 import javax.inject.Inject;
 import rx.Observable;
 import rx.subjects.PublishSubject;
@@ -66,6 +69,7 @@ public class ProductListViewImpl extends CoordinatorLayout implements ProductLis
   @Inject ProductListViewModel viewModel;
 
   private PublishSubject<ViewInteraction> interactions = PublishSubject.create();
+  @Icicle String productListId;
 
   public ProductListViewImpl(Context context) {
     super(context);
@@ -93,7 +97,16 @@ public class ProductListViewImpl extends CoordinatorLayout implements ProductLis
     if (isInEditMode()) return;
 
     bindToViewModel();
+    viewModel.forProductList(productListId);
     viewModel.onAttachedToWindow();
+  }
+
+  @Override public Parcelable onSaveInstanceState() {
+    return Icepick.saveInstanceState(this, super.onSaveInstanceState());
+  }
+
+  @Override public void onRestoreInstanceState(Parcelable state) {
+    super.onRestoreInstanceState(Icepick.restoreInstanceState(this, state));
   }
 
   @Override public void onDetachedFromWindow() {
@@ -102,7 +115,7 @@ public class ProductListViewImpl extends CoordinatorLayout implements ProductLis
   }
 
   @Override public void showProductList(@NonNull String productListId) {
-    viewModel.forProductList(productListId);
+    this.productListId = productListId;
   }
 
   @Override public Observable<ViewInteraction> interactions() {

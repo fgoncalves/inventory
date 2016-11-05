@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.fred.inventory.presentation.productlist.views.ProductListViewImpl xmlns:android="http://schemas.android.com/apk/res/android"
+<com.fred.inventory.presentation.productlist.views.ProductListViewImpl
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/listOfProducts"
@@ -7,71 +8,81 @@
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
     app:theme="@style/AppTheme"
-    tools:context="com.fred.inventory.MainActivity">
+    tools:context="com.fred.inventory.MainActivity"
+    >
 
-    <android.support.design.widget.AppBarLayout
+  <android.support.design.widget.AppBarLayout
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:theme="@style/AppTheme.AppBarOverlay"
+      >
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:theme="@style/AppTheme.AppBarOverlay">
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/primary"
+        >
 
-        <android.support.v7.widget.Toolbar
-            android:id="@+id/toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:background="@color/primary">
+      <LinearLayout
+          android:layout_width="match_parent"
+          android:layout_height="match_parent"
+          android:orientation="horizontal"
+          android:weightSum="1"
+          >
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="horizontal"
-                android:weightSum="1">
+        <com.fred.inventory.presentation.widgets.clicktoedittext.ClickToEditTextViewImpl
+            android:id="@+id/product_list_name"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="0.75"
+            style="@style/MainToolbarClickToEdit"
+            />
 
-                <com.fred.inventory.presentation.widgets.clicktoedittext.ClickToEditTextViewImpl
-                    android:id="@+id/product_list_name"
-                    style="@style/MainToolbarClickToEdit"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="0.75" />
+        <Button
+            android:id="@+id/toolbar_done_button"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="0.25"
+            android:text="@string/done"
+            style="@style/ToolbarDoneButton"
+            />
+      </LinearLayout>
+    </android.support.v7.widget.Toolbar>
+  </android.support.design.widget.AppBarLayout>
 
-                <Button
-                    android:id="@+id/toolbar_done_button"
-                    style="@style/ToolbarDoneButton"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="0.25"
-                    android:text="@string/done" />
-            </LinearLayout>
-        </android.support.v7.widget.Toolbar>
-    </android.support.design.widget.AppBarLayout>
+  <RelativeLayout
+      android:id="@+id/product_list_container"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      app:layout_behavior="@string/appbar_scrolling_view_behavior"
+      >
 
-    <RelativeLayout
-        android:id="@+id/product_list_container"
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/product_list_recycler_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+        android:background="@color/pale_grey"
+        tools:listitem="@layout/product_list_list_item"
+        />
 
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/product_list_recycler_view"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@color/pale_grey"
-            tools:listitem="@layout/product_list_list_item" />
+    <TextView
+        android:id="@+id/empty_product_list_recycler"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_centerInParent="true"
+        android:text="@string/empty_view"
+        android:visibility="gone"
+        />
+  </RelativeLayout>
 
-        <TextView
-            android:id="@+id/empty_product_list_recycler"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_centerInParent="true"
-            android:text="@string/empty_view"
-            android:visibility="gone" />
-    </RelativeLayout>
-
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/add_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="end|bottom"
-        android:layout_margin="@dimen/fab_margin"
-        android:src="@drawable/plus" />
+  <android.support.design.widget.FloatingActionButton
+      android:id="@+id/add_button"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_gravity="end|bottom"
+      android:layout_margin="@dimen/fab_margin"
+      android:src="@drawable/plus"
+      />
 
 </com.fred.inventory.presentation.productlist.views.ProductListViewImpl>
