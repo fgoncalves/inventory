@@ -8,7 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import com.fred.inventory.MainActivity;
 import com.fred.inventory.R;
-import com.fred.inventory.databinding.ProductListConstraintBinding;
+import com.fred.inventory.databinding.ProductListBinding;
 import com.fred.inventory.presentation.base.BaseScreen;
 import com.fred.inventory.presentation.productlist.modules.ProductListModule;
 import com.fred.inventory.presentation.productlist.viewmodels.ProductListViewModel;
@@ -24,8 +24,8 @@ public class ProductListScreen extends BaseScreen {
 
   @Nullable @Override public View onCreateView(LayoutInflater inflater, ViewGroup container,
       Bundle savedInstanceState) {
-    ProductListConstraintBinding binding =
-        DataBindingUtil.inflate(inflater, R.layout.product_list_constraint, container, false);
+    ProductListBinding binding =
+        DataBindingUtil.inflate(inflater, R.layout.product_list, container, false);
 
     MainActivity.scoped(new ProductListModule()).inject(this);
     binding.setViewModel(viewModel);

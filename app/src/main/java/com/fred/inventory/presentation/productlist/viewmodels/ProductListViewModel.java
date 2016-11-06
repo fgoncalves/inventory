@@ -4,8 +4,6 @@ import android.databinding.ObservableField;
 import android.databinding.ObservableInt;
 import android.text.TextWatcher;
 import android.view.View;
-import com.fred.inventory.presentation.productlist.models.ProductListScreenState;
-import com.fred.inventory.utils.binding.Observer;
 
 /**
  * View model for the product list
@@ -21,10 +19,6 @@ public interface ProductListViewModel {
   void forProductList(String id);
 
   void onAttachedToWindow();
-
-  void bindProductListScreenStateObserver(Observer<ProductListScreenState> observer);
-
-  void unbindProductListScreenStateObserver(Observer<ProductListScreenState> observer);
 
   void onDetachedFromWindow();
 

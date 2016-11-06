@@ -9,11 +9,7 @@ import com.fred.inventory.domain.models.ProductList;
 import com.fred.inventory.domain.usecases.GetProductListUseCase;
 import com.fred.inventory.domain.usecases.SaveProductListInLocalStorageUseCase;
 import com.fred.inventory.presentation.items.ItemScreen;
-import com.fred.inventory.presentation.productlist.models.ImmutableProductListScreenState;
-import com.fred.inventory.presentation.productlist.models.ProductListScreenState;
 import com.fred.inventory.utils.StringUtils;
-import com.fred.inventory.utils.binding.Observable;
-import com.fred.inventory.utils.binding.Observer;
 import com.fred.inventory.utils.binding.widgets.OneTimeTextWatcher;
 import com.fred.inventory.utils.path.PathManager;
 import com.fred.inventory.utils.rx.RxSubscriptionPool;
@@ -25,8 +21,6 @@ import rx.Subscription;
 import timber.log.Timber;
 
 public class ProductListViewModelImpl implements ProductListViewModel {
-  private final Observable<ProductListScreenState> screenStateObservable = Observable.create();
-  private final Observable<String> showAddProductScreenObservable = Observable.create();
   private final ObservableField<String> productListName = new ObservableField<>();
   private final OneTimeTextWatcher productNameTextWatcher = new OneTimeTextWatcher(productListName);
   private final GetProductListUseCase getProductListUseCase;
@@ -55,12 +49,7 @@ public class ProductListViewModelImpl implements ProductListViewModel {
 
   @Override public void onAttachedToWindow() {
     if (StringUtils.isBlank(productListId)) {
-      ProductListScreenState newState = ImmutableProductListScreenState.builder()
-          .emptyViewVisibility(View.VISIBLE)
-          .showKeyboard(true)
-          .productList(new ProductList())
-          .build();
-      screenStateObservable.set(newState);
+      // TODO: put input in text view
       return;
     }
 
@@ -69,16 +58,6 @@ public class ProductListViewModelImpl implements ProductListViewModel {
 
   @Override public void onDetachedFromWindow() {
     rxSubscriptionPool.unsubscribeFrom(getClass().getCanonicalName());
-  }
-
-  @Override
-  public void bindProductListScreenStateObserver(Observer<ProductListScreenState> observer) {
-    screenStateObservable.bind(observer);
-  }
-
-  @Override
-  public void unbindProductListScreenStateObserver(Observer<ProductListScreenState> observer) {
-    screenStateObservable.unbind(observer);
   }
 
   @Override public ObservableField<String> productListName() {
@@ -104,29 +83,23 @@ public class ProductListViewModelImpl implements ProductListViewModel {
       return;
     }
 
-    ProductListScreenState currentState = screenStateObservable.get();
-    currentState.productList().setName(name);
-    Subscription subscription =
-        saveProductListInLocalStorageUseCase.save(currentState.productList())
-            .compose(transformer.<ProductList>applySchedulers())
-            .subscribe(new Subscriber<ProductList>() {
-              @Override public void onCompleted() {
+    ProductList productList = createFromInput();
+    Subscription subscription = saveProductListInLocalStorageUseCase.save(productList)
+        .compose(transformer.<ProductList>applySchedulers())
+        .subscribe(new Subscriber<ProductList>() {
+          @Override public void onCompleted() {
 
-              }
+          }
 
-              @Override public void onError(Throwable e) {
-                Timber.d(e, "Failed to save product list");
-                // TODO: Update state with error
-              }
+          @Override public void onError(Throwable e) {
+            Timber.d(e, "Failed to save product list");
+            // TODO: Update state with error
+          }
 
-              @Override public void onNext(ProductList productList) {
-                ProductListScreenState newState = ImmutableProductListScreenState.builder()
-                    .dismissed(true)
-                    .productList(productList)
-                    .build();
-                screenStateObservable.set(newState);
-              }
-            });
+          @Override public void onNext(ProductList productList) {
+            pathManager.back();
+          }
+        });
 
     rxSubscriptionPool.addSubscription(getClass().getCanonicalName(), subscription);
   }
@@ -138,35 +111,34 @@ public class ProductListViewModelImpl implements ProductListViewModel {
       return;
     }
 
-    // TODO: Obviously current list is null
-    ProductListScreenState currentState = screenStateObservable.get();
-    currentState.productList().setName(name);
-    ProductListScreenState newState = ImmutableProductListScreenState.builder()
-        .showKeyboard(false)
-        .productList(currentState.productList())
-        .build();
-    screenStateObservable.set(newState);
+    ProductList productList = createFromInput();
 
-    Subscription subscription =
-        saveProductListInLocalStorageUseCase.save(currentState.productList())
-            .compose(transformer.<ProductList>applySchedulers())
-            .subscribe(new Subscriber<ProductList>() {
-              @Override public void onCompleted() {
+    Subscription subscription = saveProductListInLocalStorageUseCase.save(productList)
+        .compose(transformer.<ProductList>applySchedulers())
+        .subscribe(new Subscriber<ProductList>() {
+          @Override public void onCompleted() {
 
-              }
+          }
 
-              @Override public void onError(Throwable e) {
-                Timber.d(e, "Failed to save product list");
-                // TODO: Update state with error
-              }
+          @Override public void onError(Throwable e) {
+            Timber.d(e, "Failed to save product list");
+            // TODO: Update state with error
+          }
 
-              @Override public void onNext(ProductList productList) {
-                ItemScreen itemScreen = ItemScreen.newInstance(productList.getId());
-                pathManager.go(itemScreen, R.id.main_container);
-              }
-            });
+          @Override public void onNext(ProductList productList) {
+            ItemScreen itemScreen = ItemScreen.newInstance(productList.getId());
+            pathManager.go(itemScreen, R.id.main_container);
+          }
+        });
 
     rxSubscriptionPool.addSubscription(getClass().getCanonicalName(), subscription);
+  }
+
+  private ProductList createFromInput() {
+    ProductList productList = new ProductList();
+    productList.setId(productListId);
+    productList.setName(productListName.get());
+    return productList;
   }
 
   @Override public ObservableInt emptyListVisibility() {
