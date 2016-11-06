@@ -1,11 +1,11 @@
 package com.fred.inventory.presentation.productlist.viewmodels;
 
+import android.databinding.ObservableInt;
 import android.text.TextWatcher;
 import android.view.View;
 import com.fred.inventory.domain.models.ProductList;
 import com.fred.inventory.domain.usecases.GetProductListUseCase;
 import com.fred.inventory.domain.usecases.SaveProductListInLocalStorageUseCase;
-import com.fred.inventory.presentation.productlist.models.Error;
 import com.fred.inventory.presentation.productlist.models.ImmutableProductListScreenState;
 import com.fred.inventory.presentation.productlist.models.ProductListScreenState;
 import com.fred.inventory.utils.StringUtils;
@@ -28,79 +28,8 @@ public class ProductListViewModelImpl implements ProductListViewModel {
   private final SaveProductListInLocalStorageUseCase saveProductListInLocalStorageUseCase;
   private final SchedulerTransformer transformer;
   private final RxSubscriptionPool rxSubscriptionPool;
-  private final View.OnClickListener doneButtonClickListener = new View.OnClickListener() {
-    @Override public void onClick(View v) {
-      final String name = productNameTextWatcher.get();
-      if (StringUtils.isBlank(name)) {
-        emptyListNameError();
-        return;
-      }
-
-      ProductListScreenState currentState = screenStateObservable.get();
-      currentState.productList().setName(name);
-      Subscription subscription =
-          saveProductListInLocalStorageUseCase.save(currentState.productList())
-              .compose(transformer.<ProductList>applySchedulers())
-              .subscribe(new Subscriber<ProductList>() {
-                @Override public void onCompleted() {
-
-                }
-
-                @Override public void onError(Throwable e) {
-                  Timber.d(e, "Failed to save product list");
-                  // TODO: Update state with error
-                }
-
-                @Override public void onNext(ProductList productList) {
-                  ProductListScreenState newState = ImmutableProductListScreenState.builder()
-                      .dismissed(true)
-                      .productList(productList)
-                      .build();
-                  screenStateObservable.set(newState);
-                }
-              });
-
-      rxSubscriptionPool.addSubscription(getClass().getCanonicalName(), subscription);
-    }
-  };
-
-  private final View.OnClickListener addButtonClickListener = new View.OnClickListener() {
-    @Override public void onClick(View v) {
-      String name = productNameTextWatcher.get();
-      if (StringUtils.isBlank(name)) {
-        emptyListNameError();
-        return;
-      }
-
-      ProductListScreenState currentState = screenStateObservable.get();
-      currentState.productList().setName(name);
-      ProductListScreenState newState = ImmutableProductListScreenState.builder()
-          .showKeyboard(false)
-          .productList(currentState.productList())
-          .build();
-      screenStateObservable.set(newState);
-
-      Subscription subscription =
-          saveProductListInLocalStorageUseCase.save(currentState.productList())
-              .compose(transformer.<ProductList>applySchedulers())
-              .subscribe(new Subscriber<ProductList>() {
-                @Override public void onCompleted() {
-
-                }
-
-                @Override public void onError(Throwable e) {
-                  Timber.d(e, "Failed to save product list");
-                  // TODO: Update state with error
-                }
-
-                @Override public void onNext(ProductList productList) {
-                  showAddProductScreenObservable.set(productList.getId());
-                }
-              });
-
-      rxSubscriptionPool.addSubscription(getClass().getCanonicalName(), subscription);
-    }
-  };
+  private final ObservableInt listVisibility = new ObservableInt(View.GONE);
+  private final ObservableInt emptyListVisibility = new ObservableInt(View.VISIBLE);
   private String productListId;
 
   @Inject public ProductListViewModelImpl(GetProductListUseCase getProductListUseCase,
@@ -161,14 +90,6 @@ public class ProductListViewModelImpl implements ProductListViewModel {
     showAddProductScreenObservable.unbind(observer);
   }
 
-  @Override public View.OnClickListener doneButtonClickListener() {
-    return doneButtonClickListener;
-  }
-
-  @Override public View.OnClickListener addButtonClickListener() {
-    return addButtonClickListener;
-  }
-
   @Override public TextWatcher productNameTextWatcher() {
     return productNameTextWatcher;
   }
@@ -181,6 +102,84 @@ public class ProductListViewModelImpl implements ProductListViewModel {
     rxSubscriptionPool.addSubscription(getClass().getCanonicalName(), subscription);
   }
 
+  @Override public void onDoneButtonClick(View view) {
+    final String name = productNameTextWatcher.get();
+    if (StringUtils.isBlank(name)) {
+      // TODO: Set error
+      return;
+    }
+
+    ProductListScreenState currentState = screenStateObservable.get();
+    currentState.productList().setName(name);
+    Subscription subscription =
+        saveProductListInLocalStorageUseCase.save(currentState.productList())
+            .compose(transformer.<ProductList>applySchedulers())
+            .subscribe(new Subscriber<ProductList>() {
+              @Override public void onCompleted() {
+
+              }
+
+              @Override public void onError(Throwable e) {
+                Timber.d(e, "Failed to save product list");
+                // TODO: Update state with error
+              }
+
+              @Override public void onNext(ProductList productList) {
+                ProductListScreenState newState = ImmutableProductListScreenState.builder()
+                    .dismissed(true)
+                    .productList(productList)
+                    .build();
+                screenStateObservable.set(newState);
+              }
+            });
+
+    rxSubscriptionPool.addSubscription(getClass().getCanonicalName(), subscription);
+  }
+
+  @Override public void onAddButtonClick(View view) {
+    String name = productNameTextWatcher.get();
+    if (StringUtils.isBlank(name)) {
+      // TODO: Show error here
+      return;
+    }
+
+    ProductListScreenState currentState = screenStateObservable.get();
+    currentState.productList().setName(name);
+    ProductListScreenState newState = ImmutableProductListScreenState.builder()
+        .showKeyboard(false)
+        .productList(currentState.productList())
+        .build();
+    screenStateObservable.set(newState);
+
+    Subscription subscription =
+        saveProductListInLocalStorageUseCase.save(currentState.productList())
+            .compose(transformer.<ProductList>applySchedulers())
+            .subscribe(new Subscriber<ProductList>() {
+              @Override public void onCompleted() {
+
+              }
+
+              @Override public void onError(Throwable e) {
+                Timber.d(e, "Failed to save product list");
+                // TODO: Update state with error
+              }
+
+              @Override public void onNext(ProductList productList) {
+                showAddProductScreenObservable.set(productList.getId());
+              }
+            });
+
+    rxSubscriptionPool.addSubscription(getClass().getCanonicalName(), subscription);
+  }
+
+  @Override public ObservableInt emptyListVisibility() {
+    return emptyListVisibility;
+  }
+
+  @Override public ObservableInt itemListVisibility() {
+    return listVisibility;
+  }
+
   public class ProductListSubscriber extends Subscriber<ProductList> {
     @Override public void onCompleted() {
 
@@ -191,21 +190,14 @@ public class ProductListViewModelImpl implements ProductListViewModel {
     }
 
     @Override public void onNext(ProductList productList) {
-      ProductListViewModelImpl.this.productListId = productListId;
+      ProductListViewModelImpl.this.productListId = productList.getId();
 
-      ProductListScreenState newState =
-          ImmutableProductListScreenState.builder().productList(productList).build();
+      emptyListVisibility.set(View.GONE);
+      listVisibility.set(View.VISIBLE);
 
-      screenStateObservable.set(newState);
+      //TODO: add list and adapter shit
+
       productNameTextWatcher.set(productList.getName());
     }
-  }
-
-  private void emptyListNameError() {
-    ProductListScreenState newState = ImmutableProductListScreenState.builder()
-        .error(Error.EMPTY_PRODUCT_LIST_NAME)
-        .productList(screenStateObservable.get().productList())
-        .build();
-    screenStateObservable.set(newState);
   }
 }

@@ -1,8 +1,8 @@
 package com.fred.inventory.presentation.productlist.viewmodels;
 
+import android.databinding.ObservableInt;
 import android.text.TextWatcher;
 import android.view.View;
-import com.fred.inventory.presentation.productlist.models.Error;
 import com.fred.inventory.presentation.productlist.models.ProductListScreenState;
 import com.fred.inventory.utils.binding.Observer;
 
@@ -37,7 +37,11 @@ public interface ProductListViewModel {
 
   TextWatcher productNameTextWatcher();
 
-  View.OnClickListener doneButtonClickListener();
+  void onDoneButtonClick(View view);
 
-  View.OnClickListener addButtonClickListener();
+  void onAddButtonClick(View view);
+
+  ObservableInt emptyListVisibility();
+
+  ObservableInt itemListVisibility();
 }
