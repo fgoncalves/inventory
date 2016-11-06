@@ -1,17 +1,21 @@
 package com.fred.inventory.presentation.productlist.viewmodels;
 
+import android.databinding.ObservableField;
 import android.databinding.ObservableInt;
 import android.text.TextWatcher;
 import android.view.View;
+import com.fred.inventory.R;
 import com.fred.inventory.domain.models.ProductList;
 import com.fred.inventory.domain.usecases.GetProductListUseCase;
 import com.fred.inventory.domain.usecases.SaveProductListInLocalStorageUseCase;
+import com.fred.inventory.presentation.items.ItemScreen;
 import com.fred.inventory.presentation.productlist.models.ImmutableProductListScreenState;
 import com.fred.inventory.presentation.productlist.models.ProductListScreenState;
 import com.fred.inventory.utils.StringUtils;
 import com.fred.inventory.utils.binding.Observable;
 import com.fred.inventory.utils.binding.Observer;
-import com.fred.inventory.utils.binding.widgets.ObservableTextWatcher;
+import com.fred.inventory.utils.binding.widgets.OneTimeTextWatcher;
+import com.fred.inventory.utils.path.PathManager;
 import com.fred.inventory.utils.rx.RxSubscriptionPool;
 import com.fred.inventory.utils.rx.schedulers.SchedulerTransformer;
 import com.fred.inventory.utils.rx.schedulers.qualifiers.IOToUiSchedulerTransformer;
@@ -23,23 +27,26 @@ import timber.log.Timber;
 public class ProductListViewModelImpl implements ProductListViewModel {
   private final Observable<ProductListScreenState> screenStateObservable = Observable.create();
   private final Observable<String> showAddProductScreenObservable = Observable.create();
-  private final ObservableTextWatcher productNameTextWatcher = ObservableTextWatcher.create();
+  private final ObservableField<String> productListName = new ObservableField<>();
+  private final OneTimeTextWatcher productNameTextWatcher = new OneTimeTextWatcher(productListName);
   private final GetProductListUseCase getProductListUseCase;
   private final SaveProductListInLocalStorageUseCase saveProductListInLocalStorageUseCase;
   private final SchedulerTransformer transformer;
   private final RxSubscriptionPool rxSubscriptionPool;
   private final ObservableInt listVisibility = new ObservableInt(View.GONE);
   private final ObservableInt emptyListVisibility = new ObservableInt(View.VISIBLE);
+  private final PathManager pathManager;
   private String productListId;
 
   @Inject public ProductListViewModelImpl(GetProductListUseCase getProductListUseCase,
       SaveProductListInLocalStorageUseCase saveProductListInLocalStorageUseCase,
       @IOToUiSchedulerTransformer SchedulerTransformer transformer,
-      RxSubscriptionPool rxSubscriptionPool) {
+      RxSubscriptionPool rxSubscriptionPool, PathManager pathManager) {
     this.getProductListUseCase = getProductListUseCase;
     this.saveProductListInLocalStorageUseCase = saveProductListInLocalStorageUseCase;
     this.transformer = transformer;
     this.rxSubscriptionPool = rxSubscriptionPool;
+    this.pathManager = pathManager;
   }
 
   @Override public void forProductList(String id) {
@@ -74,20 +81,8 @@ public class ProductListViewModelImpl implements ProductListViewModel {
     screenStateObservable.unbind(observer);
   }
 
-  @Override public void bindProductNameObserver(Observer<String> observer) {
-    productNameTextWatcher.bind(observer);
-  }
-
-  @Override public void unbindProductNameObserver(Observer<String> observer) {
-    productNameTextWatcher.unbind(observer);
-  }
-
-  @Override public void bindShowAddProductScreenObservable(Observer<String> observer) {
-    showAddProductScreenObservable.bind(observer);
-  }
-
-  @Override public void unbindShowAddProductScreenObservable(Observer<String> observer) {
-    showAddProductScreenObservable.unbind(observer);
+  @Override public ObservableField<String> productListName() {
+    return productListName;
   }
 
   @Override public TextWatcher productNameTextWatcher() {
@@ -103,7 +98,7 @@ public class ProductListViewModelImpl implements ProductListViewModel {
   }
 
   @Override public void onDoneButtonClick(View view) {
-    final String name = productNameTextWatcher.get();
+    final String name = productListName.get();
     if (StringUtils.isBlank(name)) {
       // TODO: Set error
       return;
@@ -137,12 +132,13 @@ public class ProductListViewModelImpl implements ProductListViewModel {
   }
 
   @Override public void onAddButtonClick(View view) {
-    String name = productNameTextWatcher.get();
+    String name = productListName.get();
     if (StringUtils.isBlank(name)) {
       // TODO: Show error here
       return;
     }
 
+    // TODO: Obviously current list is null
     ProductListScreenState currentState = screenStateObservable.get();
     currentState.productList().setName(name);
     ProductListScreenState newState = ImmutableProductListScreenState.builder()
@@ -165,7 +161,8 @@ public class ProductListViewModelImpl implements ProductListViewModel {
               }
 
               @Override public void onNext(ProductList productList) {
-                showAddProductScreenObservable.set(productList.getId());
+                ItemScreen itemScreen = ItemScreen.newInstance(productList.getId());
+                pathManager.go(itemScreen, R.id.main_container);
               }
             });
 
@@ -197,7 +194,7 @@ public class ProductListViewModelImpl implements ProductListViewModel {
 
       //TODO: add list and adapter shit
 
-      productNameTextWatcher.set(productList.getName());
+      productListName.set(productList.getName());
     }
   }
 }

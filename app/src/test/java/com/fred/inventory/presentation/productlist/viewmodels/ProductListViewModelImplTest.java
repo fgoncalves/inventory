@@ -46,7 +46,7 @@ public class ProductListViewModelImplTest {
 
     viewModel =
         new ProductListViewModelImpl(getProductListUseCase, saveProductListInLocalStorageUseCase,
-            new ImmediateToImmediateTransformer(), rxSubscriptionPool);
+            new ImmediateToImmediateTransformer(), rxSubscriptionPool, pathManager);
 
     viewModel.bindProductNameObserver(productNameObserver);
     viewModel.bindProductListScreenStateObserver(screenStateObserver);

@@ -1,5 +1,6 @@
 package com.fred.inventory.presentation.productlist.viewmodels;
 
+import android.databinding.ObservableField;
 import android.databinding.ObservableInt;
 import android.text.TextWatcher;
 import android.view.View;
@@ -25,15 +26,9 @@ public interface ProductListViewModel {
 
   void unbindProductListScreenStateObserver(Observer<ProductListScreenState> observer);
 
-  void bindProductNameObserver(Observer<String> observer);
-
-  void unbindProductNameObserver(Observer<String> observer);
-
-  void bindShowAddProductScreenObservable(Observer<String> observer);
-
-  void unbindShowAddProductScreenObservable(Observer<String> observer);
-
   void onDetachedFromWindow();
+
+  ObservableField<String> productListName();
 
   TextWatcher productNameTextWatcher();
 
