@@ -4,10 +4,12 @@ import android.app.DatePickerDialog;
 import android.content.Context;
 import android.databinding.ObservableField;
 import android.databinding.ObservableInt;
-import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.DatePicker;
+import android.widget.SpinnerAdapter;
 import com.fred.inventory.R;
 import com.fred.inventory.domain.models.Product;
 import com.fred.inventory.domain.models.ProductList;
@@ -30,30 +32,7 @@ public class ItemViewModelImpl implements ItemViewModel {
   private final ObservableField<Date> expirationDate = new ObservableField<>();
   private final ObservableField<String> itemName = new ObservableField<>();
   private final ObservableField<String> itemNameError = new ObservableField<>();
-  private final ObservableInt quantity = new ObservableInt(0);
-  private final ObservableInt uncertainQuantityMaximum = new ObservableInt(0);
-  private final ObservableField<String> uncertainQuantityUnit = new ObservableField<>();
-  private final ObservableField<String> maxQuantityError = new ObservableField<>();
-  private final TextWatcher uncertainQuantityMaximumWatcher = new TextWatcher() {
-    @Override public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-    }
-
-    @Override public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-    }
-
-    @Override public void afterTextChanged(Editable s) {
-      String text = s.toString();
-      if (text.isEmpty()) {
-        // TODO: Ugly as shit!
-        uncertainQuantityMaximum.set(1);
-        return;
-      }
-
-      uncertainQuantityMaximum.set(Integer.parseInt(s.toString()));
-    }
-  };
+  private final ObservableInt seekBarVisibility = new ObservableInt(View.GONE);
   private final TextWatcher itemNameTextWatcher = new OneTimeTextWatcher(itemNameObservable());
 
   private final Context context;
@@ -72,6 +51,27 @@ public class ItemViewModelImpl implements ItemViewModel {
         }
       };
   private final PathManager pathManager;
+  private final ArrayAdapter<CharSequence> itemSpinnerAdapter;
+  private final AdapterView.OnItemSelectedListener spinnerOnItemSelectedListener =
+      new AdapterView.OnItemSelectedListener() {
+        @Override
+        public void onItemSelected(AdapterView<?> adapterView, View view, int position, long id) {
+          // Selected item(s)
+          if (position == 0) {
+            seekBarVisibility.set(View.GONE);
+          } else {
+            seekBarVisibility.set(View.VISIBLE);
+          }
+        }
+
+        @Override public void onNothingSelected(AdapterView<?> adapterView) {
+          seekBarVisibility.set(View.GONE);
+        }
+      };
+  private final ObservableField<String> itemQuantityLabel = new ObservableField<>();
+  private final TextWatcher itemQuantityLabelTextWatcher =
+      new OneTimeTextWatcher(itemQuantityLabel);
+
   private String productListId;
   private String productId;
   private ProductList productList;
@@ -87,6 +87,9 @@ public class ItemViewModelImpl implements ItemViewModel {
     this.transformer = transformer;
     this.rxSubscriptionPool = rxSubscriptionPool;
     this.pathManager = pathManager;
+    this.itemSpinnerAdapter = ArrayAdapter.createFromResource(context, R.array.item_types,
+        android.R.layout.simple_spinner_item);
+    itemSpinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
   }
 
   @Override public void onResume() {
@@ -145,26 +148,6 @@ public class ItemViewModelImpl implements ItemViewModel {
     return itemName;
   }
 
-  @Override public ObservableInt knownQuantityObservable() {
-    return quantity;
-  }
-
-  @Override public ObservableInt uncertainQuantityMaximumObservable() {
-    return uncertainQuantityMaximum;
-  }
-
-  @Override public ObservableField<String> uncertainQuantityUnitObservable() {
-    return uncertainQuantityUnit;
-  }
-
-  @Override public ObservableInt quantityObservable() {
-    return quantity;
-  }
-
-  @Override public TextWatcher uncertainQuantityMaximumTextWatcher() {
-    return uncertainQuantityMaximumWatcher;
-  }
-
   @Override public void onDoneButtonClick(View view) {
     if (!checkInput()) return;
 
@@ -190,10 +173,6 @@ public class ItemViewModelImpl implements ItemViewModel {
         });
   }
 
-  @Override public ObservableField<String> maxQuantityErrorObservable() {
-    return maxQuantityError;
-  }
-
   @Override public ObservableField<String> itemNameError() {
     return itemNameError;
   }
@@ -202,14 +181,30 @@ public class ItemViewModelImpl implements ItemViewModel {
     return itemNameTextWatcher;
   }
 
+  @Override public ObservableInt seekBarVisibility() {
+    return seekBarVisibility;
+  }
+
+  @Override public SpinnerAdapter itemSpinnerAdapter() {
+    return itemSpinnerAdapter;
+  }
+
+  @Override public AdapterView.OnItemSelectedListener spinnerOnItemSelectedListener() {
+    return spinnerOnItemSelectedListener;
+  }
+
+  @Override public TextWatcher itemQuantityLabelTextWatcher() {
+    return itemQuantityLabelTextWatcher;
+  }
+
+  @Override public ObservableField<String> itemQuantityLabel() {
+    return itemQuantityLabel;
+  }
+
   private boolean checkInput() {
     boolean valid = true;
     if (StringUtils.isBlank(itemName.get())) {
       itemNameError.set(context.getString(R.string.mandatory_field));
-      valid = false;
-    }
-    if (uncertainQuantityMaximum.get() == 0) {
-      maxQuantityError.set(context.getString(R.string.mandatory_field));
       valid = false;
     }
     return valid;
@@ -218,7 +213,7 @@ public class ItemViewModelImpl implements ItemViewModel {
   private void fillProductFromInput(Product product) {
     product.setName(itemName.get());
     product.setExpirationDate(expirationDate.get());
-    product.setQuantity(quantity.get());
+    //product.setQuantity(quantity.get());
     // TODO: This shit!!
     //product.setQuantityUnit(uncertainQuantityMaximum);
   }
@@ -228,7 +223,7 @@ public class ItemViewModelImpl implements ItemViewModel {
       if (product == null) return;
 
       itemName.set(product.getName());
-      quantity.set(product.getQuantity());
+      //quantity.set(product.getQuantity());
     }
 
     @Override public void onError(Throwable e) {

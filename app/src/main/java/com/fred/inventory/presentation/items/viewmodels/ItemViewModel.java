@@ -4,6 +4,8 @@ import android.databinding.ObservableField;
 import android.databinding.ObservableInt;
 import android.text.TextWatcher;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.SpinnerAdapter;
 import java.util.Date;
 
 /**
@@ -26,19 +28,17 @@ public interface ItemViewModel {
 
   ObservableField<String> itemNameObservable();
 
-  ObservableInt quantityObservable();
-
-  ObservableInt knownQuantityObservable();
-
-  ObservableInt uncertainQuantityMaximumObservable();
-
-  ObservableField<String> uncertainQuantityUnitObservable();
-
-  TextWatcher uncertainQuantityMaximumTextWatcher();
-
-  ObservableField<String> maxQuantityErrorObservable();
-
   ObservableField<String> itemNameError();
 
   TextWatcher itemNameTextWatcher();
+
+  TextWatcher itemQuantityLabelTextWatcher();
+
+  ObservableInt seekBarVisibility();
+
+  SpinnerAdapter itemSpinnerAdapter();
+
+  AdapterView.OnItemSelectedListener spinnerOnItemSelectedListener();
+
+  ObservableField<String> itemQuantityLabel();
 }

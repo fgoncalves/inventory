@@ -23,7 +23,6 @@ public class ProductToDBProductTranslator
     product.setId(model.getId());
     product.setExpirationDate(model.getExpirationDate());
     product.setQuantity(model.getQuantity());
-    product.setQuantityUnit(model.getQuantityUnit());
     for (Image image : model.getImages())
       product.getImages().add(imageToDBImageTranslator.translate(image));
     return product;

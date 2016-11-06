@@ -6,21 +6,13 @@ import java.util.Date;
 import java.util.List;
 
 public class Product {
-  public static final String NO_UNIT = null;
-
   /**
    * Same as the bar code
    */
   @PrimaryKey private String id;
   private String name;
   private List<Image> images = new ArrayList<>();
-
-  //for now an int should be enough
-  private int quantity;
-  /**
-   * This represents the unit of the quantity.
-   */
-  private String quantityUnit;
+  private String quantity;
   private Date expirationDate;
 
   public String getId() {
@@ -47,20 +39,12 @@ public class Product {
     this.images = images;
   }
 
-  public int getQuantity() {
+  public String getQuantity() {
     return quantity;
   }
 
-  public void setQuantity(int quantity) {
+  public void setQuantity(String quantity) {
     this.quantity = quantity;
-  }
-
-  public String getQuantityUnit() {
-    return quantityUnit;
-  }
-
-  public void setQuantityUnit(String quantityUnit) {
-    this.quantityUnit = quantityUnit;
   }
 
   public Date getExpirationDate() {

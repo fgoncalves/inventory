@@ -30,22 +30,14 @@
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/placeholder_groceries"
         />
-    <View
-        android:id="@+id/view"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:background="@drawable/black_gradient"
-        app:layout_constraintBottom_toBottomOf="@+id/imageView"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintLeft_toLeftOf="@+id/imageView"
-        app:layout_constraintRight_toRightOf="@+id/imageView"
-        app:layout_constraintTop_toTopOf="@+id/imageView"
-        app:layout_constraintVertical_bias="1.0"
-        />
 
     <android.support.design.widget.TextInputLayout
+        android:id="@+id/textInputLayout"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:background="@color/black_alpha_50"
+        android:hint="@string/name_hint"
+        android:textColorHint="@color/white"
         app:error="@{viewModel.itemNameError()}"
         app:layout_constraintBottom_toBottomOf="@+id/imageView"
         app:layout_constraintHorizontal_bias="0.93"
@@ -57,16 +49,10 @@
           android:id="@+id/item_name"
           android:layout_width="match_parent"
           android:layout_height="match_parent"
-          android:layout_marginBottom="16dp"
-          android:layout_marginEnd="16dp"
-          android:layout_marginLeft="16dp"
-          android:layout_marginRight="16dp"
-          android:layout_marginStart="16dp"
-          android:hint="@string/name_hint"
-          android:text="@{viewModel.itemNameObservable()}"
           android:addTextChangedListener="@{viewModel.itemNameTextWatcher()}"
+          android:padding="16dp"
+          android:text="@{viewModel.itemNameObservable()}"
           android:textColor="@color/white"
-          android:textColorHint="@color/white"
           tools:text="Olive oil"
           style="@style/MainTitleText"
           />
@@ -80,12 +66,12 @@
         android:layout_marginLeft="16dp"
         android:layout_marginRight="8dp"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="24dp"
         android:hint="@string/expiration_date_hint"
         android:text="@{viewModel.expirationDateObservable()}"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toLeftOf="@+id/expiration_date_edit_button"
-        app:layout_constraintTop_toBottomOf="@+id/include"
+        app:layout_constraintTop_toBottomOf="@+id/textInputLayout"
         tools:text="20.09.1988"
         style="@style/MainTitleText"
         />
@@ -112,26 +98,58 @@
         android:layout_marginRight="16dp"
         android:clickable="true"
         android:onClick="@{viewModel::onDoneButtonClick}"
-        app:fabSize="mini"
+        app:fabSize="normal"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:srcCompat="@drawable/ic_done"
         />
 
-    <include
-        layout="@layout/uncertain_quantity"
-        android:id="@+id/include"
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/item_quantity_label_input_layout"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp"
+        android:layout_marginEnd="8dp"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="16dp"
         app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@+id/spinner"
+        app:layout_constraintTop_toBottomOf="@+id/item_expiration_date"
+        >
+      <EditText
+          android:id="@+id/item_quantity_label"
+          android:layout_width="match_parent"
+          android:layout_height="match_parent"
+          android:addTextChangedListener="@{viewModel.itemQuantityLabelTextWatcher()}"
+          android:hint="@string/total_quantity_text_hint"
+          android:text="@{viewModel.itemQuantityLabel()}"
+          tools:text="200kg"
+          style="@style/MainTitleText"
+          />
+    </android.support.design.widget.TextInputLayout>
+    <android.support.v7.widget.AppCompatSpinner
+        android:id="@+id/spinner"
+        android:layout_width="0dp"
+        android:layout_height="48dp"
+        android:layout_marginEnd="16dp"
+        app:adapter="@{viewModel.itemSpinnerAdapter()}"
+        app:layout_constraintBottom_toBottomOf="@+id/item_quantity_label_input_layout"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/view"
-        app:viewModel="@{viewModel}"
+        app:layout_constraintTop_toTopOf="@+id/item_quantity_label_input_layout"
+        app:onItemSelectedListener="@{viewModel.spinnerOnItemSelectedListener()}"
         />
+
+    <android.support.v7.widget.AppCompatSeekBar
+        android:id="@+id/item_seek_bar"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:max="1000"
+        android:visibility="@{viewModel.seekBarVisibility()}"
+        app:layout_constraintLeft_toLeftOf="@+id/item_quantity_label_input_layout"
+        app:layout_constraintRight_toRightOf="@+id/spinner"
+        app:layout_constraintTop_toBottomOf="@+id/spinner"
+        tools:visibility="visible"
+        />
+
   </android.support.constraint.ConstraintLayout>
 </layout>
