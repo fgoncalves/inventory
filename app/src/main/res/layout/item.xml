@@ -126,6 +126,7 @@
           style="@style/MainTitleText"
           />
     </android.support.design.widget.TextInputLayout>
+
     <android.support.v7.widget.AppCompatSpinner
         android:id="@+id/spinner"
         android:layout_width="0dp"
@@ -144,10 +145,12 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
         android:max="1000"
+        android:progress="@{viewModel.seekBarProgress()}"
         android:visibility="@{viewModel.seekBarVisibility()}"
         app:layout_constraintLeft_toLeftOf="@+id/item_quantity_label_input_layout"
         app:layout_constraintRight_toRightOf="@+id/spinner"
         app:layout_constraintTop_toBottomOf="@+id/spinner"
+        app:onSeekBarChangeListener="@{viewModel.seekBarChangeListener()}"
         tools:visibility="visible"
         />
 

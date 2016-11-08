@@ -6,12 +6,13 @@ import io.realm.annotations.PrimaryKey;
 import java.util.Date;
 
 public class Product extends RealmObject {
-  /**
-   * Same as the bar code
-   */
   @PrimaryKey private String id;
-
-  private String quantity;
+  /**
+   * Internal quantity intended only for display purposes
+   */
+  private int quantity;
+  private String barcode;
+  private String quantityLabel;
   private Date expirationDate;
   private RealmList<Image> images = new RealmList<>();
 
@@ -31,12 +32,12 @@ public class Product extends RealmObject {
     this.images = images;
   }
 
-  public String getQuantity() {
-    return quantity;
+  public String getQuantityLabel() {
+    return quantityLabel;
   }
 
-  public void setQuantity(String quantity) {
-    this.quantity = quantity;
+  public void setQuantityLabel(String quantityLabel) {
+    this.quantityLabel = quantityLabel;
   }
 
   public Date getExpirationDate() {
@@ -45,5 +46,21 @@ public class Product extends RealmObject {
 
   public void setExpirationDate(Date expirationDate) {
     this.expirationDate = expirationDate;
+  }
+
+  public int getQuantity() {
+    return quantity;
+  }
+
+  public void setQuantity(int quantity) {
+    this.quantity = quantity;
+  }
+
+  public String getBarcode() {
+    return barcode;
+  }
+
+  public void setBarcode(String barcode) {
+    this.barcode = barcode;
   }
 }

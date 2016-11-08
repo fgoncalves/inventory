@@ -10,7 +10,7 @@
   <string name="expiration_date_hint">Expiration date</string>
   <string name="lists">Lists</string>
   <string name="name_hint">Name</string>
-  <string name="total_quantity_text_hint">Total quantity</string>
+  <string name="total_quantity_text_hint">Total quantityLabel</string>
   <string name="mandatory_field">Mandatory</string>
   <string-array name="item_types">
     <item>Item(s)</item>

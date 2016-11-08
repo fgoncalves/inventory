@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.DatePicker;
+import android.widget.SeekBar;
 import android.widget.SpinnerAdapter;
 import com.fred.inventory.R;
 import com.fred.inventory.domain.models.Product;
@@ -68,7 +69,22 @@ public class ItemViewModelImpl implements ItemViewModel {
           seekBarVisibility.set(View.GONE);
         }
       };
+  private final SeekBar.OnSeekBarChangeListener seekBarChangeListener =
+      new SeekBar.OnSeekBarChangeListener() {
+        @Override public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
+
+        }
+
+        @Override public void onStartTrackingTouch(SeekBar seekBar) {
+
+        }
+
+        @Override public void onStopTrackingTouch(SeekBar seekBar) {
+
+        }
+      };
   private final ObservableField<String> itemQuantityLabel = new ObservableField<>();
+  private final ObservableInt seekBarProgress = new ObservableInt(0);
   private final TextWatcher itemQuantityLabelTextWatcher =
       new OneTimeTextWatcher(itemQuantityLabel);
 
@@ -201,6 +217,14 @@ public class ItemViewModelImpl implements ItemViewModel {
     return itemQuantityLabel;
   }
 
+  @Override public ObservableInt seekBarProgress() {
+    return seekBarProgress;
+  }
+
+  @Override public SeekBar.OnSeekBarChangeListener seekBarChangeListener() {
+    return seekBarChangeListener;
+  }
+
   private boolean checkInput() {
     boolean valid = true;
     if (StringUtils.isBlank(itemName.get())) {
@@ -213,9 +237,8 @@ public class ItemViewModelImpl implements ItemViewModel {
   private void fillProductFromInput(Product product) {
     product.setName(itemName.get());
     product.setExpirationDate(expirationDate.get());
-    //product.setQuantity(quantity.get());
-    // TODO: This shit!!
-    //product.setQuantityUnit(uncertainQuantityMaximum);
+    product.setQuantityLabel(itemQuantityLabel.get());
+    product.setQuantity(seekBarProgress.get());
   }
 
   private class ProductListSubscriber extends Subscriber<ProductList> {
@@ -223,7 +246,7 @@ public class ItemViewModelImpl implements ItemViewModel {
       if (product == null) return;
 
       itemName.set(product.getName());
-      //quantity.set(product.getQuantity());
+      //quantity.set(product.getQuantityLabel());
     }
 
     @Override public void onError(Throwable e) {

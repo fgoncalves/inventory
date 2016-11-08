@@ -5,6 +5,7 @@ import android.databinding.ObservableInt;
 import android.text.TextWatcher;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.SeekBar;
 import android.widget.SpinnerAdapter;
 import java.util.Date;
 
@@ -41,4 +42,8 @@ public interface ItemViewModel {
   AdapterView.OnItemSelectedListener spinnerOnItemSelectedListener();
 
   ObservableField<String> itemQuantityLabel();
+
+  ObservableInt seekBarProgress();
+
+  SeekBar.OnSeekBarChangeListener seekBarChangeListener();
 }

@@ -12,7 +12,9 @@ public class Product {
   @PrimaryKey private String id;
   private String name;
   private List<Image> images = new ArrayList<>();
-  private String quantity;
+  private String barcode;
+  private int quantity;
+  private String quantityLabel;
   private Date expirationDate;
 
   public String getId() {
@@ -39,12 +41,12 @@ public class Product {
     this.images = images;
   }
 
-  public String getQuantity() {
-    return quantity;
+  public String getQuantityLabel() {
+    return quantityLabel;
   }
 
-  public void setQuantity(String quantity) {
-    this.quantity = quantity;
+  public void setQuantityLabel(String quantityLabel) {
+    this.quantityLabel = quantityLabel;
   }
 
   public Date getExpirationDate() {
@@ -53,6 +55,22 @@ public class Product {
 
   public void setExpirationDate(Date expirationDate) {
     this.expirationDate = expirationDate;
+  }
+
+  public String getBarcode() {
+    return barcode;
+  }
+
+  public void setBarcode(String barcode) {
+    this.barcode = barcode;
+  }
+
+  public int getQuantity() {
+    return quantity;
+  }
+
+  public void setQuantity(int quantity) {
+    this.quantity = quantity;
   }
 
   @Override public boolean equals(Object o) {
