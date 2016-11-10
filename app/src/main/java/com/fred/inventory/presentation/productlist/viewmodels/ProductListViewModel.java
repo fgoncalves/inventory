@@ -4,6 +4,7 @@ import android.databinding.ObservableField;
 import android.databinding.ObservableInt;
 import android.text.TextWatcher;
 import android.view.View;
+import com.fred.inventory.utils.binding.Observer;
 
 /**
  * View model for the product list
@@ -18,9 +19,9 @@ public interface ProductListViewModel {
    */
   void forProductList(String id);
 
-  void onAttachedToWindow();
+  void onActivityCreated();
 
-  void onDetachedFromWindow();
+  void onDestroyView();
 
   ObservableField<String> productListName();
 
@@ -33,4 +34,8 @@ public interface ProductListViewModel {
   ObservableInt emptyListVisibility();
 
   ObservableInt itemListVisibility();
+
+  void unbindProductListIdObserver(Observer<String> observer);
+
+  void bindProductListIdObserver(Observer<String> observer);
 }

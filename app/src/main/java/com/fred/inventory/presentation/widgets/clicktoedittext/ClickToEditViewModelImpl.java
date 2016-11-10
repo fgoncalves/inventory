@@ -56,14 +56,13 @@ public class ClickToEditViewModelImpl implements ClickToEditViewModel {
           }
         }
       };
-  private String model;
 
   @Inject public ClickToEditViewModelImpl() {
   }
 
   @Override public void onAttachToWindow() {
-    editableTextObservable.set(model);
-    textObservable.set(model);
+    editableTextObservable.set(textObservable.get());
+    textObservable.set(textObservable.get());
     stateObservable.set(ClickToEditTextView.ClickToEditTextViewState.NON_EDITABLE);
     stateObservable.bind(stateObserver);
   }
@@ -109,7 +108,7 @@ public class ClickToEditViewModelImpl implements ClickToEditViewModel {
   }
 
   @Override public void attachModel(@NonNull String text) {
-    this.model = text;
+    textObservable.set(text);
   }
 
   @Override public void setState(ClickToEditTextView.ClickToEditTextViewState state) {

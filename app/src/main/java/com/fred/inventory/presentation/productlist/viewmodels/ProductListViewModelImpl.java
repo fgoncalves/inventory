@@ -10,6 +10,8 @@ import com.fred.inventory.domain.usecases.GetProductListUseCase;
 import com.fred.inventory.domain.usecases.SaveProductListInLocalStorageUseCase;
 import com.fred.inventory.presentation.items.ItemScreen;
 import com.fred.inventory.utils.StringUtils;
+import com.fred.inventory.utils.binding.Observable;
+import com.fred.inventory.utils.binding.Observer;
 import com.fred.inventory.utils.binding.widgets.OneTimeTextWatcher;
 import com.fred.inventory.utils.path.PathManager;
 import com.fred.inventory.utils.rx.RxSubscriptionPool;
@@ -29,8 +31,8 @@ public class ProductListViewModelImpl implements ProductListViewModel {
   private final RxSubscriptionPool rxSubscriptionPool;
   private final ObservableInt listVisibility = new ObservableInt(View.GONE);
   private final ObservableInt emptyListVisibility = new ObservableInt(View.VISIBLE);
+  private final Observable<String> productListIdObservable = Observable.create();
   private final PathManager pathManager;
-  private String productListId;
 
   @Inject public ProductListViewModelImpl(GetProductListUseCase getProductListUseCase,
       SaveProductListInLocalStorageUseCase saveProductListInLocalStorageUseCase,
@@ -44,11 +46,11 @@ public class ProductListViewModelImpl implements ProductListViewModel {
   }
 
   @Override public void forProductList(String id) {
-    this.productListId = id;
+    productListIdObservable.set(id);
   }
 
-  @Override public void onAttachedToWindow() {
-    if (StringUtils.isBlank(productListId)) {
+  @Override public void onActivityCreated() {
+    if (StringUtils.isBlank(productListIdObservable.get())) {
       // TODO: put input in text view
       return;
     }
@@ -56,7 +58,7 @@ public class ProductListViewModelImpl implements ProductListViewModel {
     queryForProductList();
   }
 
-  @Override public void onDetachedFromWindow() {
+  @Override public void onDestroyView() {
     rxSubscriptionPool.unsubscribeFrom(getClass().getCanonicalName());
   }
 
@@ -69,7 +71,7 @@ public class ProductListViewModelImpl implements ProductListViewModel {
   }
 
   private void queryForProductList() {
-    Subscription subscription = getProductListUseCase.get(productListId)
+    Subscription subscription = getProductListUseCase.get(productListIdObservable.get())
         .compose(transformer.<ProductList>applySchedulers())
         .subscribe(new ProductListSubscriber());
 
@@ -127,18 +129,12 @@ public class ProductListViewModelImpl implements ProductListViewModel {
 
           @Override public void onNext(ProductList productList) {
             ItemScreen itemScreen = ItemScreen.newInstance(productList.getId());
+            productListIdObservable.set(productList.getId());
             pathManager.go(itemScreen, R.id.main_container);
           }
         });
 
     rxSubscriptionPool.addSubscription(getClass().getCanonicalName(), subscription);
-  }
-
-  private ProductList createFromInput() {
-    ProductList productList = new ProductList();
-    productList.setId(productListId);
-    productList.setName(productListName.get());
-    return productList;
   }
 
   @Override public ObservableInt emptyListVisibility() {
@@ -149,7 +145,22 @@ public class ProductListViewModelImpl implements ProductListViewModel {
     return listVisibility;
   }
 
-  public class ProductListSubscriber extends Subscriber<ProductList> {
+  @Override public void unbindProductListIdObserver(Observer<String> observer) {
+    productListIdObservable.unbind(observer);
+  }
+
+  @Override public void bindProductListIdObserver(Observer<String> observer) {
+    productListIdObservable.bind(observer);
+  }
+
+  private ProductList createFromInput() {
+    ProductList productList = new ProductList();
+    productList.setId(productListIdObservable.get());
+    productList.setName(productListName.get());
+    return productList;
+  }
+
+  private class ProductListSubscriber extends Subscriber<ProductList> {
     @Override public void onCompleted() {
 
     }
@@ -159,14 +170,14 @@ public class ProductListViewModelImpl implements ProductListViewModel {
     }
 
     @Override public void onNext(ProductList productList) {
-      ProductListViewModelImpl.this.productListId = productList.getId();
-
-      emptyListVisibility.set(View.GONE);
-      listVisibility.set(View.VISIBLE);
+      boolean hasItems = !productList.getProducts().isEmpty();
+      emptyListVisibility.set(hasItems ? View.GONE : View.VISIBLE);
+      listVisibility.set(hasItems ? View.VISIBLE : View.GONE);
 
       //TODO: add list and adapter shit
 
       productListName.set(productList.getName());
+      productListIdObservable.set(productList.getId());
     }
   }
 }
