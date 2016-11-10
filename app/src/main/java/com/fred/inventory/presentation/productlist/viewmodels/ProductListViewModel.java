@@ -2,6 +2,7 @@ package com.fred.inventory.presentation.productlist.viewmodels;
 
 import android.databinding.ObservableField;
 import android.databinding.ObservableInt;
+import android.support.v7.widget.RecyclerView;
 import android.text.TextWatcher;
 import android.view.View;
 import com.fred.inventory.utils.binding.Observer;
@@ -38,4 +39,6 @@ public interface ProductListViewModel {
   void unbindProductListIdObserver(Observer<String> observer);
 
   void bindProductListIdObserver(Observer<String> observer);
+
+  RecyclerView.Adapter productListRecyclerViewAdapter();
 }

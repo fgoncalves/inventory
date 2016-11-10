@@ -2,6 +2,7 @@ package com.fred.inventory.presentation.productlist.viewmodels;
 
 import android.databinding.ObservableField;
 import android.databinding.ObservableInt;
+import android.support.v7.widget.RecyclerView;
 import android.text.TextWatcher;
 import android.view.View;
 import com.fred.inventory.R;
@@ -9,6 +10,7 @@ import com.fred.inventory.domain.models.ProductList;
 import com.fred.inventory.domain.usecases.GetProductListUseCase;
 import com.fred.inventory.domain.usecases.SaveProductListInLocalStorageUseCase;
 import com.fred.inventory.presentation.items.ItemScreen;
+import com.fred.inventory.presentation.productlist.adapters.ProductListRecyclerViewAdapter;
 import com.fred.inventory.utils.StringUtils;
 import com.fred.inventory.utils.binding.Observable;
 import com.fred.inventory.utils.binding.Observer;
@@ -33,16 +35,19 @@ public class ProductListViewModelImpl implements ProductListViewModel {
   private final ObservableInt emptyListVisibility = new ObservableInt(View.VISIBLE);
   private final Observable<String> productListIdObservable = Observable.create();
   private final PathManager pathManager;
+  private final ProductListRecyclerViewAdapter adapter;
 
   @Inject public ProductListViewModelImpl(GetProductListUseCase getProductListUseCase,
       SaveProductListInLocalStorageUseCase saveProductListInLocalStorageUseCase,
       @IOToUiSchedulerTransformer SchedulerTransformer transformer,
-      RxSubscriptionPool rxSubscriptionPool, PathManager pathManager) {
+      RxSubscriptionPool rxSubscriptionPool, PathManager pathManager,
+      ProductListRecyclerViewAdapter adapter) {
     this.getProductListUseCase = getProductListUseCase;
     this.saveProductListInLocalStorageUseCase = saveProductListInLocalStorageUseCase;
     this.transformer = transformer;
     this.rxSubscriptionPool = rxSubscriptionPool;
     this.pathManager = pathManager;
+    this.adapter = adapter;
   }
 
   @Override public void forProductList(String id) {
@@ -153,6 +158,10 @@ public class ProductListViewModelImpl implements ProductListViewModel {
     productListIdObservable.bind(observer);
   }
 
+  @Override public RecyclerView.Adapter productListRecyclerViewAdapter() {
+    return (RecyclerView.Adapter) adapter;
+  }
+
   private ProductList createFromInput() {
     ProductList productList = new ProductList();
     productList.setId(productListIdObservable.get());
@@ -178,6 +187,7 @@ public class ProductListViewModelImpl implements ProductListViewModel {
 
       productListName.set(productList.getName());
       productListIdObservable.set(productList.getId());
+      adapter.setData(productList.getProducts());
     }
   }
 }
