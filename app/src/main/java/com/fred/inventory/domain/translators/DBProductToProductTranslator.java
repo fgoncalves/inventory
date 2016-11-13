@@ -19,6 +19,7 @@ public class DBProductToProductTranslator
 
   @Override public Product translate(com.fred.inventory.data.db.models.Product model) {
     Product product = new Product();
+    product.setName(model.getName());
     product.setId(model.getId());
     product.setExpirationDate(model.getExpirationDate());
     product.setQuantityLabel(model.getQuantityLabel());

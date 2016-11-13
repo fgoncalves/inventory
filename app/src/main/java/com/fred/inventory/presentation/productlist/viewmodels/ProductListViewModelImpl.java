@@ -119,6 +119,7 @@ public class ProductListViewModelImpl implements ProductListViewModel {
     }
 
     ProductList productList = createFromInput();
+    productList.setProducts(adapter.getItems());
 
     Subscription subscription = saveProductListInLocalStorageUseCase.save(productList)
         .compose(transformer.<ProductList>applySchedulers())
@@ -182,9 +183,6 @@ public class ProductListViewModelImpl implements ProductListViewModel {
       boolean hasItems = !productList.getProducts().isEmpty();
       emptyListVisibility.set(hasItems ? View.GONE : View.VISIBLE);
       listVisibility.set(hasItems ? View.VISIBLE : View.GONE);
-
-      //TODO: add list and adapter shit
-
       productListName.set(productList.getName());
       productListIdObservable.set(productList.getId());
       adapter.setData(productList.getProducts());

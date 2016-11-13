@@ -47,6 +47,10 @@ public class ProductListRecyclerViewAdapterImpl
     notifyDataSetChanged();
   }
 
+  @Override public List<Product> getItems() {
+    return products;
+  }
+
   public static class ViewHolder extends RecyclerView.ViewHolder {
     @Inject ProductListRecyclerViewItemViewModel viewModel;
 

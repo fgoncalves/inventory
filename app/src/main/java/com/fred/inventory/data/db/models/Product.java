@@ -7,6 +7,7 @@ import java.util.Date;
 
 public class Product extends RealmObject {
   @PrimaryKey private String id;
+  private String name;
   /**
    * Internal quantity intended only for display purposes
    */
@@ -15,6 +16,14 @@ public class Product extends RealmObject {
   private String quantityLabel;
   private Date expirationDate;
   private RealmList<Image> images = new RealmList<>();
+
+  public String getName() {
+    return name;
+  }
+
+  public void setName(String name) {
+    this.name = name;
+  }
 
   public String getId() {
     return id;
