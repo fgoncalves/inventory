@@ -91,6 +91,8 @@ public class ProductListViewModelImpl implements ProductListViewModel {
     }
 
     ProductList productList = createFromInput();
+    productList.setProducts(adapter.getItems());
+
     Subscription subscription = saveProductListInLocalStorageUseCase.save(productList)
         .compose(transformer.<ProductList>applySchedulers())
         .subscribe(new Subscriber<ProductList>() {
