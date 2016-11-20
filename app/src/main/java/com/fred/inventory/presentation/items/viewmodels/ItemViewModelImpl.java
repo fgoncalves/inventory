@@ -73,8 +73,9 @@ public class ItemViewModelImpl implements ItemViewModel {
       };
   private final SeekBar.OnSeekBarChangeListener seekBarChangeListener =
       new SeekBar.OnSeekBarChangeListener() {
-        @Override public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
-
+        @Override public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+          if (progress == seekBarProgress.get()) return;
+          seekBarProgress.set(progress);
         }
 
         @Override public void onStartTrackingTouch(SeekBar seekBar) {
