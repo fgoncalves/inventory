@@ -60,8 +60,10 @@ public class ItemViewModelImpl implements ItemViewModel {
           // Selected item(s)
           if (position == 0) {
             seekBarVisibility.set(View.GONE);
+            isUnit = true;
           } else {
             seekBarVisibility.set(View.VISIBLE);
+            isUnit = false;
           }
         }
 
@@ -92,6 +94,7 @@ public class ItemViewModelImpl implements ItemViewModel {
   private String productId;
   private ProductList productList;
   private Product product;
+  private boolean isUnit;
 
   @Inject public ItemViewModelImpl(Context context, GetProductListUseCase getProductListUseCase,
       SaveProductListInLocalStorageUseCase saveProductListInLocalStorageUseCase,
@@ -239,6 +242,7 @@ public class ItemViewModelImpl implements ItemViewModel {
     product.setExpirationDate(expirationDate.get());
     product.setQuantityLabel(itemQuantityLabel.get());
     product.setQuantity(seekBarProgress.get());
+    product.setUnit(isUnit);
   }
 
   private class ProductListSubscriber extends Subscriber<ProductList> {

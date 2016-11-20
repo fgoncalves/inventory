@@ -24,6 +24,7 @@ public class DBProductToProductTranslator
     product.setExpirationDate(model.getExpirationDate());
     product.setQuantityLabel(model.getQuantityLabel());
     product.setQuantity(model.getQuantity());
+    product.setUnit(model.isUnit());
     product.setBarcode(model.getBarcode());
     for (com.fred.inventory.data.db.models.Image image : model.getImages())
       product.getImages().add(imageToImageTranslator.translate(image));

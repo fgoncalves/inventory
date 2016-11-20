@@ -12,6 +12,7 @@ public class Product extends RealmObject {
    * Internal quantity intended only for display purposes
    */
   private int quantity;
+  private boolean unit;
   private String barcode;
   private String quantityLabel;
   private Date expirationDate;
@@ -71,5 +72,13 @@ public class Product extends RealmObject {
 
   public void setBarcode(String barcode) {
     this.barcode = barcode;
+  }
+
+  public boolean isUnit() {
+    return unit;
+  }
+
+  public void setUnit(boolean unit) {
+    this.unit = unit;
   }
 }
