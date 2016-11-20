@@ -251,14 +251,12 @@ public class ItemViewModelImpl implements ItemViewModel {
       if (product == null) return;
 
       itemName.set(product.getName());
-      //quantity.set(product.getQuantityLabel());
+      // TODO: display stuff
     }
 
     @Override public void onError(Throwable e) {
       Timber.e(e, "Failed to retrieve product list from local storage");
-      //ItemScreenModel model =
-      //    ImmutableItemScreenModel.builder().error(Error.FAILED_TO_FIND_ITEM).build();
-      //itemScreenModelObservable.set(model);
+      // TODO: make view show something
     }
 
     @Override public void onNext(ProductList productList) {

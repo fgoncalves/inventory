@@ -46,6 +46,11 @@ public class ProductServiceImpl implements ProductService {
   @Override public Observable<ProductList> createOrUpdate(final ProductList productList) {
     if (StringUtils.isBlank(productList.getId())) productList.setId(UniqueIdGenerator.id());
 
+    // Ensure product ids are set
+    for (Product product : productList.getProducts()) {
+      if (StringUtils.isBlank(product.getId())) product.setId(UniqueIdGenerator.id());
+    }
+
     return Observable.fromCallable(new Callable<ProductList>() {
       @Override public ProductList call() throws Exception {
         return realmWrapper.store(productList);
