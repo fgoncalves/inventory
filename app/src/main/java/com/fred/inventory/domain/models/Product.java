@@ -16,6 +16,7 @@ public class Product {
   private int quantity;
   private String quantityLabel;
   private Date expirationDate;
+  private boolean unit;
 
   public String getId() {
     return id;
@@ -84,5 +85,13 @@ public class Product {
 
   @Override public int hashCode() {
     return id != null ? id.hashCode() : 0;
+  }
+
+  public boolean isUnit() {
+    return unit;
+  }
+
+  public void setUnit(boolean unit) {
+    this.unit = unit;
   }
 }
