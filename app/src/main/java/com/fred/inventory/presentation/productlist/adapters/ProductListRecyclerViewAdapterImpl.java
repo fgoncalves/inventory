@@ -16,6 +16,7 @@ import javax.inject.Inject;
 public class ProductListRecyclerViewAdapterImpl
     extends RecyclerView.Adapter<ProductListRecyclerViewAdapterImpl.ViewHolder>
     implements ProductListRecyclerViewAdapter {
+  private OnProductDeletedListener onProductDeletedListener;
   private List<Product> products = new ArrayList<>();
 
   @Inject public ProductListRecyclerViewAdapterImpl() {
@@ -33,15 +34,16 @@ public class ProductListRecyclerViewAdapterImpl
     return holder;
   }
 
-  @Override public void onBindViewHolder(ViewHolder holder, final int position) {
+  @Override public void onBindViewHolder(final ViewHolder holder, int position) {
     final Product product = products.get(position);
     holder.viewModel.onBindViewHolder(product);
 
     holder.viewModel.setOnDeleteListener(
         new ProductListRecyclerViewItemViewModel.OnDeleteListener() {
           @Override public void onDelete() {
-            products.remove(position);
+            Product item = products.remove(holder.getAdapterPosition());
             notifyDataSetChanged();
+            if (onProductDeletedListener != null) onProductDeletedListener.onProductDeleted(item);
           }
         });
   }
@@ -57,6 +59,11 @@ public class ProductListRecyclerViewAdapterImpl
 
   @Override public List<Product> getItems() {
     return products;
+  }
+
+  @Override
+  public void setOnProductDeletedListener(OnProductDeletedListener onProductDeletedListener) {
+    this.onProductDeletedListener = onProductDeletedListener;
   }
 
   public static class ViewHolder extends RecyclerView.ViewHolder {

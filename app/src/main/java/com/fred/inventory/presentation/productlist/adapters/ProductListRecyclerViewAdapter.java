@@ -10,7 +10,13 @@ import java.util.List;
  */
 
 public interface ProductListRecyclerViewAdapter {
+  interface OnProductDeletedListener {
+    void onProductDeleted(Product product);
+  }
+
   void setData(List<Product> products);
 
   List<Product> getItems();
+
+  void setOnProductDeletedListener(OnProductDeletedListener onProductDeletedListener);
 }

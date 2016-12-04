@@ -34,12 +34,12 @@ public class ListOfProductListsAdapterImpl
     return holder;
   }
 
-  @Override public void onBindViewHolder(ViewHolder holder, final int position) {
+  @Override public void onBindViewHolder(final ViewHolder holder, final int position) {
     holder.viewModel.onBindViewHolder(model.get(position));
     holder.viewModel.setOnDeleteButtonClick(
         new ListOfProductListsItemViewModel.OnDeleteButtonClick() {
           @Override public void onDeleteClicked() {
-            ProductList list = model.remove(position);
+            ProductList list = model.remove(holder.getAdapterPosition());
             notifyDataSetChanged();
             if (onProductListDeletedListener != null) {
               onProductListDeletedListener.onProductListDeleted(list);

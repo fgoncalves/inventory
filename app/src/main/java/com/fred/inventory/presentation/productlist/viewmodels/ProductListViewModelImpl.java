@@ -6,6 +6,7 @@ import android.support.v7.widget.RecyclerView;
 import android.text.TextWatcher;
 import android.view.View;
 import com.fred.inventory.R;
+import com.fred.inventory.domain.models.Product;
 import com.fred.inventory.domain.models.ProductList;
 import com.fred.inventory.domain.usecases.GetProductListUseCase;
 import com.fred.inventory.domain.usecases.SaveProductListInLocalStorageUseCase;
@@ -24,7 +25,8 @@ import rx.Subscriber;
 import rx.Subscription;
 import timber.log.Timber;
 
-public class ProductListViewModelImpl implements ProductListViewModel {
+public class ProductListViewModelImpl
+    implements ProductListViewModel, ProductListRecyclerViewAdapter.OnProductDeletedListener {
   private final ObservableField<String> productListName = new ObservableField<>();
   private final OneTimeTextWatcher productNameTextWatcher = new OneTimeTextWatcher(productListName);
   private final GetProductListUseCase getProductListUseCase;
@@ -55,6 +57,7 @@ public class ProductListViewModelImpl implements ProductListViewModel {
   }
 
   @Override public void onActivityCreated() {
+    adapter.setOnProductDeletedListener(this);
     if (StringUtils.isBlank(productListIdObservable.get())) {
       // TODO: put input in text view
       return;
@@ -170,6 +173,12 @@ public class ProductListViewModelImpl implements ProductListViewModel {
     productList.setId(productListIdObservable.get());
     productList.setName(productListName.get());
     return productList;
+  }
+
+  @Override public void onProductDeleted(Product product) {
+    boolean hasItems = !adapter.getItems().isEmpty();
+    emptyListVisibility.set(hasItems ? View.GONE : View.VISIBLE);
+    listVisibility.set(hasItems ? View.VISIBLE : View.GONE);
   }
 
   private class ProductListSubscriber extends Subscriber<ProductList> {
