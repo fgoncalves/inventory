@@ -19,7 +19,8 @@ import rx.Subscription;
 import timber.log.Timber;
 
 public class ListOfProductListsViewModelImpl
-    implements ListOfProductListsViewModel, ListOfProductListsAdapter.OnProductListDeletedListener {
+    implements ListOfProductListsViewModel, ListOfProductListsAdapter.OnProductListDeletedListener,
+    ListOfProductListsAdapter.OnItemClickListener {
   private final ObservableInt emptyViewVisibility = new ObservableInt(View.VISIBLE);
   private final ObservableInt listViewVisibility = new ObservableInt(View.GONE);
   private final View.OnClickListener addButtonClickListener = new View.OnClickListener() {
@@ -48,6 +49,7 @@ public class ListOfProductListsViewModelImpl
 
   @Override public void onResume() {
     adapter.setOnProductListDeletedListener(this);
+    adapter.setOnItemClickListener(this);
 
     Subscription subscription = retrieveData();
     rxSubscriptionPool.addSubscription(getClass().getCanonicalName(), subscription);
@@ -92,6 +94,11 @@ public class ListOfProductListsViewModelImpl
     return listAllProductListsUseCase.list()
         .compose(ioToUiSchedulerTransformer.<List<ProductList>>applySchedulers())
         .subscribe(new ListOfProductListsSubscriber());
+  }
+
+  @Override public void onItemClicked(ProductList productList) {
+    final ProductListScreen screen = ProductListScreen.newInstance(productList.getId());
+    pathManager.go(screen, R.id.main_container);
   }
 
   /**

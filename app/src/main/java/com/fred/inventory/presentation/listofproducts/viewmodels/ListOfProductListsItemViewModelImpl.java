@@ -31,10 +31,16 @@ public class ListOfProductListsItemViewModelImpl implements ListOfProductListsIt
           });
     }
   };
+  private final View.OnClickListener itemClickListener = new View.OnClickListener() {
+    @Override public void onClick(View view) {
+      if (onItemClickListener != null) onItemClickListener.onItemClicked();
+    }
+  };
   private final Context context;
   private final DeleteProductListUseCase deleteProductListUseCase;
   private final SchedulerTransformer transformer;
   private OnDeleteButtonClick onDeleteButtonClick;
+  private OnItemClickListener onItemClickListener;
   private ProductList productList;
 
   @Inject public ListOfProductListsItemViewModelImpl(Context context,
@@ -64,7 +70,15 @@ public class ListOfProductListsItemViewModelImpl implements ListOfProductListsIt
     return deleteButtonClickListener;
   }
 
+  @Override public View.OnClickListener itemClickListener() {
+    return itemClickListener;
+  }
+
   @Override public void setOnDeleteButtonClick(OnDeleteButtonClick onDeleteButtonClick) {
     this.onDeleteButtonClick = onDeleteButtonClick;
+  }
+
+  @Override public void setOnItemClickListener(OnItemClickListener onItemClickListener) {
+    this.onItemClickListener = onItemClickListener;
   }
 }

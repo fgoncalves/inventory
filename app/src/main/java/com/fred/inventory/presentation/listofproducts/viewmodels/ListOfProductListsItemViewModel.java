@@ -14,7 +14,13 @@ public interface ListOfProductListsItemViewModel {
     void onDeleteClicked();
   }
 
+  interface OnItemClickListener {
+    void onItemClicked();
+  }
+
   void onBindViewHolder(ProductList productList);
+
+  View.OnClickListener itemClickListener();
 
   void setOnDeleteButtonClick(OnDeleteButtonClick onDeleteButtonClick);
 
@@ -23,4 +29,6 @@ public interface ListOfProductListsItemViewModel {
   ObservableField<String> infoTextObservable();
 
   View.OnClickListener deleteButtonClickListener();
+
+  void setOnItemClickListener(OnItemClickListener onItemClickListener);
 }

@@ -76,6 +76,8 @@ public class ProductListScreen extends BaseScreen {
 
   @Override public void onActivityCreated(Bundle savedInstanceState) {
     super.onActivityCreated(savedInstanceState);
+    if (getArguments() != null)
+      productListId = getArguments().getString(PRODUCT_LIST_ID_BUNDLE_KEY);
     Icepick.restoreInstanceState(this, savedInstanceState);
     viewModel.forProductList(productListId);
     viewModel.onActivityCreated();

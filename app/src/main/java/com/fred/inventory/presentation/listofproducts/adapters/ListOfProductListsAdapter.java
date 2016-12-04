@@ -8,13 +8,18 @@ import java.util.List;
  */
 public interface ListOfProductListsAdapter {
   interface OnProductListDeletedListener {
-
     void onProductListDeleted(ProductList productList);
+  }
+
+  interface OnItemClickListener {
+    void onItemClicked(ProductList productList);
   }
 
   void setData(List<ProductList> productListList);
 
   void setOnProductListDeletedListener(OnProductListDeletedListener onProductListDeletedListener);
+
+  void setOnItemClickListener(OnItemClickListener onItemClickListener);
 
   int getItemCount();
 }
