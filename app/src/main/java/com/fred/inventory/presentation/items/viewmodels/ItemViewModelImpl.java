@@ -179,8 +179,8 @@ public class ItemViewModelImpl implements ItemViewModel {
     if (product == null) product = new Product();
 
     fillProductFromInput(product);
+    addOrUpdateProductInList(productList, product);
 
-    productList.getProducts().add(product);
     saveProductListInLocalStorageUseCase.save(productList)
         .compose(transformer.<ProductList>applySchedulers())
         .subscribe(new Subscriber<ProductList>() {
@@ -232,6 +232,15 @@ public class ItemViewModelImpl implements ItemViewModel {
 
   @Override public SeekBar.OnSeekBarChangeListener seekBarChangeListener() {
     return seekBarChangeListener;
+  }
+
+  private void addOrUpdateProductInList(ProductList productList, Product product) {
+    int index = productList.getProducts().indexOf(product);
+    if (index == -1) {
+      productList.getProducts().add(product);
+    } else {
+      productList.getProducts().set(index, product);
+    }
   }
 
   private boolean checkInput() {
