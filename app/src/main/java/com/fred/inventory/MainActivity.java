@@ -58,7 +58,7 @@ public class MainActivity extends AppCompatActivity {
 
     if (pathManager.back()) return;
 
-    super.onBackPressed();
+    finish();
   }
 
   private void addListOfProductListsScreen() {
