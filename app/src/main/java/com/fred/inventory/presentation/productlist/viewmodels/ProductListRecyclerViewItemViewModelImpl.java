@@ -4,8 +4,12 @@ import android.databinding.ObservableField;
 import android.databinding.ObservableInt;
 import android.view.View;
 import com.fred.inventory.domain.models.Product;
+import com.fred.inventory.domain.usecases.DeleteProductUseCase;
+import com.fred.inventory.utils.rx.schedulers.SchedulerTransformer;
+import com.fred.inventory.utils.rx.schedulers.qualifiers.IOToUiSchedulerTransformer;
 import java.util.Date;
 import javax.inject.Inject;
+import rx.functions.Action1;
 
 public class ProductListRecyclerViewItemViewModelImpl
     implements ProductListRecyclerViewItemViewModel {
@@ -15,11 +19,34 @@ public class ProductListRecyclerViewItemViewModelImpl
   private final ObservableInt progressBarVisibility = new ObservableInt();
   private final ObservableField<Date> expirationDate = new ObservableField<>();
   private final ObservableInt expirationDateVisibility = new ObservableInt();
+  private final DeleteProductUseCase deleteProductUseCase;
+  private final SchedulerTransformer transformer;
+  private final View.OnClickListener deleteButtonClickListener = new View.OnClickListener() {
+    @Override public void onClick(View view) {
+      deleteProductUseCase.delete(product)
+          .compose(transformer.<Void>applySchedulers())
+          .subscribe(new Action1<Void>() {
+            @Override public void call(Void aVoid) {
+              if (deleteListener != null) deleteListener.onDelete();
+            }
+          }, new Action1<Throwable>() {
+            @Override public void call(Throwable throwable) {
+              // TODO: Show some error here
+            }
+          });
+    }
+  };
+  private OnDeleteListener deleteListener;
+  private Product product;
 
-  @Inject public ProductListRecyclerViewItemViewModelImpl() {
+  @Inject public ProductListRecyclerViewItemViewModelImpl(DeleteProductUseCase deleteProductUseCase,
+      @IOToUiSchedulerTransformer SchedulerTransformer transformer) {
+    this.deleteProductUseCase = deleteProductUseCase;
+    this.transformer = transformer;
   }
 
   @Override public void onBindViewHolder(Product product) {
+    this.product = product;
     productName.set(product.getName());
     productQuantityLabel.set(product.getQuantityLabel());
     quantity.set(product.getQuantity());
@@ -58,5 +85,13 @@ public class ProductListRecyclerViewItemViewModelImpl
 
   @Override public ObservableInt expirationDateVisibility() {
     return expirationDateVisibility;
+  }
+
+  @Override public View.OnClickListener deleteButtonClickListener() {
+    return deleteButtonClickListener;
+  }
+
+  @Override public void setOnDeleteListener(OnDeleteListener onDeleteListener) {
+    deleteListener = onDeleteListener;
   }
 }

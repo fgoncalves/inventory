@@ -35,4 +35,12 @@ public interface RealmWrapper {
    * @return The created or updated object
    */
   <T extends RealmObject> T store(T object);
+
+  /**
+   * Delete the given from the realm
+   *
+   * @param clazz the class of the object to delete
+   * @param id the object id to delete
+   */
+  <T extends RealmObject> void delete(Class<T> clazz, String id);
 }

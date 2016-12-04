@@ -37,11 +37,20 @@ public interface ProductService {
   Observable<ProductList> createOrUpdate(ProductList productList);
 
   /**
-   * Create or update the given product. If the product has an id, then an update will be attempted.
+   * Create or update the given product. If the product has an id, then an update will be
+   * attempted.
    * If the product has no ide then a random one will be assigned and the product will be created.
    *
    * @param product The product to create or update
    * @return An observable for the created or updated product
    */
   Observable<Product> createOrUpdate(Product product);
+
+  /**
+   * Delete the given product.
+   *
+   * @param product The product to delete
+   * @return An observable for the operation
+   */
+  Observable<Void> delete(Product product);
 }

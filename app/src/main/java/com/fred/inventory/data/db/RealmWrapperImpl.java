@@ -31,4 +31,11 @@ public class RealmWrapperImpl implements RealmWrapper {
     realm.commitTransaction();
     return result;
   }
+
+  @Override public <T extends RealmObject> void delete(Class<T> clazz, String id) {
+    Realm realm = Realm.getInstance(realmConfiguration);
+    realm.beginTransaction();
+    realm.where(clazz).equalTo("id", id).findAll().deleteAllFromRealm();
+    realm.commitTransaction();
+  }
 }

@@ -67,4 +67,13 @@ public class ProductServiceImpl implements ProductService {
       }
     });
   }
+
+  @Override public Observable<Void> delete(final Product product) {
+    return Observable.fromCallable(new Callable<Void>() {
+      @Override public Void call() throws Exception {
+        realmWrapper.delete(Product.class, product.getId());
+        return null;
+      }
+    });
+  }
 }

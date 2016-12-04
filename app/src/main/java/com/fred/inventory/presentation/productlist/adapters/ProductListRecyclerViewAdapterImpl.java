@@ -33,9 +33,17 @@ public class ProductListRecyclerViewAdapterImpl
     return holder;
   }
 
-  @Override public void onBindViewHolder(ViewHolder holder, int position) {
-    Product product = products.get(position);
+  @Override public void onBindViewHolder(ViewHolder holder, final int position) {
+    final Product product = products.get(position);
     holder.viewModel.onBindViewHolder(product);
+
+    holder.viewModel.setOnDeleteListener(
+        new ProductListRecyclerViewItemViewModel.OnDeleteListener() {
+          @Override public void onDelete() {
+            products.remove(position);
+            notifyDataSetChanged();
+          }
+        });
   }
 
   @Override public int getItemCount() {
