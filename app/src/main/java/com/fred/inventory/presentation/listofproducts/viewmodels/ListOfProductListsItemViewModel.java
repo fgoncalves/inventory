@@ -1,7 +1,7 @@
 package com.fred.inventory.presentation.listofproducts.viewmodels;
 
+import android.databinding.ObservableField;
 import com.fred.inventory.domain.models.ProductList;
-import com.fred.inventory.utils.binding.Observer;
 
 /**
  * View model for each item in the first list of products
@@ -9,16 +9,9 @@ import com.fred.inventory.utils.binding.Observer;
  * Created by fred on 04.06.16.
  */
 public interface ListOfProductListsItemViewModel {
+  void onBindViewHolder(ProductList productList);
 
-  void bindProductListNameObserver(Observer<String> observer);
+  ObservableField<String> itemNameObservable();
 
-  void bindInfoTextObserver(Observer<String> observer);
-
-  void attachModel(ProductList productList);
-
-  void unbindProductListNameObserver(Observer<String> observer);
-
-  void unbindInfoTextObserver(Observer<String> observer);
-
-  void onAttachedToWindow();
+  ObservableField<String> infoTextObservable();
 }

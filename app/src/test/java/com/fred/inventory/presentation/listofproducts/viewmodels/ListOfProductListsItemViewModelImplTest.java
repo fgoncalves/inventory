@@ -36,7 +36,7 @@ public class ListOfProductListsItemViewModelImplTest {
     ProductList productList = emptyProductList();
     when(context.getString(R.string.number_of_items, productList.getProducts().size())).thenReturn(
         productList.getProducts().size() + " items");
-    viewModel.attachModel(productList);
+    viewModel.onBindViewHolder(productList);
 
     viewModel.onAttachedToWindow();
 
@@ -48,7 +48,7 @@ public class ListOfProductListsItemViewModelImplTest {
     ProductList productList = emptyProductList();
     when(context.getString(R.string.number_of_items, productList.getProducts().size())).thenReturn(
         productList.getProducts().size() + " items");
-    viewModel.attachModel(productList);
+    viewModel.onBindViewHolder(productList);
 
     viewModel.unbindProductListNameObserver(productListNameObserver);
     viewModel.onAttachedToWindow();
@@ -60,7 +60,7 @@ public class ListOfProductListsItemViewModelImplTest {
     ProductList productList = emptyProductList();
     when(context.getString(R.string.number_of_items, productList.getProducts().size())).thenReturn(
         productList.getProducts().size() + " items");
-    viewModel.attachModel(productList);
+    viewModel.onBindViewHolder(productList);
 
     viewModel.unbindInfoTextObserver(infoTextObserver);
     viewModel.onAttachedToWindow();

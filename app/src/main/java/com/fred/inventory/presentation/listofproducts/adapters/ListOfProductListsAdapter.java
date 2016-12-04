@@ -7,7 +7,5 @@ import java.util.List;
  * The adapter for the product lists
  */
 public interface ListOfProductListsAdapter {
-  void attachModel(List<ProductList> productListList);
-
-  void onNewData();
+  void setData(List<ProductList> productListList);
 }

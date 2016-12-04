@@ -1,11 +1,14 @@
 package com.fred.inventory.presentation.listofproducts.adapters;
 
 import android.support.v7.widget.RecyclerView;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import com.fred.inventory.R;
+import com.fred.inventory.MainActivity;
+import com.fred.inventory.databinding.ProductListListItemBinding;
 import com.fred.inventory.domain.models.ProductList;
-import com.fred.inventory.presentation.listofproducts.views.ListOfProductListsItemView;
+import com.fred.inventory.presentation.listofproducts.modules.ListOfProductListsItemModule;
+import com.fred.inventory.presentation.listofproducts.viewmodels.ListOfProductListsItemViewModel;
 import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Inject;
@@ -19,33 +22,35 @@ public class ListOfProductListsAdapterImpl
   }
 
   @Override public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-    View view = View.inflate(parent.getContext(), R.layout.product_list_list_item, null);
+    ProductListListItemBinding binding =
+        ProductListListItemBinding.inflate(LayoutInflater.from(parent.getContext()), parent, false);
 
-    return new ViewHolder(view);
+    ViewHolder holder = new ViewHolder(binding.getRoot());
+    MainActivity.scoped(new ListOfProductListsItemModule()).inject(holder);
+
+    binding.setViewModel(holder.viewModel);
+
+    return holder;
   }
 
   @Override public void onBindViewHolder(ViewHolder holder, int position) {
-    holder.mainView.displayProductList(model.get(position));
+    holder.viewModel.onBindViewHolder(model.get(position));
   }
 
   @Override public int getItemCount() {
     return model.size();
   }
 
-  @Override public void attachModel(List<ProductList> model) {
+  @Override public void setData(List<ProductList> model) {
     this.model = model;
-  }
-
-  @Override public void onNewData() {
     notifyDataSetChanged();
   }
 
   public static class ViewHolder extends RecyclerView.ViewHolder {
-    ListOfProductListsItemView mainView;
+    @Inject ListOfProductListsItemViewModel viewModel;
 
     public ViewHolder(View itemView) {
       super(itemView);
-      mainView = (ListOfProductListsItemView) itemView;
     }
   }
 }

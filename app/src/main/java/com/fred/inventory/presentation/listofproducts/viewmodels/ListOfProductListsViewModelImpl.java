@@ -85,8 +85,7 @@ public class ListOfProductListsViewModelImpl implements ListOfProductListsViewMo
 
     @Override public void onNext(List<ProductList> productLists) {
       this.productLists = productLists;
-      adapter.attachModel(productLists);
-      adapter.onNewData();
+      adapter.setData(productLists);
     }
   }
 }

@@ -92,7 +92,7 @@ public class ListOfProductListsViewModelImplTest {
   @Test public void onAttachedToWindow_shouldSetTheAdaptersData() {
     viewModel.onAttachedToWindow();
 
-    verify(adapter).attachModel(anyList());
+    verify(adapter).setData(anyList());
     verify(adapter).onNewData();
   }
 
