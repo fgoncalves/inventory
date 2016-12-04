@@ -6,7 +6,6 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Window;
 import android.view.WindowManager;
-import butterknife.ButterKnife;
 import com.fred.inventory.presentation.base.BaseScreen;
 import com.fred.inventory.presentation.listofproducts.ListOfProductListsScreen;
 import com.fred.inventory.utils.path.PathManager;
@@ -23,7 +22,6 @@ public class MainActivity extends AppCompatActivity {
     objectGraph = ObjectGraph.create(new RootModule(this));
 
     setContentView(R.layout.main_activity);
-    ButterKnife.bind(this);
 
     inject();
     addListOfProductListsScreen();
