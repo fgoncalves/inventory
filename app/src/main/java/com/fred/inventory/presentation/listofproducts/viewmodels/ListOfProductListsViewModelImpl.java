@@ -21,8 +21,9 @@ import timber.log.Timber;
 public class ListOfProductListsViewModelImpl
     implements ListOfProductListsViewModel, ListOfProductListsAdapter.OnProductListDeletedListener,
     ListOfProductListsAdapter.OnItemClickListener {
-  private final ObservableInt emptyViewVisibility = new ObservableInt(View.VISIBLE);
+  private final ObservableInt emptyViewVisibility = new ObservableInt(View.GONE);
   private final ObservableInt listViewVisibility = new ObservableInt(View.GONE);
+  private final ObservableInt progressBarVisibility = new ObservableInt(View.GONE);
   private final View.OnClickListener addButtonClickListener = new View.OnClickListener() {
     @Override public void onClick(View v) {
       final ProductListScreen screen = ProductListScreen.newInstance();
@@ -51,6 +52,7 @@ public class ListOfProductListsViewModelImpl
     adapter.setOnProductListDeletedListener(this);
     adapter.setOnItemClickListener(this);
 
+    progressBarVisibility.set(View.VISIBLE);
     Subscription subscription = retrieveData();
     rxSubscriptionPool.addSubscription(getClass().getCanonicalName(), subscription);
   }
@@ -85,6 +87,15 @@ public class ListOfProductListsViewModelImpl
     }
   }
 
+  @Override public ObservableInt progressBarVisibility() {
+    return progressBarVisibility;
+  }
+
+  @Override public void onItemClicked(ProductList productList) {
+    final ProductListScreen screen = ProductListScreen.newInstance(productList.getId());
+    pathManager.go(screen, R.id.main_container);
+  }
+
   /**
    * Get the data for the view
    *
@@ -96,11 +107,6 @@ public class ListOfProductListsViewModelImpl
         .subscribe(new ListOfProductListsSubscriber());
   }
 
-  @Override public void onItemClicked(ProductList productList) {
-    final ProductListScreen screen = ProductListScreen.newInstance(productList.getId());
-    pathManager.go(screen, R.id.main_container);
-  }
-
   /**
    * Subscriber for the list of product lists
    */
@@ -108,6 +114,7 @@ public class ListOfProductListsViewModelImpl
     private List<ProductList> productLists;
 
     @Override public void onCompleted() {
+      progressBarVisibility.set(View.GONE);
       if (productLists == null || productLists.isEmpty()) {
         emptyViewVisibility.set(View.VISIBLE);
         listViewVisibility.set(View.GONE);
@@ -118,6 +125,7 @@ public class ListOfProductListsViewModelImpl
     }
 
     @Override public void onError(Throwable e) {
+      progressBarVisibility.set(View.GONE);
       Timber.d(e, "Failed to list all product lists from the app");
       // TODO: Show error
     }

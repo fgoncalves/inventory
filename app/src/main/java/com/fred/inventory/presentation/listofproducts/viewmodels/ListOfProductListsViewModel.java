@@ -14,6 +14,8 @@ public interface ListOfProductListsViewModel {
 
   ObservableInt listVisibilityObservable();
 
+  ObservableInt progressBarVisibility();
+
   RecyclerView.Adapter adapter();
 
   View.OnClickListener addButtonClickListener();
