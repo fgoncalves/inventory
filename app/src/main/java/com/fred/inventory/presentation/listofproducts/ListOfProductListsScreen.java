@@ -36,34 +36,15 @@ public class ListOfProductListsScreen extends BaseScreen {
     return binding.getRoot();
   }
 
-  //private void setEventSubscribers(ListOfProductListsViewImpl listOfProductListsView) {
-  //  listOfProductListsView.interactions()
-  //      .map(new Func1<ListOfProductListsView.ListOfProductListsEvent, ScreenEvent>() {
-  //        @Override public ScreenEvent call(
-  //            ListOfProductListsView.ListOfProductListsEvent listOfProductListsEvent) {
-  //          if (listOfProductListsEvent
-  //              == ListOfProductListsView.ListOfProductListsEvent.ADD_BUTTON_CLICKED) {
-  //            return new ScreenEvent(ScreenEvent.Type.ADD_PRODUCT_LIST_SCREEN);
-  //          }
-  //          return new ScreenEvent(ScreenEvent.Type.NOOP);
-  //        }
-  //      })
-  //      .subscribeOn(Schedulers.computation())
-  //      .observeOn(AndroidSchedulers.mainThread())
-  //      .subscribe(new Subscriber<ScreenEvent>() {
-  //        @Override public void onCompleted() {
-  //
-  //        }
-  //
-  //        @Override public void onError(Throwable e) {
-  //          Timber.e(e, "Failed to get events from screen");
-  //        }
-  //
-  //        @Override public void onNext(ScreenEvent screenEvent) {
-  //          events.onNext(screenEvent);
-  //        }
-  //      });
-  //}
+  @Override public void onResume() {
+    super.onResume();
+    viewModel.onResume();
+  }
+
+  @Override public void onPause() {
+    super.onPause();
+    viewModel.onPause();
+  }
 
   @Override protected boolean handleBackPress() {
     return false;

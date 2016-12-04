@@ -37,7 +37,7 @@ public class ListOfProductListsViewModelImplTest {
     MockitoAnnotations.initMocks(this);
 
     viewModel = new ListOfProductListsViewModelImpl(listAllProductListsUseCase,
-        new ImmediateToImmediateTransformer(), rxSubscriptionPool, adapter);
+        new ImmediateToImmediateTransformer(), rxSubscriptionPool, adapter, pathManager);
     viewModel.bindEmptyViewVisibilityObserver(emptyViewVisibilityObserver);
     viewModel.bindShowErrorMessageObserver(showErrorMessageObserver);
 
@@ -47,13 +47,13 @@ public class ListOfProductListsViewModelImplTest {
   }
 
   @Test public void onAttachedToWindow_shouldQueryForData() {
-    viewModel.onAttachedToWindow();
+    viewModel.onResume();
 
     verify(listAllProductListsUseCase).list();
   }
 
   @Test public void onAttachedToWindow_shouldAddSubscriptionsToThePool() {
-    viewModel.onAttachedToWindow();
+    viewModel.onResume();
 
     verify(rxSubscriptionPool).addSubscription(anyString(), anySubscription());
   }
@@ -66,7 +66,7 @@ public class ListOfProductListsViewModelImplTest {
 
   @Test
   public void onAttachedToWindow_shouldSetTheEmptyViewToGoneIfThereIsSomeDataInTheProductList() {
-    viewModel.onAttachedToWindow();
+    viewModel.onResume();
 
     verify(emptyViewVisibilityObserver).update(View.GONE);
   }
@@ -75,7 +75,7 @@ public class ListOfProductListsViewModelImplTest {
   public void onAttachedToWindow_shouldSetTheEmptyViewToIfThereIsNoDataReturnedFromTheUseCase() {
     when(listAllProductListsUseCase.list()).thenReturn(Observable.<List<ProductList>>empty());
 
-    viewModel.onAttachedToWindow();
+    viewModel.onResume();
 
     verify(emptyViewVisibilityObserver).update(View.VISIBLE);
   }
@@ -84,13 +84,13 @@ public class ListOfProductListsViewModelImplTest {
     when(listAllProductListsUseCase.list()).thenReturn(
         Observable.<List<ProductList>>just(new ArrayList<ProductList>()));
 
-    viewModel.onAttachedToWindow();
+    viewModel.onResume();
 
     verify(emptyViewVisibilityObserver).update(View.VISIBLE);
   }
 
   @Test public void onAttachedToWindow_shouldSetTheAdaptersData() {
-    viewModel.onAttachedToWindow();
+    viewModel.onResume();
 
     verify(adapter).setData(anyList());
     verify(adapter).onNewData();
@@ -99,7 +99,7 @@ public class ListOfProductListsViewModelImplTest {
   @Test public void unbindEmptyViewVisibilityObserver_shouldPreventAnyFurtherInteractions() {
     viewModel.unbindEmptyViewVisibilityObserver(emptyViewVisibilityObserver);
 
-    viewModel.onAttachedToWindow();
+    viewModel.onResume();
 
     verify(emptyViewVisibilityObserver, never()).update(anyInt());
   }
@@ -108,7 +108,7 @@ public class ListOfProductListsViewModelImplTest {
     when(listAllProductListsUseCase.list()).thenReturn(
         Observable.<List<ProductList>>error(new Exception()));
 
-    viewModel.onAttachedToWindow();
+    viewModel.onResume();
 
     verify(showErrorMessageObserver).update(null);
   }
@@ -118,7 +118,7 @@ public class ListOfProductListsViewModelImplTest {
         Observable.<List<ProductList>>error(new Exception()));
     viewModel.unbindShowErrorMessageObserver(showErrorMessageObserver);
 
-    viewModel.onAttachedToWindow();
+    viewModel.onResume();
 
     verify(showErrorMessageObserver, never()).update(any(Void.class));
   }

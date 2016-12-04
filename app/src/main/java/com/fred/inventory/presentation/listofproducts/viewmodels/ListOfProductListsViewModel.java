@@ -8,7 +8,7 @@ import android.view.View;
  * View model for the list of product lists
  */
 public interface ListOfProductListsViewModel {
-  void onAttachedToWindow();
+  void onResume();
 
   ObservableInt emptyViewVisibilityObservable();
 
@@ -17,4 +17,6 @@ public interface ListOfProductListsViewModel {
   RecyclerView.Adapter adapter();
 
   View.OnClickListener addButtonClickListener();
+
+  void onPause();
 }
