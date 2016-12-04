@@ -137,6 +137,7 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="@+id/item_quantity_label_input_layout"
         app:onItemSelectedListener="@{viewModel.spinnerOnItemSelectedListener()}"
+        app:selection="@{viewModel.spinnerSelection()}"
         />
 
     <android.support.v7.widget.AppCompatSeekBar

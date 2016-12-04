@@ -88,6 +88,7 @@ public class ItemViewModelImpl implements ItemViewModel {
       };
   private final ObservableField<String> itemQuantityLabel = new ObservableField<>();
   private final ObservableInt seekBarProgress = new ObservableInt(0);
+  private final ObservableInt spinnerSelection = new ObservableInt(0);
   private final TextWatcher itemQuantityLabelTextWatcher =
       new OneTimeTextWatcher(itemQuantityLabel);
 
@@ -130,6 +131,10 @@ public class ItemViewModelImpl implements ItemViewModel {
 
   @Override public void forProduct(String productId) {
     this.productId = productId;
+  }
+
+  @Override public ObservableInt spinnerSelection() {
+    return spinnerSelection;
   }
 
   /**
@@ -251,7 +256,17 @@ public class ItemViewModelImpl implements ItemViewModel {
       if (product == null) return;
 
       itemName.set(product.getName());
-      // TODO: display stuff
+      expirationDate.set(product.getExpirationDate());
+      itemQuantityLabel.set(product.getQuantityLabel());
+      seekBarProgress.set(product.getQuantity());
+      isUnit = product.isUnit();
+      if (isUnit) {
+        seekBarVisibility.set(View.GONE);
+        spinnerSelection.set(0);
+      } else {
+        seekBarVisibility.set(View.VISIBLE);
+        spinnerSelection.set(1);
+      }
     }
 
     @Override public void onError(Throwable e) {

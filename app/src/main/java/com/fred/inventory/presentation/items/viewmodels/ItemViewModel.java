@@ -21,6 +21,8 @@ public interface ItemViewModel {
 
   void forProduct(String productId);
 
+  ObservableInt spinnerSelection();
+
   void onEditExpireDateButtonClick(View view);
 
   void onDoneButtonClick(View view);
