@@ -36,6 +36,8 @@ public interface ProductListViewModel {
 
   ObservableInt itemListVisibility();
 
+  ObservableInt progressBarVisibility();
+
   void unbindProductListIdObserver(Observer<String> observer);
 
   void bindProductListIdObserver(Observer<String> observer);

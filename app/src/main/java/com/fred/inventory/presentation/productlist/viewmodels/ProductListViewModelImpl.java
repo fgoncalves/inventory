@@ -35,7 +35,8 @@ public class ProductListViewModelImpl
   private final SchedulerTransformer transformer;
   private final RxSubscriptionPool rxSubscriptionPool;
   private final ObservableInt listVisibility = new ObservableInt(View.GONE);
-  private final ObservableInt emptyListVisibility = new ObservableInt(View.VISIBLE);
+  private final ObservableInt emptyListVisibility = new ObservableInt(View.GONE);
+  private final ObservableInt progressBarVisibility = new ObservableInt(View.GONE);
   private final Observable<String> productListIdObservable = Observable.create();
   private final PathManager pathManager;
   private final ProductListRecyclerViewAdapter adapter;
@@ -62,10 +63,12 @@ public class ProductListViewModelImpl
     adapter.setOnItemClickListener(this);
 
     if (StringUtils.isBlank(productListIdObservable.get())) {
+      emptyListVisibility.set(View.VISIBLE);
       // TODO: put input in text view
       return;
     }
 
+    progressBarVisibility.set(View.VISIBLE);
     queryForProductList();
   }
 
@@ -79,6 +82,10 @@ public class ProductListViewModelImpl
 
   @Override public TextWatcher productNameTextWatcher() {
     return productNameTextWatcher;
+  }
+
+  @Override public ObservableInt progressBarVisibility() {
+    return progressBarVisibility;
   }
 
   private void queryForProductList() {
@@ -195,11 +202,12 @@ public class ProductListViewModelImpl
 
   private class ProductListSubscriber extends Subscriber<ProductList> {
     @Override public void onCompleted() {
-
+      progressBarVisibility.set(View.GONE);
     }
 
     @Override public void onError(Throwable e) {
-
+      progressBarVisibility.set(View.GONE);
+      Timber.e(e, "Failed to get the product list");
     }
 
     @Override public void onNext(ProductList productList) {
