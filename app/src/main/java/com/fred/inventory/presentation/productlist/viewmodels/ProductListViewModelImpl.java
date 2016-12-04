@@ -26,7 +26,8 @@ import rx.Subscription;
 import timber.log.Timber;
 
 public class ProductListViewModelImpl
-    implements ProductListViewModel, ProductListRecyclerViewAdapter.OnProductDeletedListener {
+    implements ProductListViewModel, ProductListRecyclerViewAdapter.OnProductDeletedListener,
+    ProductListRecyclerViewAdapter.OnItemClickListener {
   private final ObservableField<String> productListName = new ObservableField<>();
   private final OneTimeTextWatcher productNameTextWatcher = new OneTimeTextWatcher(productListName);
   private final GetProductListUseCase getProductListUseCase;
@@ -58,6 +59,8 @@ public class ProductListViewModelImpl
 
   @Override public void onActivityCreated() {
     adapter.setOnProductDeletedListener(this);
+    adapter.setOnItemClickListener(this);
+
     if (StringUtils.isBlank(productListIdObservable.get())) {
       // TODO: put input in text view
       return;
@@ -139,9 +142,7 @@ public class ProductListViewModelImpl
           }
 
           @Override public void onNext(ProductList productList) {
-            ItemScreen itemScreen = ItemScreen.newInstance(productList.getId());
-            productListIdObservable.set(productList.getId());
-            pathManager.go(itemScreen, R.id.main_container);
+            goToItemScreen(productList);
           }
         });
 
@@ -179,6 +180,17 @@ public class ProductListViewModelImpl
     boolean hasItems = !adapter.getItems().isEmpty();
     emptyListVisibility.set(hasItems ? View.GONE : View.VISIBLE);
     listVisibility.set(hasItems ? View.VISIBLE : View.GONE);
+  }
+
+  @Override public void onItemClicked(Product product) {
+    //goToItemScreen(product);
+    // TODO: The item screen doesn't support edit mode yet
+  }
+
+  private void goToItemScreen(ProductList productList) {
+    ItemScreen itemScreen = ItemScreen.newInstance(productList.getId());
+    productListIdObservable.set(productList.getId());
+    pathManager.go(itemScreen, R.id.main_container);
   }
 
   private class ProductListSubscriber extends Subscriber<ProductList> {

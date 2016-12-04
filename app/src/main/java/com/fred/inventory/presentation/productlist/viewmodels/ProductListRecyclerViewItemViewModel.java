@@ -15,9 +15,15 @@ public interface ProductListRecyclerViewItemViewModel {
     void onDelete();
   }
 
+  interface OnItemClickListener {
+    void onClicked();
+  }
+
   void onBindViewHolder(Product product);
 
   void setOnDeleteListener(OnDeleteListener onDeleteListener);
+
+  void setOnItemClickListener(OnItemClickListener onItemClickListener);
 
   ObservableField<String> productName();
 
@@ -32,4 +38,6 @@ public interface ProductListRecyclerViewItemViewModel {
   ObservableInt expirationDateVisibility();
 
   View.OnClickListener deleteButtonClickListener();
+
+  View.OnClickListener itemClickListener();
 }

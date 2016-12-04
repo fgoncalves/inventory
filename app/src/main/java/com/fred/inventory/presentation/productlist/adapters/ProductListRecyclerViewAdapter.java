@@ -14,9 +14,15 @@ public interface ProductListRecyclerViewAdapter {
     void onProductDeleted(Product product);
   }
 
+  interface OnItemClickListener {
+    void onItemClicked(Product product);
+  }
+
   void setData(List<Product> products);
 
   List<Product> getItems();
 
   void setOnProductDeletedListener(OnProductDeletedListener onProductDeletedListener);
+
+  void setOnItemClickListener(OnItemClickListener onItemClickListener);
 }

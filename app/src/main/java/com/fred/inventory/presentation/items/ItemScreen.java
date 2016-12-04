@@ -17,6 +17,7 @@ import javax.inject.Inject;
 
 public class ItemScreen extends BaseScreen {
   private static final String PRODUCT_LIST_ID = "product.list.id";
+  private static final String PRODUCT_ID = "product.id";
 
   @Inject ItemViewModel viewModel;
 

@@ -10,6 +10,7 @@ import com.fred.inventory.utils.rx.schedulers.qualifiers.IOToUiSchedulerTransfor
 import java.util.Date;
 import javax.inject.Inject;
 import rx.functions.Action1;
+import timber.log.Timber;
 
 public class ProductListRecyclerViewItemViewModelImpl
     implements ProductListRecyclerViewItemViewModel {
@@ -31,12 +32,19 @@ public class ProductListRecyclerViewItemViewModelImpl
             }
           }, new Action1<Throwable>() {
             @Override public void call(Throwable throwable) {
+              Timber.e(throwable, "Failed to delete item from product list");
               // TODO: Show some error here
             }
           });
     }
   };
+  private final View.OnClickListener itemClickListener = new View.OnClickListener() {
+    @Override public void onClick(View view) {
+      if (onItemClickListener != null) onItemClickListener.onClicked();
+    }
+  };
   private OnDeleteListener deleteListener;
+  private OnItemClickListener onItemClickListener;
   private Product product;
 
   @Inject public ProductListRecyclerViewItemViewModelImpl(DeleteProductUseCase deleteProductUseCase,
@@ -93,5 +101,13 @@ public class ProductListRecyclerViewItemViewModelImpl
 
   @Override public void setOnDeleteListener(OnDeleteListener onDeleteListener) {
     deleteListener = onDeleteListener;
+  }
+
+  @Override public View.OnClickListener itemClickListener() {
+    return itemClickListener;
+  }
+
+  @Override public void setOnItemClickListener(OnItemClickListener onItemClickListener) {
+    this.onItemClickListener = onItemClickListener;
   }
 }

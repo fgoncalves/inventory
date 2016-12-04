@@ -17,6 +17,7 @@ public class ProductListRecyclerViewAdapterImpl
     extends RecyclerView.Adapter<ProductListRecyclerViewAdapterImpl.ViewHolder>
     implements ProductListRecyclerViewAdapter {
   private OnProductDeletedListener onProductDeletedListener;
+  private OnItemClickListener onItemClickListener;
   private List<Product> products = new ArrayList<>();
 
   @Inject public ProductListRecyclerViewAdapterImpl() {
@@ -46,6 +47,14 @@ public class ProductListRecyclerViewAdapterImpl
             if (onProductDeletedListener != null) onProductDeletedListener.onProductDeleted(item);
           }
         });
+    holder.viewModel.setOnItemClickListener(
+        new ProductListRecyclerViewItemViewModel.OnItemClickListener() {
+          @Override public void onClicked() {
+            if (onItemClickListener != null) {
+              onItemClickListener.onItemClicked(products.get(holder.getAdapterPosition()));
+            }
+          }
+        });
   }
 
   @Override public int getItemCount() {
@@ -64,6 +73,10 @@ public class ProductListRecyclerViewAdapterImpl
   @Override
   public void setOnProductDeletedListener(OnProductDeletedListener onProductDeletedListener) {
     this.onProductDeletedListener = onProductDeletedListener;
+  }
+
+  @Override public void setOnItemClickListener(OnItemClickListener onItemClickListener) {
+    this.onItemClickListener = onItemClickListener;
   }
 
   public static class ViewHolder extends RecyclerView.ViewHolder {
