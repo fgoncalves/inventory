@@ -1,6 +1,7 @@
 package com.fred.inventory.presentation.listofproducts.viewmodels;
 
 import android.databinding.ObservableField;
+import android.view.View;
 import com.fred.inventory.domain.models.ProductList;
 
 /**
@@ -9,9 +10,17 @@ import com.fred.inventory.domain.models.ProductList;
  * Created by fred on 04.06.16.
  */
 public interface ListOfProductListsItemViewModel {
+  interface OnDeleteButtonClick {
+    void onDeleteClicked();
+  }
+
   void onBindViewHolder(ProductList productList);
+
+  void setOnDeleteButtonClick(OnDeleteButtonClick onDeleteButtonClick);
 
   ObservableField<String> itemNameObservable();
 
   ObservableField<String> infoTextObservable();
+
+  View.OnClickListener deleteButtonClickListener();
 }

@@ -26,7 +26,8 @@ public class ListOfProductListsItemViewModelImplTest {
   @Before public void setUp() throws Exception {
     MockitoAnnotations.initMocks(this);
 
-    viewModel = new ListOfProductListsItemViewModelImpl(context);
+    viewModel = new ListOfProductListsItemViewModelImpl(context, deleteProductListUseCase,
+        transformer);
 
     viewModel.bindProductListNameObserver(productListNameObserver);
     viewModel.bindInfoTextObserver(infoTextObserver);
