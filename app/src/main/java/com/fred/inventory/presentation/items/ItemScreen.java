@@ -38,6 +38,25 @@ public class ItemScreen extends BaseScreen {
     return itemScreen;
   }
 
+  /**
+   * Create an instance of an item screen which will display the given item for the given product
+   * list.
+   *
+   * @param productListId The product list id to display the item for
+   * @param productId The product to display
+   * @return The instance of the screen to use
+   */
+  public static ItemScreen newInstance(@NonNull String productListId, @NonNull String productId) {
+    ItemScreen itemScreen = new ItemScreen();
+
+    Bundle args = new Bundle();
+    args.putString(PRODUCT_LIST_ID, productListId);
+    args.putString(PRODUCT_ID, productId);
+    itemScreen.setArguments(args);
+
+    return itemScreen;
+  }
+
   @Nullable @Override public View onCreateView(LayoutInflater inflater, ViewGroup container,
       Bundle savedInstanceState) {
     ItemBinding binding = DataBindingUtil.inflate(inflater, R.layout.item, container, false);
@@ -52,6 +71,7 @@ public class ItemScreen extends BaseScreen {
   @Override public void onResume() {
     super.onResume();
     viewModel.forProductList(getArguments().getString(PRODUCT_LIST_ID));
+    viewModel.forProduct(getArguments().getString(PRODUCT_ID));
     viewModel.onResume();
   }
 

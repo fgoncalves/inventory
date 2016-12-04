@@ -41,6 +41,8 @@ public class ProductListViewModelImpl
   private final PathManager pathManager;
   private final ProductListRecyclerViewAdapter adapter;
 
+  private ProductList productList;
+
   @Inject public ProductListViewModelImpl(GetProductListUseCase getProductListUseCase,
       SaveProductListInLocalStorageUseCase saveProductListInLocalStorageUseCase,
       @IOToUiSchedulerTransformer SchedulerTransformer transformer,
@@ -149,7 +151,8 @@ public class ProductListViewModelImpl
           }
 
           @Override public void onNext(ProductList productList) {
-            goToItemScreen(productList);
+            ProductListViewModelImpl.this.productList = productList;
+            goToItemScreen(productList, null);
           }
         });
 
@@ -190,12 +193,16 @@ public class ProductListViewModelImpl
   }
 
   @Override public void onItemClicked(Product product) {
-    //goToItemScreen(product);
-    // TODO: The item screen doesn't support edit mode yet
+    goToItemScreen(productList, product);
   }
 
-  private void goToItemScreen(ProductList productList) {
-    ItemScreen itemScreen = ItemScreen.newInstance(productList.getId());
+  private void goToItemScreen(ProductList productList, Product product) {
+    ItemScreen itemScreen;
+    if (product == null) {
+      itemScreen = ItemScreen.newInstance(productList.getId());
+    } else {
+      itemScreen = ItemScreen.newInstance(productList.getId(), product.getId());
+    }
     productListIdObservable.set(productList.getId());
     pathManager.go(itemScreen, R.id.main_container);
   }
@@ -211,6 +218,7 @@ public class ProductListViewModelImpl
     }
 
     @Override public void onNext(ProductList productList) {
+      ProductListViewModelImpl.this.productList = productList;
       boolean hasItems = !productList.getProducts().isEmpty();
       emptyListVisibility.set(hasItems ? View.GONE : View.VISIBLE);
       listVisibility.set(hasItems ? View.VISIBLE : View.GONE);
