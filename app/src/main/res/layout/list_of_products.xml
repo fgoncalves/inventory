@@ -16,9 +16,9 @@
       android:id="@+id/listOfProducts"
       android:layout_width="match_parent"
       android:layout_height="match_parent"
+      android:background="@color/primary_dark"
       android:fitsSystemWindows="true"
       tools:context="com.fred.inventory.MainActivity"
-      android:background="@color/primary_dark"
       >
 
     <android.support.v7.widget.Toolbar
@@ -52,7 +52,9 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_centerInParent="true"
+        android:gravity="center"
         android:text="@string/empty_view"
+        android:textColor="@color/white"
         android:visibility="@{viewModel.emptyViewVisibilityObservable()}"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"

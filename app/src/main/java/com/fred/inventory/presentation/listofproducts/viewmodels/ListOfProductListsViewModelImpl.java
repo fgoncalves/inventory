@@ -18,7 +18,8 @@ import rx.Subscriber;
 import rx.Subscription;
 import timber.log.Timber;
 
-public class ListOfProductListsViewModelImpl implements ListOfProductListsViewModel {
+public class ListOfProductListsViewModelImpl
+    implements ListOfProductListsViewModel, ListOfProductListsAdapter.OnProductListDeletedListener {
   private final ObservableInt emptyViewVisibility = new ObservableInt(View.VISIBLE);
   private final ObservableInt listViewVisibility = new ObservableInt(View.GONE);
   private final View.OnClickListener addButtonClickListener = new View.OnClickListener() {
@@ -46,6 +47,8 @@ public class ListOfProductListsViewModelImpl implements ListOfProductListsViewMo
   }
 
   @Override public void onResume() {
+    adapter.setOnProductListDeletedListener(this);
+
     Subscription subscription = retrieveData();
     rxSubscriptionPool.addSubscription(getClass().getCanonicalName(), subscription);
   }
@@ -68,6 +71,16 @@ public class ListOfProductListsViewModelImpl implements ListOfProductListsViewMo
 
   @Override public ObservableInt listVisibilityObservable() {
     return listViewVisibility;
+  }
+
+  @Override public void onProductListDeleted(ProductList productList) {
+    if (adapter.getItemCount() == 0) {
+      emptyViewVisibility.set(View.VISIBLE);
+      listViewVisibility.set(View.GONE);
+    } else {
+      emptyViewVisibility.set(View.GONE);
+      listViewVisibility.set(View.VISIBLE);
+    }
   }
 
   /**
