@@ -1,5 +1,7 @@
 package com.fred.inventory.domain.modules;
 
+import com.fred.inventory.domain.usecases.DeleteProductListUseCase;
+import com.fred.inventory.domain.usecases.DeleteProductListUseCaseImpl;
 import com.fred.inventory.domain.usecases.DeleteProductUseCase;
 import com.fred.inventory.domain.usecases.DeleteProductUseCaseImpl;
 import com.fred.inventory.domain.usecases.GetProductListUseCase;
@@ -30,6 +32,11 @@ import javax.inject.Singleton;
 
   @Provides @Singleton
   public DeleteProductUseCase providesDeleteProductUseCase(DeleteProductUseCaseImpl useCase) {
+    return useCase;
+  }
+
+  @Provides @Singleton public DeleteProductListUseCase providesDeleteProductListUseCase(
+      DeleteProductListUseCaseImpl useCase) {
     return useCase;
   }
 }

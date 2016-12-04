@@ -53,4 +53,12 @@ public interface ProductService {
    * @return An observable for the operation
    */
   Observable<Void> delete(Product product);
+
+  /**
+   * Delete the given product list.
+   *
+   * @param productList The product list to delete
+   * @return An observable for the operation
+   */
+  Observable<Void> delete(ProductList productList);
 }
