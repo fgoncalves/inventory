@@ -14,7 +14,6 @@ import com.fred.inventory.presentation.base.BaseScreen;
 import com.fred.inventory.presentation.items.modules.ItemViewModule;
 import com.fred.inventory.presentation.items.viewmodels.ItemViewModel;
 import javax.inject.Inject;
-import rx.Observable;
 
 public class ItemScreen extends BaseScreen {
   private static final String PRODUCT_LIST_ID = "product.list.id";
@@ -62,9 +61,5 @@ public class ItemScreen extends BaseScreen {
 
   @Override protected boolean handleBackPress() {
     return false;
-  }
-
-  @Override public Observable<ScreenEvent> screenEvents() {
-    return Observable.empty();
   }
 }

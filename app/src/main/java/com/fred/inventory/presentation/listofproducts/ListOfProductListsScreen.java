@@ -13,13 +13,9 @@ import com.fred.inventory.presentation.base.BaseScreen;
 import com.fred.inventory.presentation.listofproducts.modules.ListOfProductListsModule;
 import com.fred.inventory.presentation.listofproducts.viewmodels.ListOfProductListsViewModel;
 import javax.inject.Inject;
-import rx.Observable;
-import rx.subjects.PublishSubject;
 
 public class ListOfProductListsScreen extends BaseScreen {
   @Inject ListOfProductListsViewModel viewModel;
-
-  private PublishSubject<ScreenEvent> events = PublishSubject.create();
 
   public static ListOfProductListsScreen newInstance() {
     return new ListOfProductListsScreen();
@@ -48,9 +44,5 @@ public class ListOfProductListsScreen extends BaseScreen {
 
   @Override protected boolean handleBackPress() {
     return false;
-  }
-
-  @Override public Observable<ScreenEvent> screenEvents() {
-    return events.asObservable();
   }
 }

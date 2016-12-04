@@ -69,10 +69,6 @@ public class ProductListScreen extends BaseScreen {
     return false;
   }
 
-  @Override public Observable<ScreenEvent> screenEvents() {
-    return Observable.empty();
-  }
-
   @Override public void onSaveInstanceState(Bundle outState) {
     super.onSaveInstanceState(outState);
     Icepick.saveInstanceState(this, outState);
