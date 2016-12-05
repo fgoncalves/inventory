@@ -3,6 +3,7 @@ package com.fred.inventory.presentation.listofproducts;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -44,5 +45,13 @@ public class ListOfProductListsScreen extends BaseScreen {
 
   @Override protected boolean handleBackPress() {
     return false;
+  }
+
+  @Override public Toolbar getToolbar() {
+    return (Toolbar) getView().findViewById(R.id.list_of_lists_toolbar);
+  }
+
+  @Override protected String getToolbarTitle() {
+    return getString(R.string.lists);
   }
 }

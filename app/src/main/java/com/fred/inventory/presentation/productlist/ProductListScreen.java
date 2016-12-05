@@ -3,6 +3,7 @@ package com.fred.inventory.presentation.productlist;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,7 +17,6 @@ import com.fred.inventory.utils.binding.Observer;
 import icepick.Icepick;
 import icepick.Icicle;
 import javax.inject.Inject;
-import rx.Observable;
 
 public class ProductListScreen extends BaseScreen {
   private static final String PRODUCT_LIST_ID_BUNDLE_KEY = "product.lis.id";
@@ -76,8 +76,9 @@ public class ProductListScreen extends BaseScreen {
 
   @Override public void onActivityCreated(Bundle savedInstanceState) {
     super.onActivityCreated(savedInstanceState);
-    if (getArguments() != null)
+    if (getArguments() != null) {
       productListId = getArguments().getString(PRODUCT_LIST_ID_BUNDLE_KEY);
+    }
     Icepick.restoreInstanceState(this, savedInstanceState);
     viewModel.forProductList(productListId);
     viewModel.onActivityCreated();
@@ -96,5 +97,13 @@ public class ProductListScreen extends BaseScreen {
   @Override public void onStop() {
     super.onStop();
     viewModel.unbindProductListIdObserver(productListIdObserver);
+  }
+
+  @Override public Toolbar getToolbar() {
+    return (Toolbar) getView().findViewById(R.id.product_list_toolbar);
+  }
+
+  @Override protected String getToolbarTitle() {
+    return "";
   }
 }
