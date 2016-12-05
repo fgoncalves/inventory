@@ -22,8 +22,11 @@ public abstract class BaseScreen extends Fragment {
   @Override public void onResume() {
     super.onResume();
     AppCompatActivity appCompatActivity = (AppCompatActivity) getActivity();
-    appCompatActivity.setSupportActionBar(getToolbar());
-    appCompatActivity.getSupportActionBar().setTitle(getToolbarTitle());
+    Toolbar toolbar = getToolbar();
+    if (toolbar != null) {
+      appCompatActivity.setSupportActionBar(toolbar);
+      appCompatActivity.getSupportActionBar().setTitle(getToolbarTitle());
+    }
   }
 
   /**
