@@ -59,18 +59,6 @@
         tools:visibility="gone"
         />
 
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/add_button_group"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
-        android:layout_marginEnd="16dp"
-        android:onClick="@{viewModel.addButtonClickListener()}"
-        android:src="@drawable/plus"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        />
-
     <android.support.constraint.ConstraintLayout
         android:id="@+id/empty_list_of_lists_recycler"
         android:layout_width="match_parent"
@@ -111,5 +99,16 @@
           />
     </android.support.constraint.ConstraintLayout>
 
+    <com.github.clans.fab.FloatingActionButton
+        android:id="@+id/add_button_group"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:layout_marginEnd="16dp"
+        android:onClick="@{viewModel.addButtonClickListener()}"
+        android:src="@drawable/plus"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        />
   </android.support.constraint.ConstraintLayout>
 </layout>
