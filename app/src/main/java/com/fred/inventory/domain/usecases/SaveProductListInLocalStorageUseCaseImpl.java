@@ -9,6 +9,7 @@ import javax.inject.Inject;
 import rx.Observable;
 import rx.functions.Func0;
 import rx.functions.Func1;
+import timber.log.Timber;
 
 public class SaveProductListInLocalStorageUseCaseImpl
     implements SaveProductListInLocalStorageUseCase {
@@ -20,9 +21,9 @@ public class SaveProductListInLocalStorageUseCaseImpl
 
   @Inject public SaveProductListInLocalStorageUseCaseImpl(ProductService service,
       @DBProductListToProductListTranslator
-      Translator<com.fred.inventory.data.db.models.ProductList, ProductList> dbToDomainTranslator,
+          Translator<com.fred.inventory.data.db.models.ProductList, ProductList> dbToDomainTranslator,
       @ProductListToDBProductListTranslator
-      Translator<ProductList, com.fred.inventory.data.db.models.ProductList> domainToDBTranslator) {
+          Translator<ProductList, com.fred.inventory.data.db.models.ProductList> domainToDBTranslator) {
     this.service = service;
     this.dbToDomainTranslator = dbToDomainTranslator;
     this.domainToDBTranslator = domainToDBTranslator;
@@ -30,7 +31,13 @@ public class SaveProductListInLocalStorageUseCaseImpl
 
   @Override public Observable<ProductList> save(final ProductList productList) {
     return translateToDB(productList).flatMap(new CreateOrUpdateFunc())
-        .map(new TranslateToDomainFunc());
+        .map(new TranslateToDomainFunc())
+        .map(new Func1<ProductList, ProductList>() {
+          @Override public ProductList call(ProductList productList) {
+            Timber.d("Saving product list with id %s", productList.getId());
+            return productList;
+          }
+        });
   }
 
   /**
@@ -41,9 +48,9 @@ public class SaveProductListInLocalStorageUseCaseImpl
    */
   private Observable<com.fred.inventory.data.db.models.ProductList> translateToDB(
       final ProductList productList) {
-    return Observable.defer(new Func0<Observable<com.fred.inventory.data.db.models.ProductList>>() {
-      @Override public Observable<com.fred.inventory.data.db.models.ProductList> call() {
-        return Observable.just(domainToDBTranslator.translate(productList));
+    return Observable.fromCallable(new Func0<com.fred.inventory.data.db.models.ProductList>() {
+      @Override public com.fred.inventory.data.db.models.ProductList call() {
+        return domainToDBTranslator.translate(productList);
       }
     });
   }
