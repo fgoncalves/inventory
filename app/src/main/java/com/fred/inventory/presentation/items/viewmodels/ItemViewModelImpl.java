@@ -189,6 +189,7 @@ public class ItemViewModelImpl implements ItemViewModel {
           }
 
           @Override public void onError(Throwable e) {
+            Timber.e(e, "Failed to save product in db");
             //TODO: show some error
           }
 

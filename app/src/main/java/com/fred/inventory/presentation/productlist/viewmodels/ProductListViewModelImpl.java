@@ -141,6 +141,12 @@ public class ProductListViewModelImpl
   }
 
   @Override public void onScanBarCodeButtonClick(View view) {
+    String name = productListName.get();
+    if (StringUtils.isBlank(name)) {
+      // TODO: Show error here
+      return;
+    }
+
     if (scanBarCodeButtonClickListener != null) {
       scanBarCodeButtonClickListener.onScanBarCodeButtonClicked();
     }
@@ -229,7 +235,8 @@ public class ProductListViewModelImpl
 
           @Override public void onNext(ProductListProductCombo productListProductCombo) {
             ProductListViewModelImpl.this.productList = productListProductCombo.list;
-            goToItemScreen(productListProductCombo.list, productListProductCombo.product);
+            goToItemScreen(productListProductCombo.list, productListProductCombo.list.getProducts()
+                .get(productListProductCombo.list.getProducts().size() - 1));
           }
         });
     rxSubscriptionPool.addSubscription(getClass().getCanonicalName(), subscription);
@@ -271,6 +278,7 @@ public class ProductListViewModelImpl
       implements Func1<Product, rx.Observable<ProductListProductCombo>> {
     @Override public rx.Observable<ProductListProductCombo> call(Product product) {
       ProductList productList = createFromInput();
+      productList.setProducts(adapter.getItems());
       productList.getProducts().add(product);
       return saveProductListInLocalStorageUseCase.save(productList)
           .zipWith(rx.Observable.just(product),
