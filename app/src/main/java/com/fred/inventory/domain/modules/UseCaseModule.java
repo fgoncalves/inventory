@@ -4,6 +4,8 @@ import com.fred.inventory.domain.usecases.DeleteProductListUseCase;
 import com.fred.inventory.domain.usecases.DeleteProductListUseCaseImpl;
 import com.fred.inventory.domain.usecases.DeleteProductUseCase;
 import com.fred.inventory.domain.usecases.DeleteProductUseCaseImpl;
+import com.fred.inventory.domain.usecases.GetProductInfoFromCodeUseCase;
+import com.fred.inventory.domain.usecases.GetProductInfoFromCodeUseCaseImpl;
 import com.fred.inventory.domain.usecases.GetProductListUseCase;
 import com.fred.inventory.domain.usecases.GetProductListUseCaseImpl;
 import com.fred.inventory.domain.usecases.ListAllProductListsUseCase;
@@ -37,6 +39,11 @@ import javax.inject.Singleton;
 
   @Provides @Singleton public DeleteProductListUseCase providesDeleteProductListUseCase(
       DeleteProductListUseCaseImpl useCase) {
+    return useCase;
+  }
+
+  @Provides @Singleton public GetProductInfoFromCodeUseCase providesGetProductInfoFromCode(
+      GetProductInfoFromCodeUseCaseImpl useCase) {
     return useCase;
   }
 }

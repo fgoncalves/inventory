@@ -7,6 +7,7 @@ import com.fred.inventory.domain.modules.qualifiers.DBImageToImageTranslator;
 import com.fred.inventory.domain.modules.qualifiers.DBProductListToProductListTranslator;
 import com.fred.inventory.domain.modules.qualifiers.DBProductToProductTranslator;
 import com.fred.inventory.domain.modules.qualifiers.ImageToDBImageTranslator;
+import com.fred.inventory.domain.modules.qualifiers.OutpanProductToProductTranslator;
 import com.fred.inventory.domain.modules.qualifiers.ProductListToDBProductListTranslator;
 import com.fred.inventory.domain.modules.qualifiers.ProductToDBProductTranslator;
 import com.fred.inventory.domain.translators.Translator;
@@ -46,6 +47,12 @@ import javax.inject.Singleton;
   @Provides @Singleton @ProductListToDBProductListTranslator
   public Translator<ProductList, com.fred.inventory.data.db.models.ProductList> providesProductListToDBProductListTranslator(
       com.fred.inventory.domain.translators.ProductListToDBProductListTranslator translator) {
+    return translator;
+  }
+
+  @Provides @Singleton @OutpanProductToProductTranslator
+  public Translator<com.fred.inventory.data.outpan.models.Product, Product> providesOutpanProductToProductTranslator(
+      com.fred.inventory.domain.translators.OutpanProductToProductTranslator translator) {
     return translator;
   }
 }

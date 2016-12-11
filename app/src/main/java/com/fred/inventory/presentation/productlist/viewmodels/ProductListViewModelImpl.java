@@ -8,6 +8,7 @@ import android.view.View;
 import com.fred.inventory.R;
 import com.fred.inventory.domain.models.Product;
 import com.fred.inventory.domain.models.ProductList;
+import com.fred.inventory.domain.usecases.GetProductInfoFromCodeUseCase;
 import com.fred.inventory.domain.usecases.GetProductListUseCase;
 import com.fred.inventory.domain.usecases.SaveProductListInLocalStorageUseCase;
 import com.fred.inventory.presentation.items.ItemScreen;
@@ -40,6 +41,7 @@ public class ProductListViewModelImpl
   private final Observable<String> productListIdObservable = Observable.create();
   private final PathManager pathManager;
   private final ProductListRecyclerViewAdapter adapter;
+  private final GetProductInfoFromCodeUseCase getProductInfoFromCodeUseCase;
 
   private ProductList productList;
   private OnScanBarCodeButtonClickListener scanBarCodeButtonClickListener;
@@ -48,13 +50,15 @@ public class ProductListViewModelImpl
       SaveProductListInLocalStorageUseCase saveProductListInLocalStorageUseCase,
       @IOToUiSchedulerTransformer SchedulerTransformer transformer,
       RxSubscriptionPool rxSubscriptionPool, PathManager pathManager,
-      ProductListRecyclerViewAdapter adapter) {
+      ProductListRecyclerViewAdapter adapter,
+      GetProductInfoFromCodeUseCase getProductInfoFromCodeUseCase) {
     this.getProductListUseCase = getProductListUseCase;
     this.saveProductListInLocalStorageUseCase = saveProductListInLocalStorageUseCase;
     this.transformer = transformer;
     this.rxSubscriptionPool = rxSubscriptionPool;
     this.pathManager = pathManager;
     this.adapter = adapter;
+    this.getProductInfoFromCodeUseCase = getProductInfoFromCodeUseCase;
   }
 
   @Override public void forProductList(String id) {
@@ -206,6 +210,25 @@ public class ProductListViewModelImpl
 
   @Override public void onItemClicked(Product product) {
     goToItemScreen(productList, product);
+  }
+
+  @Override public void onCodeScanned(String barcode) {
+    Subscription subscription = getProductInfoFromCodeUseCase.info(barcode)
+        .compose(transformer.<Product>applySchedulers())
+        .subscribe(new Subscriber<Product>() {
+          @Override public void onCompleted() {
+
+          }
+
+          @Override public void onError(Throwable e) {
+            Timber.e(e, "Failed to get the product info");
+          }
+
+          @Override public void onNext(Product product) {
+            Timber.d("Here's the retrieved shit: %s [%s]", product.getName(), product.getBarcode());
+          }
+        });
+    rxSubscriptionPool.addSubscription(getClass().getCanonicalName(), subscription);
   }
 
   private void goToItemScreen(ProductList productList, Product product) {

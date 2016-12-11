@@ -51,4 +51,6 @@ public interface ProductListViewModel {
   void bindProductListIdObserver(Observer<String> observer);
 
   RecyclerView.Adapter productListRecyclerViewAdapter();
+
+  void onCodeScanned(String barcode);
 }

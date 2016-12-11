@@ -121,10 +121,8 @@ public class ProductListScreen extends BaseScreen {
   @Override public void onActivityResult(int requestCode, int resultCode, Intent data) {
     IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
     if (result != null) {
-      if (result.getContents() == null) {
-        Toast.makeText(getActivity(), "Cancelled", Toast.LENGTH_LONG).show();
-      } else {
-        Toast.makeText(getActivity(), "Scanned: " + result.getContents(), Toast.LENGTH_LONG).show();
+      if (result.getContents() != null) {
+        viewModel.onCodeScanned(result.getContents());
       }
     } else {
       super.onActivityResult(requestCode, resultCode, data);
