@@ -153,6 +153,7 @@
           android:id="@+id/bar_code_scanner_button"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
+          android:onClick="@{viewModel::onScanBarCodeButtonClick}"
           app:fab_label="@string/scan_code"
           style="@style/FabButton"
           />

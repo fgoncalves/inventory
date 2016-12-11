@@ -1,5 +1,6 @@
 package com.fred.inventory.presentation.productlist;
 
+import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -7,6 +8,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 import com.fred.inventory.MainActivity;
 import com.fred.inventory.R;
 import com.fred.inventory.databinding.ProductListBinding;
@@ -14,6 +16,8 @@ import com.fred.inventory.presentation.base.BaseScreen;
 import com.fred.inventory.presentation.productlist.modules.ProductListModule;
 import com.fred.inventory.presentation.productlist.viewmodels.ProductListViewModel;
 import com.fred.inventory.utils.binding.Observer;
+import com.google.zxing.integration.android.IntentIntegrator;
+import com.google.zxing.integration.android.IntentResult;
 import icepick.Icepick;
 import icepick.Icicle;
 import javax.inject.Inject;
@@ -62,6 +66,13 @@ public class ProductListScreen extends BaseScreen {
     MainActivity.scoped(new ProductListModule()).inject(this);
     binding.setViewModel(viewModel);
 
+    viewModel.setOnScanBarCodeButtonClickListener(
+        new ProductListViewModel.OnScanBarCodeButtonClickListener() {
+          @Override public void onScanBarCodeButtonClicked() {
+            startBarcodeScanner();
+          }
+        });
+
     return binding.getRoot();
   }
 
@@ -105,5 +116,22 @@ public class ProductListScreen extends BaseScreen {
 
   @Override protected String getToolbarTitle() {
     return "";
+  }
+
+  @Override public void onActivityResult(int requestCode, int resultCode, Intent data) {
+    IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
+    if (result != null) {
+      if (result.getContents() == null) {
+        Toast.makeText(getActivity(), "Cancelled", Toast.LENGTH_LONG).show();
+      } else {
+        Toast.makeText(getActivity(), "Scanned: " + result.getContents(), Toast.LENGTH_LONG).show();
+      }
+    } else {
+      super.onActivityResult(requestCode, resultCode, data);
+    }
+  }
+
+  private void startBarcodeScanner() {
+    IntentIntegrator.forFragment(this).initiateScan();
   }
 }

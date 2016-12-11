@@ -13,6 +13,12 @@ import com.fred.inventory.utils.binding.Observer;
  * Created by fred on 09.07.16.
  */
 public interface ProductListViewModel {
+  interface OnScanBarCodeButtonClickListener {
+    void onScanBarCodeButtonClicked();
+  }
+
+  void setOnScanBarCodeButtonClickListener(OnScanBarCodeButtonClickListener listener);
+
   /***
    * Prepare this view model to show details for this product list
    *
@@ -31,6 +37,8 @@ public interface ProductListViewModel {
   void onDoneButtonClick(View view);
 
   void onAddButtonClick(View view);
+
+  void onScanBarCodeButtonClick(View view);
 
   ObservableInt emptyListVisibility();
 

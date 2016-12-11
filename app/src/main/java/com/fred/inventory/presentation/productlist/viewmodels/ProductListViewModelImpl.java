@@ -42,6 +42,7 @@ public class ProductListViewModelImpl
   private final ProductListRecyclerViewAdapter adapter;
 
   private ProductList productList;
+  private OnScanBarCodeButtonClickListener scanBarCodeButtonClickListener;
 
   @Inject public ProductListViewModelImpl(GetProductListUseCase getProductListUseCase,
       SaveProductListInLocalStorageUseCase saveProductListInLocalStorageUseCase,
@@ -126,6 +127,17 @@ public class ProductListViewModelImpl
         });
 
     rxSubscriptionPool.addSubscription(getClass().getCanonicalName(), subscription);
+  }
+
+  @Override
+  public void setOnScanBarCodeButtonClickListener(OnScanBarCodeButtonClickListener listener) {
+    this.scanBarCodeButtonClickListener = listener;
+  }
+
+  @Override public void onScanBarCodeButtonClick(View view) {
+    if (scanBarCodeButtonClickListener != null) {
+      scanBarCodeButtonClickListener.onScanBarCodeButtonClicked();
+    }
   }
 
   @Override public void onAddButtonClick(View view) {
