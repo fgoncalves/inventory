@@ -228,6 +228,7 @@ public class ProductListViewModelImpl
           }
 
           @Override public void onNext(ProductListProductCombo productListProductCombo) {
+            ProductListViewModelImpl.this.productList = productListProductCombo.list;
             goToItemScreen(productListProductCombo.list, productListProductCombo.product);
           }
         });
