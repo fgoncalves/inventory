@@ -25,7 +25,6 @@ import javax.inject.Inject;
 import rx.Subscriber;
 import rx.Subscription;
 import rx.functions.Func1;
-import rx.functions.Func2;
 import timber.log.Timber;
 
 public class ProductListViewModelImpl
@@ -222,9 +221,16 @@ public class ProductListViewModelImpl
 
   @Override public void onCodeScanned(String barcode) {
     Subscription subscription = getProductInfoFromCodeUseCase.info(barcode)
-        .flatMap(new ZipProductListAndProduct())
-        .compose(transformer.<ProductListProductCombo>applySchedulers())
-        .subscribe(new Subscriber<ProductListProductCombo>() {
+        .flatMap(new Func1<Product, rx.Observable<ProductList>>() {
+          @Override public rx.Observable<ProductList> call(Product product) {
+            ProductList productList = createFromInput();
+            productList.setProducts(adapter.getItems());
+            productList.getProducts().add(product);
+            return saveProductListInLocalStorageUseCase.save(productList);
+          }
+        })
+        .compose(transformer.<ProductList>applySchedulers())
+        .subscribe(new Subscriber<ProductList>() {
           @Override public void onCompleted() {
 
           }
@@ -233,10 +239,10 @@ public class ProductListViewModelImpl
             Timber.e(e, "Failed to get the product info");
           }
 
-          @Override public void onNext(ProductListProductCombo productListProductCombo) {
-            ProductListViewModelImpl.this.productList = productListProductCombo.list;
-            goToItemScreen(productListProductCombo.list, productListProductCombo.list.getProducts()
-                .get(productListProductCombo.list.getProducts().size() - 1));
+          @Override public void onNext(ProductList productList) {
+            ProductListViewModelImpl.this.productList = productList;
+            goToItemScreen(productList,
+                productList.getProducts().get(productList.getProducts().size() - 1));
           }
         });
     rxSubscriptionPool.addSubscription(getClass().getCanonicalName(), subscription);
@@ -271,33 +277,6 @@ public class ProductListViewModelImpl
       productListName.set(productList.getName());
       productListIdObservable.set(productList.getId());
       adapter.setData(productList.getProducts());
-    }
-  }
-
-  private class ZipProductListAndProduct
-      implements Func1<Product, rx.Observable<ProductListProductCombo>> {
-    @Override public rx.Observable<ProductListProductCombo> call(Product product) {
-      ProductList productList = createFromInput();
-      productList.setProducts(adapter.getItems());
-      productList.getProducts().add(product);
-      return saveProductListInLocalStorageUseCase.save(productList)
-          .zipWith(rx.Observable.just(product),
-              new Func2<ProductList, Product, ProductListProductCombo>() {
-                @Override
-                public ProductListProductCombo call(ProductList productList, Product product) {
-                  return new ProductListProductCombo(productList, product);
-                }
-              });
-    }
-  }
-
-  private static class ProductListProductCombo {
-    ProductList list;
-    Product product;
-
-    public ProductListProductCombo(ProductList list, Product product) {
-      this.list = list;
-      this.product = product;
     }
   }
 }
