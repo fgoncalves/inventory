@@ -56,4 +56,11 @@
     <item name="android:textColor">@color/white</item>
     <item name="android:textSize">27sp</item>
   </style>
+
+  <style name="FabButton">
+    <item name="fab_size">mini</item>
+    <item name="fab_colorNormal">@color/primary_light</item>
+    <item name="fab_colorPressed">@color/primary</item>
+    <item name="fab_colorRipple">@color/pale_grey</item>
+  </style>
 </resources>

@@ -14,6 +14,8 @@
   <string name="mandatory_field">Mandatory</string>
   <string name="empty_list">There\'re no items in the list</string>
   <string name="empty_list_of_lists">You have no supply lists</string>
+  <string name="manually">Manually</string>
+  <string name="scan_code">Scan Code</string>
   <string-array name="item_types">
     <item>Item(s)</item>
     <item>Max.</item>
