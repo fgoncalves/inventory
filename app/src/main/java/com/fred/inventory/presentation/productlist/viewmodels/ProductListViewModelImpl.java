@@ -24,6 +24,8 @@ import com.fred.inventory.utils.rx.schedulers.qualifiers.IOToUiSchedulerTransfor
 import javax.inject.Inject;
 import rx.Subscriber;
 import rx.Subscription;
+import rx.functions.Func1;
+import rx.functions.Func2;
 import timber.log.Timber;
 
 public class ProductListViewModelImpl
@@ -214,8 +216,9 @@ public class ProductListViewModelImpl
 
   @Override public void onCodeScanned(String barcode) {
     Subscription subscription = getProductInfoFromCodeUseCase.info(barcode)
-        .compose(transformer.<Product>applySchedulers())
-        .subscribe(new Subscriber<Product>() {
+        .flatMap(new ZipProductListAndProduct())
+        .compose(transformer.<ProductListProductCombo>applySchedulers())
+        .subscribe(new Subscriber<ProductListProductCombo>() {
           @Override public void onCompleted() {
 
           }
@@ -224,8 +227,8 @@ public class ProductListViewModelImpl
             Timber.e(e, "Failed to get the product info");
           }
 
-          @Override public void onNext(Product product) {
-            Timber.d("Here's the retrieved shit: %s [%s]", product.getName(), product.getBarcode());
+          @Override public void onNext(ProductListProductCombo productListProductCombo) {
+            goToItemScreen(productListProductCombo.list, productListProductCombo.product);
           }
         });
     rxSubscriptionPool.addSubscription(getClass().getCanonicalName(), subscription);
@@ -260,6 +263,32 @@ public class ProductListViewModelImpl
       productListName.set(productList.getName());
       productListIdObservable.set(productList.getId());
       adapter.setData(productList.getProducts());
+    }
+  }
+
+  private class ZipProductListAndProduct
+      implements Func1<Product, rx.Observable<ProductListProductCombo>> {
+    @Override public rx.Observable<ProductListProductCombo> call(Product product) {
+      ProductList productList = createFromInput();
+      productList.getProducts().add(product);
+      return saveProductListInLocalStorageUseCase.save(productList)
+          .zipWith(rx.Observable.just(product),
+              new Func2<ProductList, Product, ProductListProductCombo>() {
+                @Override
+                public ProductListProductCombo call(ProductList productList, Product product) {
+                  return new ProductListProductCombo(productList, product);
+                }
+              });
+    }
+  }
+
+  private static class ProductListProductCombo {
+    ProductList list;
+    Product product;
+
+    public ProductListProductCombo(ProductList list, Product product) {
+      this.list = list;
+      this.product = product;
     }
   }
 }
