@@ -26,16 +26,9 @@ public class ProductListRecyclerViewItemViewModelImpl
     @Override public void onClick(View view) {
       deleteProductUseCase.delete(product)
           .compose(transformer.<Void>applySchedulers())
-          .subscribe(new Action1<Void>() {
-            @Override public void call(Void aVoid) {
-              if (deleteListener != null) deleteListener.onDelete();
-            }
-          }, new Action1<Throwable>() {
-            @Override public void call(Throwable throwable) {
-              Timber.e(throwable, "Failed to delete item from product list");
-              // TODO: Show some error here
-            }
-          });
+          .subscribe(aVoid -> {
+            if (deleteListener != null) deleteListener.onDelete();
+          }, throwable -> Timber.e(throwable, "Failed to delete item from product list"));
     }
   };
   private final View.OnClickListener itemClickListener = new View.OnClickListener() {

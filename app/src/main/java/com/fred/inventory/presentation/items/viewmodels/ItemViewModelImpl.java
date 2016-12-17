@@ -8,7 +8,6 @@ import android.text.TextWatcher;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.DatePicker;
 import android.widget.SeekBar;
 import android.widget.SpinnerAdapter;
 import com.fred.inventory.R;
@@ -42,14 +41,11 @@ public class ItemViewModelImpl implements ItemViewModel {
   private final SchedulerTransformer transformer;
   private final RxSubscriptionPool rxSubscriptionPool;
   private final DatePickerDialog.OnDateSetListener dateSetListener =
-      new DatePickerDialog.OnDateSetListener() {
-        @Override
-        public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-          Calendar calendar = Calendar.getInstance();
-          calendar.clear();
-          calendar.set(year, monthOfYear, dayOfMonth);
-          expirationDate.set(calendar.getTime());
-        }
+      (view, year, monthOfYear, dayOfMonth) -> {
+        Calendar calendar = Calendar.getInstance();
+        calendar.clear();
+        calendar.set(year, monthOfYear, dayOfMonth);
+        expirationDate.set(calendar.getTime());
       };
   private final PathManager pathManager;
   private final ArrayAdapter<CharSequence> itemSpinnerAdapter;
@@ -183,20 +179,7 @@ public class ItemViewModelImpl implements ItemViewModel {
 
     saveProductListInLocalStorageUseCase.save(productList)
         .compose(transformer.<ProductList>applySchedulers())
-        .subscribe(new Subscriber<ProductList>() {
-          @Override public void onCompleted() {
-
-          }
-
-          @Override public void onError(Throwable e) {
-            Timber.e(e, "Failed to save product in db");
-            //TODO: show some error
-          }
-
-          @Override public void onNext(ProductList productList) {
-            pathManager.back();
-          }
-        });
+        .subscribe(value -> pathManager.back(), e -> Timber.e(e, "Failed to save product in db"));
   }
 
   @Override public ObservableField<String> itemNameError() {

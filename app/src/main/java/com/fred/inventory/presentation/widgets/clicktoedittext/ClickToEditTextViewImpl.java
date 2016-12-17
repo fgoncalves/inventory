@@ -13,7 +13,6 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.ViewSwitcher;
 import com.fred.inventory.MainActivity;
-import com.fred.inventory.utils.binding.Observer;
 import javax.inject.Inject;
 
 public class ClickToEditTextViewImpl extends ViewSwitcher implements ClickToEditTextView {
@@ -131,37 +130,21 @@ public class ClickToEditTextViewImpl extends ViewSwitcher implements ClickToEdit
   }
 
   private void bindToViewModel() {
-    viewModel.bindEditableTextObserver(new Observer<String>() {
-      @Override public void update(String value) {
-        editText.setText(value);
-        editText.setSelection(editText.length());
+    viewModel.bindEditableTextObserver(value -> {
+      editText.setText(value);
+      editText.setSelection(editText.length());
+    });
+    viewModel.bindTextObserver(value -> text.setText(value));
+    viewModel.bindShowKeyboardObserver(value -> {
+      editText.requestFocus();
+      if (value) {
+        showKeyboard();
+      } else {
+        dismissKeyboard();
       }
     });
-    viewModel.bindTextObserver(new Observer<String>() {
-      @Override public void update(String value) {
-        text.setText(value);
-      }
-    });
-    viewModel.bindShowKeyboardObserver(new Observer<Boolean>() {
-      @Override public void update(Boolean value) {
-        editText.requestFocus();
-        if (value) {
-          showKeyboard();
-        } else {
-          dismissKeyboard();
-        }
-      }
-    });
-    viewModel.bindSwitchToEditTextViewObserver(new Observer<Void>() {
-      @Override public void update(Void value) {
-        showNext();
-      }
-    });
-    viewModel.bindSwitchToTextViewObserver(new Observer<Void>() {
-      @Override public void update(Void value) {
-        showPrevious();
-      }
-    });
+    viewModel.bindSwitchToEditTextViewObserver(value -> showNext());
+    viewModel.bindSwitchToTextViewObserver(value -> showPrevious());
     editText.addTextChangedListener(viewModel.textWatcher());
     editText.setOnEditorActionListener(viewModel.editorActionListener());
     text.setOnClickListener(viewModel.textViewClickListener());

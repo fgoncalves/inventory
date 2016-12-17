@@ -18,10 +18,6 @@ public class IOToUiSchedulerTransformer implements SchedulerTransformer {
   }
 
   @Override public <T> Observable.Transformer<T, T> applySchedulers() {
-    return new Observable.Transformer<T, T>() {
-      @Override public Observable<T> call(Observable<T> observable) {
-        return observable.subscribeOn(subscribeOnScheduler).observeOn(observeOnScheduler);
-      }
-    };
+    return observable -> observable.subscribeOn(subscribeOnScheduler).observeOn(observeOnScheduler);
   }
 }

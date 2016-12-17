@@ -7,7 +7,6 @@ import com.fred.inventory.domain.translators.Translator;
 import javax.inject.Inject;
 import rx.Observable;
 import rx.functions.Func0;
-import rx.functions.Func1;
 
 public class DeleteProductUseCaseImpl implements DeleteProductUseCase {
   private final ProductService productService;
@@ -21,14 +20,8 @@ public class DeleteProductUseCaseImpl implements DeleteProductUseCase {
   }
 
   @Override public Observable<Void> delete(final Product product) {
-    return Observable.fromCallable(new Func0<com.fred.inventory.data.db.models.Product>() {
-      @Override public com.fred.inventory.data.db.models.Product call() {
-        return translator.translate(product);
-      }
-    }).flatMap(new Func1<com.fred.inventory.data.db.models.Product, Observable<Void>>() {
-      @Override public Observable<Void> call(com.fred.inventory.data.db.models.Product product) {
-        return productService.delete(product);
-      }
-    });
+    return Observable.fromCallable(
+        (Func0<com.fred.inventory.data.db.models.Product>) () -> translator.translate(product))
+        .flatMap(productService::delete);
   }
 }

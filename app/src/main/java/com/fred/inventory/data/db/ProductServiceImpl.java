@@ -12,11 +12,7 @@ import rx.functions.Func1;
 
 public class ProductServiceImpl implements ProductService {
   private final static Func1<ProductList, Boolean> FILTER_OUT_NULLS =
-      new Func1<ProductList, Boolean>() {
-        @Override public Boolean call(ProductList productList) {
-          return productList != null;
-        }
-      };
+      productList -> productList != null;
   private final RealmWrapper realmWrapper;
 
   @Inject public ProductServiceImpl(RealmWrapper realmWrapper) {
@@ -24,23 +20,13 @@ public class ProductServiceImpl implements ProductService {
   }
 
   @Override public Observable<List<ProductList>> all() {
-    return Observable.fromCallable(new Callable<List<ProductList>>() {
-      @Override public List<ProductList> call() throws Exception {
-        return realmWrapper.all(ProductList.class);
-      }
-    }).filter(new Func1<List<ProductList>, Boolean>() {
-      @Override public Boolean call(List<ProductList> productLists) {
-        return !productLists.isEmpty();
-      }
-    });
+    return Observable.fromCallable(() -> realmWrapper.all(ProductList.class))
+        .filter(productLists -> !productLists.isEmpty());
   }
 
   @Override public Observable<ProductList> productList(final String id) {
-    return Observable.fromCallable(new Callable<ProductList>() {
-      @Override public ProductList call() throws Exception {
-        return realmWrapper.get(ProductList.class, id);
-      }
-    }).filter(FILTER_OUT_NULLS);
+    return Observable.fromCallable(() -> realmWrapper.get(ProductList.class, id))
+        .filter(FILTER_OUT_NULLS);
   }
 
   @Override public Observable<ProductList> createOrUpdate(final ProductList productList) {
@@ -51,21 +37,13 @@ public class ProductServiceImpl implements ProductService {
       if (StringUtils.isBlank(product.getId())) product.setId(UniqueIdGenerator.id());
     }
 
-    return Observable.fromCallable(new Callable<ProductList>() {
-      @Override public ProductList call() throws Exception {
-        return realmWrapper.store(productList);
-      }
-    });
+    return Observable.fromCallable(() -> realmWrapper.store(productList));
   }
 
   @Override public Observable<Product> createOrUpdate(final Product product) {
     if (StringUtils.isBlank(product.getId())) product.setId(UniqueIdGenerator.id());
 
-    return Observable.fromCallable(new Callable<Product>() {
-      @Override public Product call() throws Exception {
-        return realmWrapper.store(product);
-      }
-    });
+    return Observable.fromCallable(() -> realmWrapper.store(product));
   }
 
   @Override public Observable<Void> delete(final Product product) {

@@ -39,22 +39,16 @@ public class ProductListRecyclerViewAdapterImpl
     final Product product = products.get(position);
     holder.viewModel.onBindViewHolder(product);
 
-    holder.viewModel.setOnDeleteListener(
-        new ProductListRecyclerViewItemViewModel.OnDeleteListener() {
-          @Override public void onDelete() {
-            Product item = products.remove(holder.getAdapterPosition());
-            notifyDataSetChanged();
-            if (onProductDeletedListener != null) onProductDeletedListener.onProductDeleted(item);
-          }
-        });
-    holder.viewModel.setOnItemClickListener(
-        new ProductListRecyclerViewItemViewModel.OnItemClickListener() {
-          @Override public void onClicked() {
-            if (onItemClickListener != null) {
-              onItemClickListener.onItemClicked(products.get(holder.getAdapterPosition()));
-            }
-          }
-        });
+    holder.viewModel.setOnDeleteListener(() -> {
+      Product item = products.remove(holder.getAdapterPosition());
+      notifyDataSetChanged();
+      if (onProductDeletedListener != null) onProductDeletedListener.onProductDeleted(item);
+    });
+    holder.viewModel.setOnItemClickListener(() -> {
+      if (onItemClickListener != null) {
+        onItemClickListener.onItemClicked(products.get(holder.getAdapterPosition()));
+      }
+    });
   }
 
   @Override public int getItemCount() {

@@ -116,20 +116,7 @@ public class ProductListViewModelImpl
 
     Subscription subscription = saveProductListInLocalStorageUseCase.save(productList)
         .compose(transformer.<ProductList>applySchedulers())
-        .subscribe(new Subscriber<ProductList>() {
-          @Override public void onCompleted() {
-
-          }
-
-          @Override public void onError(Throwable e) {
-            Timber.d(e, "Failed to save product list");
-            // TODO: Update state with error
-          }
-
-          @Override public void onNext(ProductList productList) {
-            pathManager.back();
-          }
-        });
+        .subscribe(value -> pathManager.back(), e -> Timber.d(e, "Failed to save product list"));
 
     rxSubscriptionPool.addSubscription(getClass().getCanonicalName(), subscription);
   }
@@ -163,21 +150,10 @@ public class ProductListViewModelImpl
 
     Subscription subscription = saveProductListInLocalStorageUseCase.save(productList)
         .compose(transformer.<ProductList>applySchedulers())
-        .subscribe(new Subscriber<ProductList>() {
-          @Override public void onCompleted() {
-
-          }
-
-          @Override public void onError(Throwable e) {
-            Timber.d(e, "Failed to save product list");
-            // TODO: Update state with error
-          }
-
-          @Override public void onNext(ProductList productList) {
-            ProductListViewModelImpl.this.productList = productList;
-            goToItemScreen(productList, null);
-          }
-        });
+        .subscribe(value -> {
+          ProductListViewModelImpl.this.productList = productList;
+          goToItemScreen(productList, null);
+        }, e -> Timber.d(e, "Failed to save product list"));
 
     rxSubscriptionPool.addSubscription(getClass().getCanonicalName(), subscription);
   }

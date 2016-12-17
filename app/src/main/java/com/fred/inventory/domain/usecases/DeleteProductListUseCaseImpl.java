@@ -26,15 +26,14 @@ public class DeleteProductListUseCaseImpl implements DeleteProductListUseCase {
   }
 
   @Override public Observable<Void> delete(final ProductList productList) {
-    return Observable.fromCallable(new Func0<com.fred.inventory.data.db.models.ProductList>() {
-      @Override public com.fred.inventory.data.db.models.ProductList call() {
-        return translator.translate(productList);
-      }
-    }).flatMap(new Func1<com.fred.inventory.data.db.models.ProductList, Observable<Void>>() {
-      @Override
-      public Observable<Void> call(com.fred.inventory.data.db.models.ProductList productList) {
-        return productService.delete(productList);
-      }
-    });
+    return Observable.fromCallable(
+        (Func0<com.fred.inventory.data.db.models.ProductList>) () -> translator.translate(
+            productList))
+        .flatMap(new Func1<com.fred.inventory.data.db.models.ProductList, Observable<Void>>() {
+          @Override
+          public Observable<Void> call(com.fred.inventory.data.db.models.ProductList productList) {
+            return productService.delete(productList);
+          }
+        });
   }
 }

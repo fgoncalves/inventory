@@ -1,6 +1,6 @@
 package com.fred.inventory.domain.usecases;
 
-import com.android.annotations.NonNull;
+import android.support.annotation.NonNull;
 import com.fred.inventory.domain.models.Product;
 import rx.Observable;
 

@@ -9,7 +9,6 @@ import com.fred.inventory.domain.usecases.DeleteProductListUseCase;
 import com.fred.inventory.utils.rx.schedulers.SchedulerTransformer;
 import com.fred.inventory.utils.rx.schedulers.qualifiers.IOToUiSchedulerTransformer;
 import javax.inject.Inject;
-import rx.functions.Action1;
 import timber.log.Timber;
 
 public class ListOfProductListsItemViewModelImpl implements ListOfProductListsItemViewModel {
@@ -19,16 +18,9 @@ public class ListOfProductListsItemViewModelImpl implements ListOfProductListsIt
     @Override public void onClick(View view) {
       deleteProductListUseCase.delete(productList)
           .compose(transformer.<Void>applySchedulers())
-          .subscribe(new Action1<Void>() {
-            @Override public void call(Void aVoid) {
-              if (onDeleteButtonClick != null) onDeleteButtonClick.onDeleteClicked();
-            }
-          }, new Action1<Throwable>() {
-            @Override public void call(Throwable throwable) {
-              Timber.e(throwable, "Failed to delte product list");
-              // TODO: Do something in the ui
-            }
-          });
+          .subscribe(aVoid -> {
+            if (onDeleteButtonClick != null) onDeleteButtonClick.onDeleteClicked();
+          }, throwable -> Timber.e(throwable, "Failed to delte product list"));
     }
   };
   private final View.OnClickListener itemClickListener = new View.OnClickListener() {

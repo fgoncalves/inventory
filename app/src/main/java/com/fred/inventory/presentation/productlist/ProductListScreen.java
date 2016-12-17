@@ -66,12 +66,7 @@ public class ProductListScreen extends BaseScreen {
     MainActivity.scoped(new ProductListModule()).inject(this);
     binding.setViewModel(viewModel);
 
-    viewModel.setOnScanBarCodeButtonClickListener(
-        new ProductListViewModel.OnScanBarCodeButtonClickListener() {
-          @Override public void onScanBarCodeButtonClicked() {
-            startBarcodeScanner();
-          }
-        });
+    viewModel.setOnScanBarCodeButtonClickListener(this::startBarcodeScanner);
 
     return binding.getRoot();
   }

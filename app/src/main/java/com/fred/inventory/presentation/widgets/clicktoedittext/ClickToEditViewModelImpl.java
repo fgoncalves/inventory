@@ -2,7 +2,6 @@ package com.fred.inventory.presentation.widgets.clicktoedittext;
 
 import android.support.annotation.NonNull;
 import android.text.TextWatcher;
-import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.TextView;
@@ -20,42 +19,32 @@ public class ClickToEditViewModelImpl implements ClickToEditViewModel {
   private final Observable<ClickToEditTextView.ClickToEditTextViewState> stateObservable =
       Observable.create();
   private final ObservableTextWatcher textWatcher =
-      (ObservableTextWatcher) ObservableTextWatcher.create().bind(new Observer<String>() {
-        @Override public void update(String value) {
-          editableTextObservable.set(value);
-          textObservable.set(value);
-        }
+      (ObservableTextWatcher) ObservableTextWatcher.create().bind(value -> {
+        editableTextObservable.set(value);
+        textObservable.set(value);
       });
-  private final TextView.OnEditorActionListener editorActionListener =
-      new TextView.OnEditorActionListener() {
-        @Override public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-          if (actionId == EditorInfo.IME_ACTION_DONE) {
-            stateObservable.set(ClickToEditTextView.ClickToEditTextViewState.NON_EDITABLE);
-            showKeyBoardObservable.set(false);
-            return true;
-          }
-          return false;
-        }
-      };
-  private final View.OnClickListener textClickListener = new View.OnClickListener() {
-    @Override public void onClick(View v) {
-      stateObservable.set(ClickToEditTextView.ClickToEditTextViewState.EDITABLE);
-      showKeyBoardObservable.set(true);
+  private final TextView.OnEditorActionListener editorActionListener = (v, actionId, event) -> {
+    if (actionId == EditorInfo.IME_ACTION_DONE) {
+      stateObservable.set(ClickToEditTextView.ClickToEditTextViewState.NON_EDITABLE);
+      showKeyBoardObservable.set(false);
+      return true;
     }
+    return false;
+  };
+  private final View.OnClickListener textClickListener = v -> {
+    stateObservable.set(ClickToEditTextView.ClickToEditTextViewState.EDITABLE);
+    showKeyBoardObservable.set(true);
   };
   // This one is simply internal
-  private final Observer<ClickToEditTextView.ClickToEditTextViewState> stateObserver =
-      new Observer<ClickToEditTextView.ClickToEditTextViewState>() {
-        @Override public void update(ClickToEditTextView.ClickToEditTextViewState value) {
-          switch (value) {
-            case NON_EDITABLE:
-              switchToTextView.set(null);
-              break;
-            case EDITABLE:
-              switchToEditTextView.set(null);
-          }
-        }
-      };
+  private final Observer<ClickToEditTextView.ClickToEditTextViewState> stateObserver = value -> {
+    switch (value) {
+      case NON_EDITABLE:
+        switchToTextView.set(null);
+        break;
+      case EDITABLE:
+        switchToEditTextView.set(null);
+    }
+  };
 
   @Inject public ClickToEditViewModelImpl() {
   }
