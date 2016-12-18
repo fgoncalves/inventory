@@ -19,19 +19,19 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 public class ProductServiceImplTest {
-  @Mock RealmWrapper realmWrapper;
+  @Mock OrmWrapper ormWrapper;
 
   private ProductServiceImpl service;
 
   @Before public void setUp() throws Exception {
     MockitoAnnotations.initMocks(this);
 
-    service = new ProductServiceImpl(realmWrapper);
+    service = new ProductServiceImpl(ormWrapper);
   }
 
   @Test public void all_shouldReturnEmptyIfThereAreNoObjectsInTheDatabaseOfTheRequestedType() {
     TestSubscriber<List<ProductList>> testSubscriber = new TestSubscriber<>();
-    when(realmWrapper.all(any(Class.class))).thenReturn(new ArrayList());
+    when(ormWrapper.all(any(Class.class))).thenReturn(new ArrayList());
 
     service.all()
         .subscribeOn(Schedulers.immediate())
@@ -48,7 +48,7 @@ public class ProductServiceImplTest {
     ProductList productList = new ProductList();
     List<ProductList> lists = new ArrayList<>();
     lists.add(productList);
-    when(realmWrapper.all(any(Class.class))).thenReturn(lists);
+    when(ormWrapper.all(any(Class.class))).thenReturn(lists);
 
     service.all()
         .subscribeOn(Schedulers.immediate())
@@ -62,7 +62,7 @@ public class ProductServiceImplTest {
 
   @Test public void productList_shouldReturnEmptyIfTheSpecifiedObjectDoesntExist() {
     TestSubscriber<ProductList> testSubscriber = new TestSubscriber<>();
-    when(realmWrapper.get(any(Class.class), anyString())).thenReturn(null);
+    when(ormWrapper.get(any(Class.class), anyString())).thenReturn(null);
 
     service.productList("foo")
         .subscribeOn(Schedulers.immediate())
@@ -77,7 +77,7 @@ public class ProductServiceImplTest {
   @Test public void productList_shouldReturnTheFoundObjectWhenThereIsOneInTheLocalStorage() {
     TestSubscriber<ProductList> testSubscriber = new TestSubscriber<>();
     ProductList productList = new ProductList();
-    when(realmWrapper.get(any(Class.class), anyString())).thenReturn(productList);
+    when(ormWrapper.get(any(Class.class), anyString())).thenReturn(productList);
 
     service.productList("foo")
         .subscribeOn(Schedulers.immediate())
@@ -100,7 +100,7 @@ public class ProductServiceImplTest {
   @Test public void createOrUpdate_shouldStoreProductListToRealm() {
     TestSubscriber<ProductList> testSubscriber = new TestSubscriber<>();
     ProductList productList = new ProductList();
-    when(realmWrapper.store(any(ProductList.class))).thenReturn(productList);
+    when(ormWrapper.store(any(ProductList.class))).thenReturn(productList);
 
     service.createOrUpdate(productList)
         .subscribeOn(Schedulers.immediate())
@@ -124,7 +124,7 @@ public class ProductServiceImplTest {
     TestSubscriber<Product> testSubscriber = new TestSubscriber<>();
     Product product = new Product();
     product.setId("some id");
-    when(realmWrapper.store(any(Product.class))).thenReturn(product);
+    when(ormWrapper.store(any(Product.class))).thenReturn(product);
 
     service.createOrUpdate(product)
         .subscribeOn(Schedulers.immediate())

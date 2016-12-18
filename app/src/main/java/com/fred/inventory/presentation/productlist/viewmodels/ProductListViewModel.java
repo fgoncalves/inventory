@@ -24,7 +24,7 @@ public interface ProductListViewModel {
    *
    * @param id The id of the product list
    */
-  void forProductList(String id);
+  void forProductList(Long id);
 
   void onActivityCreated();
 
@@ -46,11 +46,11 @@ public interface ProductListViewModel {
 
   ObservableInt progressBarVisibility();
 
-  void unbindProductListIdObserver(Observer<String> observer);
+  void unbindProductListIdObserver(Observer<Long> observer);
 
-  void bindProductListIdObserver(Observer<String> observer);
+  void bindProductListIdObserver(Observer<Long> observer);
 
-  RecyclerView.Adapter productListRecyclerViewAdapter();
+  RecyclerView.Adapter<?> productListRecyclerViewAdapter();
 
   void onCodeScanned(String barcode);
 }

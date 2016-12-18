@@ -15,5 +15,5 @@ public interface GetProductListUseCase {
    * @param id The product list id
    * @return An observable for the product list. Empty if there is no product list with the given id
    */
-  Observable<ProductList> get(String id);
+  Observable<ProductList> get(Long id);
 }

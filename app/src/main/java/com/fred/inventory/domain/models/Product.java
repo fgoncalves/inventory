@@ -1,6 +1,5 @@
 package com.fred.inventory.domain.models;
 
-import io.realm.annotations.PrimaryKey;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -9,7 +8,7 @@ public class Product {
   /**
    * Same as the bar code
    */
-  @PrimaryKey private String id;
+  private Long id;
   private String name;
   private List<Image> images = new ArrayList<>();
   private String barcode;
@@ -18,11 +17,11 @@ public class Product {
   private Date expirationDate;
   private boolean unit;
 
-  public String getId() {
+  public Long getId() {
     return id;
   }
 
-  public void setId(String id) {
+  public void setId(Long id) {
     this.id = id;
   }
 

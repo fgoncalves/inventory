@@ -1,6 +1,5 @@
 apply plugin: 'com.android.application'
 apply plugin: 'jacoco'
-apply plugin: 'realm-android'
 
 android {
   dataBinding {
@@ -14,7 +13,7 @@ android {
 
   defaultConfig {
     applicationId "com.fred.inventory"
-    minSdkVersion 17
+    minSdkVersion 22
     targetSdkVersion 25
     versionCode 1
     versionName "1.0"
@@ -55,6 +54,9 @@ dependencies {
   compile 'com.github.frankiesardo:icepick:2.3.6'
   compile 'com.github.clans:fab:1.6.4'
   compile 'com.journeyapps:zxing-android-embedded:3.4.0'
+  compile 'nl.qbusict:cupboard:2.2.0'
+  compile 'nl.littlerobots.cupboard-tools:provider:0.3.1'
+  compile 'nl.littlerobots.cupboard-tools:gson:0.3.1'
 
   testCompile 'junit:junit:4.12'
   testCompile 'org.mockito:mockito-core:2.0.39-beta'

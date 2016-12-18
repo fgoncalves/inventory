@@ -1,23 +1,22 @@
 package com.fred.inventory.data.db.models;
 
-import io.realm.RealmList;
-import io.realm.RealmObject;
-import io.realm.annotations.PrimaryKey;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * This class represents a product list. Basically it's possible to have more than one list of
  * supplies.
  */
-public class ProductList extends RealmObject {
-  @PrimaryKey private String id;
+public class ProductList implements Entity {
+  private Long _id;
   private String name;
-  private RealmList<Product> products = new RealmList<>();
+  private List<Product> products = new ArrayList<>();
 
-  public RealmList<Product> getProducts() {
+  public List<Product> getProducts() {
     return products;
   }
 
-  public void setProducts(RealmList<Product> products) {
+  public void setProducts(List<Product> products) {
     this.products = products;
   }
 
@@ -29,11 +28,11 @@ public class ProductList extends RealmObject {
     this.name = name;
   }
 
-  public String getId() {
-    return id;
+  @Override public Long getId() {
+    return _id;
   }
 
-  public void setId(String id) {
-    this.id = id;
+  @Override public void setId(Long id) {
+    this._id = id;
   }
 }

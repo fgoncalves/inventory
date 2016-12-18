@@ -29,11 +29,11 @@ public class ItemScreen extends BaseScreen {
    * @param productListId The product list id to display the item for
    * @return The instance of the screen to use
    */
-  public static ItemScreen newInstance(@NonNull String productListId) {
+  public static ItemScreen newInstance(@NonNull Long productListId) {
     ItemScreen itemScreen = new ItemScreen();
 
     Bundle args = new Bundle();
-    args.putString(PRODUCT_LIST_ID, productListId);
+    args.putLong(PRODUCT_LIST_ID, productListId);
     itemScreen.setArguments(args);
 
     return itemScreen;
@@ -47,12 +47,12 @@ public class ItemScreen extends BaseScreen {
    * @param productId The product to display
    * @return The instance of the screen to use
    */
-  public static ItemScreen newInstance(@NonNull String productListId, @NonNull String productId) {
+  public static ItemScreen newInstance(@NonNull Long productListId, @NonNull Long productId) {
     ItemScreen itemScreen = new ItemScreen();
 
     Bundle args = new Bundle();
-    args.putString(PRODUCT_LIST_ID, productListId);
-    args.putString(PRODUCT_ID, productId);
+    args.putLong(PRODUCT_LIST_ID, productListId);
+    args.putLong(PRODUCT_ID, productId);
     itemScreen.setArguments(args);
 
     return itemScreen;
@@ -71,8 +71,8 @@ public class ItemScreen extends BaseScreen {
 
   @Override public void onResume() {
     super.onResume();
-    viewModel.forProductList(getArguments().getString(PRODUCT_LIST_ID));
-    viewModel.forProduct(getArguments().getString(PRODUCT_ID));
+    viewModel.forProductList(getArguments().getLong(PRODUCT_LIST_ID));
+    viewModel.forProduct(getArguments().getLong(PRODUCT_ID));
     viewModel.onResume();
   }
 

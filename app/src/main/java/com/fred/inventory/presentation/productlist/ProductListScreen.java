@@ -8,7 +8,6 @@ import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 import com.fred.inventory.MainActivity;
 import com.fred.inventory.R;
 import com.fred.inventory.databinding.ProductListBinding;
@@ -24,15 +23,15 @@ import javax.inject.Inject;
 
 public class ProductListScreen extends BaseScreen {
   private static final String PRODUCT_LIST_ID_BUNDLE_KEY = "product.lis.id";
-  private final Observer<String> productListIdObserver = new Observer<String>() {
-    @Override public void update(String value) {
+  private final Observer<Long> productListIdObserver = new Observer<Long>() {
+    @Override public void update(Long value) {
       productListId = value;
     }
   };
 
   @Inject ProductListViewModel viewModel;
 
-  @Icicle String productListId;
+  @Icicle long productListId;
 
   /**
    * Create a product list screen for no product list in specific. Use this when creating a new
@@ -50,10 +49,10 @@ public class ProductListScreen extends BaseScreen {
    * @param productListId Product list id of the list to show
    * @return The product list screen
    */
-  public static ProductListScreen newInstance(String productListId) {
+  public static ProductListScreen newInstance(Long productListId) {
     ProductListScreen fragment = new ProductListScreen();
     Bundle args = new Bundle();
-    args.putString(PRODUCT_LIST_ID_BUNDLE_KEY, productListId);
+    args.putLong(PRODUCT_LIST_ID_BUNDLE_KEY, productListId);
     fragment.setArguments(args);
     return fragment;
   }
@@ -83,7 +82,7 @@ public class ProductListScreen extends BaseScreen {
   @Override public void onActivityCreated(Bundle savedInstanceState) {
     super.onActivityCreated(savedInstanceState);
     if (getArguments() != null) {
-      productListId = getArguments().getString(PRODUCT_LIST_ID_BUNDLE_KEY);
+      productListId = getArguments().getLong(PRODUCT_LIST_ID_BUNDLE_KEY);
     }
     Icepick.restoreInstanceState(this, savedInstanceState);
     viewModel.forProductList(productListId);

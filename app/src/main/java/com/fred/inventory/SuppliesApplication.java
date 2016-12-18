@@ -2,7 +2,10 @@ package com.fred.inventory;
 
 import android.app.Application;
 import com.fred.inventory.utils.timber.CrashReportingTree;
-import io.realm.Realm;
+import com.google.gson.Gson;
+import nl.littlerobots.cupboard.tools.gson.GsonListFieldConverterFactory;
+import nl.qbusict.cupboard.CupboardBuilder;
+import nl.qbusict.cupboard.CupboardFactory;
 import timber.log.Timber;
 
 /**
@@ -14,7 +17,8 @@ public class SuppliesApplication extends Application {
   @Override public void onCreate() {
     super.onCreate();
     setupTimber();
-    Realm.init(this);
+    CupboardFactory.setCupboard(new CupboardBuilder().
+        registerFieldConverterFactory(new GsonListFieldConverterFactory(new Gson())).build());
   }
 
   /**

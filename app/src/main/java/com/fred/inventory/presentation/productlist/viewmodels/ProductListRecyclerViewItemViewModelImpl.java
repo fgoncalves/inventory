@@ -9,7 +9,6 @@ import com.fred.inventory.utils.rx.schedulers.SchedulerTransformer;
 import com.fred.inventory.utils.rx.schedulers.qualifiers.IOToUiSchedulerTransformer;
 import java.util.Date;
 import javax.inject.Inject;
-import rx.functions.Action1;
 import timber.log.Timber;
 
 public class ProductListRecyclerViewItemViewModelImpl

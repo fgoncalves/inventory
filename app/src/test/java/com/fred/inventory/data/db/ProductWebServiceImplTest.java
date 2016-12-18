@@ -14,17 +14,17 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
 public class ProductWebServiceImplTest {
-  @Mock RealmWrapper realmWrapper;
+  @Mock OrmWrapper ormWrapper;
 
   ProductServiceImpl productService;
 
   @Before public void setUp() throws Exception {
     MockitoAnnotations.initMocks(this);
-    productService = new ProductServiceImpl(realmWrapper);
+    productService = new ProductServiceImpl(ormWrapper);
   }
 
   @Test public void all_shouldCallOnCompleteWithoutAnyOnNextCallsBecauseListIsEmpty() {
-    when(realmWrapper.all(ProductList.class)).thenReturn(new ArrayList<ProductList>());
+    when(ormWrapper.all(ProductList.class)).thenReturn(new ArrayList<ProductList>());
 
     TestSubscriber<List<ProductList>> testSubscriber = new TestSubscriber<>();
     productService.all()
@@ -41,7 +41,7 @@ public class ProductWebServiceImplTest {
     ProductList productList = new ProductList();
     List<ProductList> listOflists = new ArrayList<>();
     listOflists.add(productList);
-    when(realmWrapper.all(ProductList.class)).thenReturn(listOflists);
+    when(ormWrapper.all(ProductList.class)).thenReturn(listOflists);
 
     TestSubscriber<List<ProductList>> testSubscriber = new TestSubscriber<>();
     productService.all()

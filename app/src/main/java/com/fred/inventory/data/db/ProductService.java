@@ -24,7 +24,7 @@ public interface ProductService {
    * @param id The list's id
    * @return An observable for the product list. Will be empty if none is found.
    */
-  Observable<ProductList> productList(String id);
+  Observable<ProductList> productList(Long id);
 
   /**
    * Create or update the given product list. If the list has an id, then an update will be

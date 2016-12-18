@@ -14,7 +14,7 @@ public class UniqueIdGenerator {
    *
    * @return A unique random id
    */
-  public static String id() {
-    return new BigInteger(130, random).toString(32);
+  public static Long id() {
+    return new BigInteger(130, random).longValue();
   }
 }

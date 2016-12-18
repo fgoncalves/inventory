@@ -39,7 +39,7 @@ public class ProductListViewModelImpl
   private final ObservableInt listVisibility = new ObservableInt(View.GONE);
   private final ObservableInt emptyListVisibility = new ObservableInt(View.GONE);
   private final ObservableInt progressBarVisibility = new ObservableInt(View.GONE);
-  private final Observable<String> productListIdObservable = Observable.create();
+  private final Observable<Long> productListIdObservable = Observable.create();
   private final PathManager pathManager;
   private final ProductListRecyclerViewAdapter adapter;
   private final GetProductInfoFromCodeUseCase getProductInfoFromCodeUseCase;
@@ -62,7 +62,7 @@ public class ProductListViewModelImpl
     this.getProductInfoFromCodeUseCase = getProductInfoFromCodeUseCase;
   }
 
-  @Override public void forProductList(String id) {
+  @Override public void forProductList(Long id) {
     productListIdObservable.set(id);
   }
 
@@ -70,7 +70,7 @@ public class ProductListViewModelImpl
     adapter.setOnProductDeletedListener(this);
     adapter.setOnItemClickListener(this);
 
-    if (StringUtils.isBlank(productListIdObservable.get())) {
+    if (productListIdObservable.get() == null) {
       emptyListVisibility.set(View.VISIBLE);
       // TODO: put input in text view
       return;
@@ -98,7 +98,7 @@ public class ProductListViewModelImpl
 
   private void queryForProductList() {
     Subscription subscription = getProductListUseCase.get(productListIdObservable.get())
-        .compose(transformer.<ProductList>applySchedulers())
+        .compose(transformer.applySchedulers())
         .subscribe(new ProductListSubscriber());
 
     rxSubscriptionPool.addSubscription(getClass().getCanonicalName(), subscription);
@@ -115,7 +115,7 @@ public class ProductListViewModelImpl
     productList.setProducts(adapter.getItems());
 
     Subscription subscription = saveProductListInLocalStorageUseCase.save(productList)
-        .compose(transformer.<ProductList>applySchedulers())
+        .compose(transformer.applySchedulers())
         .subscribe(value -> pathManager.back(), e -> Timber.d(e, "Failed to save product list"));
 
     rxSubscriptionPool.addSubscription(getClass().getCanonicalName(), subscription);
@@ -149,7 +149,7 @@ public class ProductListViewModelImpl
     productList.setProducts(adapter.getItems());
 
     Subscription subscription = saveProductListInLocalStorageUseCase.save(productList)
-        .compose(transformer.<ProductList>applySchedulers())
+        .compose(transformer.applySchedulers())
         .subscribe(value -> {
           ProductListViewModelImpl.this.productList = productList;
           goToItemScreen(productList, null);
@@ -166,16 +166,16 @@ public class ProductListViewModelImpl
     return listVisibility;
   }
 
-  @Override public void unbindProductListIdObserver(Observer<String> observer) {
+  @Override public void unbindProductListIdObserver(Observer<Long> observer) {
     productListIdObservable.unbind(observer);
   }
 
-  @Override public void bindProductListIdObserver(Observer<String> observer) {
+  @Override public void bindProductListIdObserver(Observer<Long> observer) {
     productListIdObservable.bind(observer);
   }
 
-  @Override public RecyclerView.Adapter productListRecyclerViewAdapter() {
-    return (RecyclerView.Adapter) adapter;
+  @Override public RecyclerView.Adapter<?> productListRecyclerViewAdapter() {
+    return (RecyclerView.Adapter<?>) adapter;
   }
 
   private ProductList createFromInput() {
@@ -205,22 +205,13 @@ public class ProductListViewModelImpl
             return saveProductListInLocalStorageUseCase.save(productList);
           }
         })
-        .compose(transformer.<ProductList>applySchedulers())
-        .subscribe(new Subscriber<ProductList>() {
-          @Override public void onCompleted() {
+        .compose(transformer.applySchedulers())
+        .subscribe(productList -> {
+          ProductListViewModelImpl.this.productList = productList;
+          goToItemScreen(productList,
+              productList.getProducts().get(productList.getProducts().size() - 1));
+        }, e -> Timber.e(e, "Failed to get the product info"));
 
-          }
-
-          @Override public void onError(Throwable e) {
-            Timber.e(e, "Failed to get the product info");
-          }
-
-          @Override public void onNext(ProductList productList) {
-            ProductListViewModelImpl.this.productList = productList;
-            goToItemScreen(productList,
-                productList.getProducts().get(productList.getProducts().size() - 1));
-          }
-        });
     rxSubscriptionPool.addSubscription(getClass().getCanonicalName(), subscription);
   }
 

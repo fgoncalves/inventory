@@ -18,7 +18,7 @@ public class GetProductListUseCaseImpl implements GetProductListUseCase {
     this.translator = translator;
   }
 
-  @Override public Observable<ProductList> get(String id) {
+  @Override public Observable<ProductList> get(Long id) {
     Timber.d("Retrieving product list with id %s", id);
     return service.productList(id).map(translator::translate);
   }

@@ -15,6 +15,7 @@ public class DBImageToImageTranslator
   @Override public Image translate(com.fred.inventory.data.db.models.Image model) {
     Image image = new Image();
     image.setName(model.getName());
+    image.setId(model.getId());
     return image;
   }
 }

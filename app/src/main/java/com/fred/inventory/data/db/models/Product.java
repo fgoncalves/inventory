@@ -1,12 +1,11 @@
 package com.fred.inventory.data.db.models;
 
-import io.realm.RealmList;
-import io.realm.RealmObject;
-import io.realm.annotations.PrimaryKey;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
-public class Product extends RealmObject {
-  @PrimaryKey private String id;
+public class Product implements Entity {
+  private Long _id;
   private String name;
   /**
    * Internal quantity intended only for display purposes
@@ -16,7 +15,7 @@ public class Product extends RealmObject {
   private String barcode;
   private String quantityLabel;
   private Date expirationDate;
-  private RealmList<Image> images = new RealmList<>();
+  private List<Image> images = new ArrayList<>();
 
   public String getName() {
     return name;
@@ -26,19 +25,19 @@ public class Product extends RealmObject {
     this.name = name;
   }
 
-  public String getId() {
-    return id;
+  @Override public Long getId() {
+    return _id;
   }
 
-  public void setId(String id) {
-    this.id = id;
+  @Override public void setId(Long id) {
+    this._id = id;
   }
 
-  public RealmList<Image> getImages() {
+  public List<Image> getImages() {
     return images;
   }
 
-  public void setImages(RealmList<Image> images) {
+  public void setImages(List<Image> images) {
     this.images = images;
   }
 

@@ -61,8 +61,8 @@ public class ListOfProductListsViewModelImpl
     rxSubscriptionPool.unsubscribeFrom(getClass().getCanonicalName());
   }
 
-  @Override public RecyclerView.Adapter adapter() {
-    return (RecyclerView.Adapter) adapter;
+  @Override public RecyclerView.Adapter<?> adapter() {
+    return (RecyclerView.Adapter<?>) adapter;
   }
 
   @Override public View.OnClickListener addButtonClickListener() {

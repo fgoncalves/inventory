@@ -1,6 +1,6 @@
 package com.fred.inventory.data.db;
 
-import io.realm.RealmObject;
+import com.fred.inventory.data.db.models.Entity;
 import java.util.List;
 
 /**
@@ -8,14 +8,14 @@ import java.util.List;
  * <p/>
  * Created by fred on 13.03.16.
  */
-public interface RealmWrapper {
+public interface OrmWrapper {
   /**
    * Get all objects from Realm with the given class
    *
    * @param clazz The class of the objects to return
    * @return The list of objects in the realm
    */
-  <T extends RealmObject> List<T> all(Class<T> clazz);
+  <T extends Entity> List<T> all(Class<T> clazz);
 
   /**
    * Get the first occurrence of the given object from realm with the given id.
@@ -24,7 +24,7 @@ public interface RealmWrapper {
    * @param id The id of the object to retrieve
    * @return The first occurrence of the object or null if none is found
    */
-  <T extends RealmObject> T get(Class<T> clazz, String id);
+  <T extends Entity> T get(Class<T> clazz, Long id);
 
   /**
    * Store the given object into realm. If the object exists it will be updated.
@@ -34,7 +34,7 @@ public interface RealmWrapper {
    * @param object The object to be stored
    * @return The created or updated object
    */
-  <T extends RealmObject> T store(T object);
+  <T extends Entity> T store(T object);
 
   /**
    * Delete the given from the realm
@@ -42,5 +42,5 @@ public interface RealmWrapper {
    * @param clazz the class of the object to delete
    * @param id the object id to delete
    */
-  <T extends RealmObject> void delete(Class<T> clazz, String id);
+  <T extends Entity> void delete(Class<T> clazz, Long id);
 }

@@ -88,8 +88,8 @@ public class ItemViewModelImpl implements ItemViewModel {
   private final TextWatcher itemQuantityLabelTextWatcher =
       new OneTimeTextWatcher(itemQuantityLabel);
 
-  private String productListId;
-  private String productId;
+  private Long productListId;
+  private Long productId;
   private ProductList productList;
   private Product product;
   private boolean isUnit;
@@ -121,11 +121,11 @@ public class ItemViewModelImpl implements ItemViewModel {
     rxSubscriptionPool.unsubscribeFrom(getClass().getCanonicalName());
   }
 
-  @Override public void forProductList(String productListId) {
+  @Override public void forProductList(Long productListId) {
     this.productListId = productListId;
   }
 
-  @Override public void forProduct(String productId) {
+  @Override public void forProduct(Long productId) {
     this.productId = productId;
   }
 
