@@ -1,0 +1,140 @@
+apply plugin: 'de.undercouch.download'
+
+public class SuppliesSigningConfig {
+  private static KEYSTORE_FILE_NAME = 'supplies.keystore'
+  private static BITRISE_ANDROID_KEYSTORE_PASSWORD_ENV_VAR = 'BITRISEIO_ANDROID_KEYSTORE_PASSWORD'
+  private static BITRISE_ANDROID_KEYSTORE_ALIAS_ENV_VAR = 'BITRISEIO_ANDROID_KEYSTORE_ALIAS'
+  private static BITRISE_ANDROID_KEYSTORE_PRIVATE_KEY_PASSWORD_ENV_VAR = 'BITRISEIO_ANDROID_KEYSTORE_PRIVATE_KEY_PASSWORD'
+  private static LOCAL_ANDROID_KEYSTORE_PASSWORD_ENV_VAR = 'LOCAL_ANDROID_KEYSTORE_PASSWORD_ENV_VAR'
+  private static LOCAL_ANDROID_KEYSTORE_ALIAS_ENV_VAR = 'LOCAL_ANDROID_KEYSTORE_ALIAS_ENV_VAR'
+  private static LOCAL_ANDROID_KEYSTORE_PRIVATE_KEY_PASSWORD_ENV_VAR = 'LOCAL_ANDROID_KEYSTORE_PRIVATE_KEY_PASSWORD_ENV_VAR'
+
+  protected static BITRISE_KEY_STORE_URL_ENV_VAR = 'BITRISEIO_ANDROID_KEYSTORE_URL'
+
+  /**
+   * Check if a given env var is set
+   */
+  static def isEnvVarSet(String variable) {
+    return System.getenv(variable) != null;
+  }
+
+  /**
+   * If the variable exists then return it. If not return the fallback. This method returns null
+   * if none are defined.
+   *
+   * @param variable The first environment variable to try and get
+   * @param fallback The fallback environment variable to try and get
+   * @return Either the variable, the fallback or null.
+   */
+  static def valueOrFallbackEnvVar(String variable, String fallback) {
+    if (isEnvVarSet(variable))
+      return System.getenv(variable);
+    return System.getenv(fallback);
+  }
+
+  /**
+   * Check if the bitrise keystore environment variable is set
+   */
+  public static def isBitriseKeystoreEnvSet() {
+    return isEnvVarSet(BITRISE_KEY_STORE_URL_ENV_VAR);
+  }
+
+  /**
+   * The keystore will always be defined by KEYSTORE_FILE_NAME
+   */
+  public static def storeFile() {
+    return new File(KEYSTORE_FILE_NAME);
+  }
+
+  /**
+   * Get the password defined by the environment variable BITRISE_ANDROID_KEYSTORE_PASSWORD_ENV_VAR.
+   * If not defined, get the one defined by LOCAL_ANDROID_KEYSTORE_PASSWORD_ENV_VAR.
+   *
+   * @return BITRISE_ANDROID_KEYSTORE_PASSWORD_ENV_VAR value or LOCAL_ANDROID_KEYSTORE_PASSWORD_ENV_VAR. If
+   *          none is defined, then null.
+   */
+  public static def storePassword() {
+    return valueOrFallbackEnvVar(BITRISE_ANDROID_KEYSTORE_PASSWORD_ENV_VAR,
+        LOCAL_ANDROID_KEYSTORE_PASSWORD_ENV_VAR);
+  }
+
+  /**
+   * Get the key alias defined by the environment variable BITRISE_ANDROID_KEYSTORE_ALIAS_ENV_VAR.
+   * If not defined, get the one defined by LOCAL_ANDROID_KEYSTORE_ALIAS_ENV_VAR.
+   *
+   * @return BITRISE_ANDROID_KEYSTORE_ALIAS_ENV_VAR value or LOCAL_ANDROID_KEYSTORE_ALIAS_ENV_VAR. If
+   *          none is defined, then null.
+   */
+  public static def keyAlias() {
+    return valueOrFallbackEnvVar(BITRISE_ANDROID_KEYSTORE_ALIAS_ENV_VAR,
+        LOCAL_ANDROID_KEYSTORE_ALIAS_ENV_VAR);
+  }
+
+  /**
+   * Get the key password defined by the environment variable BITRISE_ANDROID_KEYSTORE_PRIVATE_KEY_PASSWORD_ENV_VAR.
+   * If not defined, get the one defined by LOCAL_ANDROID_KEYSTORE_PRIVATE_KEY_PASSWORD_ENV_VAR.
+   *
+   * @return BITRISE_ANDROID_KEYSTORE_PRIVATE_KEY_PASSWORD_ENV_VAR value or LOCAL_ANDROID_KEYSTORE_PRIVATE_KEY_PASSWORD_ENV_VAR. If
+   *          none is defined, then null.
+   */
+  public static def keyPassword() {
+    return valueOrFallbackEnvVar(BITRISE_ANDROID_KEYSTORE_PRIVATE_KEY_PASSWORD_ENV_VAR,
+        LOCAL_ANDROID_KEYSTORE_PRIVATE_KEY_PASSWORD_ENV_VAR);
+  }
+}
+
+task validateReleaseCredentials(
+    description: 'Check if the necessary credentials exist and if not fail the build') << {
+  File storeFile = SuppliesSigningConfig.storeFile();
+  if (!storeFile.exists()) {
+    throw new GradleException("Cannot find keystore file: " + storeFile.absolutePath)
+  }
+
+  String storePassword = SuppliesSigningConfig.storePassword();
+  String keyAlias = SuppliesSigningConfig.keyAlias();
+  String keyPassword = SuppliesSigningConfig.keyPassword();
+
+  if (storePassword == null) {
+    throw new GradleException("Keystore password not defined. Please define it using "
+        + SuppliesSigningConfig.LOCAL_ANDROID_KEYSTORE_PASSWORD_ENV_VAR)
+  }
+
+  if (keyAlias == null) {
+    throw new GradleException("Keystore alias not defined. Please define it using "
+        + SuppliesSigningConfig.LOCAL_ANDROID_KEYSTORE_ALIAS_ENV_VAR)
+  }
+
+  if (keyPassword == null) {
+    throw new GradleException("Key password not defined. Please define it using "
+        + SuppliesSigningConfig.LOCAL_ANDROID_KEYSTORE_PRIVATE_KEY_PASSWORD_ENV_VAR)
+  }
+}
+
+task downloadBitriseKeystore << {
+  description 'Download the bitrise keystore file from the value set as ' + SuppliesSigningConfig.BITRISE_KEY_STORE_URL_ENV_VAR
+
+  logger.debug('Downloading file ' + System.getenv(SuppliesSigningConfig.BITRISE_KEY_STORE_URL_ENV_VAR)
+      + ' into ' + SuppliesSigningConfig.storeFile())
+
+  download {
+    src System.getenv(SuppliesSigningConfig.BITRISE_KEY_STORE_URL_ENV_VAR)
+    dest SuppliesSigningConfig.storeFile()
+    acceptAnyCertificate true
+  }
+}
+
+// Only download the bitrise keystore if there is an environment variable pointing to it
+downloadBitriseKeystore.onlyIf { SuppliesSigningConfig.isBitriseKeystoreEnvSet(); }
+
+// Make sure these tasks run when needed and not before
+tasks.whenTaskAdded { task ->
+  if (task.name == 'validateSigningRelease') {
+    validateReleaseCredentials.dependsOn downloadBitriseKeystore
+    task.dependsOn validateReleaseCredentials
+  }
+}
+
+ext.suppliesStoreFile = SuppliesSigningConfig.storeFile()
+ext.suppliesStorePassword = SuppliesSigningConfig.storePassword()
+ext.suppliesKeyAlias = SuppliesSigningConfig.keyAlias()
+ext.suppliesKeyPassword = SuppliesSigningConfig.keyPassword()
