@@ -31,7 +31,7 @@ public class ProductListScreen extends BaseScreen {
 
   @Inject ProductListViewModel viewModel;
 
-  @Icicle long productListId;
+  @Icicle Long productListId;
 
   /**
    * Create a product list screen for no product list in specific. Use this when creating a new
@@ -82,7 +82,9 @@ public class ProductListScreen extends BaseScreen {
   @Override public void onActivityCreated(Bundle savedInstanceState) {
     super.onActivityCreated(savedInstanceState);
     if (getArguments() != null) {
-      productListId = getArguments().getLong(PRODUCT_LIST_ID_BUNDLE_KEY);
+      if (getArguments().containsKey(PRODUCT_LIST_ID_BUNDLE_KEY)) {
+        productListId = getArguments().getLong(PRODUCT_LIST_ID_BUNDLE_KEY);
+      }
     }
     Icepick.restoreInstanceState(this, savedInstanceState);
     viewModel.forProductList(productListId);

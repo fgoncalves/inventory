@@ -71,8 +71,12 @@ public class ItemScreen extends BaseScreen {
 
   @Override public void onResume() {
     super.onResume();
-    viewModel.forProductList(getArguments().getLong(PRODUCT_LIST_ID));
-    viewModel.forProduct(getArguments().getLong(PRODUCT_ID));
+    if (getArguments().containsKey(PRODUCT_LIST_ID)) {
+      viewModel.forProductList(getArguments().getLong(PRODUCT_LIST_ID));
+    }
+    if (getArguments().containsKey(PRODUCT_ID)) {
+      viewModel.forProduct(getArguments().getLong(PRODUCT_ID));
+    }
     viewModel.onResume();
   }
 
