@@ -14,14 +14,14 @@
   <android.support.constraint.ConstraintLayout
       android:layout_width="match_parent"
       android:layout_height="match_parent"
-      android:background="@color/primary_dark"
+      android:background="@color/primary_light"
       >
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/product_list_toolbar"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:background="?attr/colorPrimary"
+        android:background="@color/primary"
         android:minHeight="?attr/actionBarSize"
         android:theme="?attr/actionBarTheme"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -93,21 +93,23 @@
         android:layout_height="match_parent"
         android:visibility="@{viewModel.emptyListVisibility()}"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/product_list_toolbar"
-        tools:visibility="gone"
+        tools:visibility="visible"
         >
 
       <ImageView
           android:id="@+id/empty_image"
           android:layout_width="200dp"
           android:layout_height="200dp"
+          android:layout_marginTop="8dp"
           app:layout_constraintBottom_toBottomOf="parent"
+          app:layout_constraintHorizontal_bias="0.491"
           app:layout_constraintLeft_toLeftOf="parent"
           app:layout_constraintRight_toRightOf="parent"
-          app:layout_constraintTop_toTopOf="parent"
+          app:layout_constraintTop_toBottomOf="@+id/empty_text"
+          app:layout_constraintVertical_bias="0.48000002"
           app:srcCompat="@drawable/box"
           />
 
@@ -115,7 +117,7 @@
           android:id="@+id/empty_text"
           android:layout_width="0dp"
           android:layout_height="wrap_content"
-          android:layout_marginBottom="24dp"
+          android:layout_marginBottom="16dp"
           android:layout_marginEnd="16dp"
           android:layout_marginStart="16dp"
           android:gravity="center_horizontal"
@@ -138,6 +140,9 @@
         app:fabSize="normal"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintRight_toRightOf="parent"
+        app:menu_colorNormal="@color/accent"
+        app:menu_colorPressed="@color/accent_dark"
+        app:menu_colorRipple="@color/accent_ripple"
         >
       <com.github.clans.fab.FloatingActionButton
           android:id="@+id/add_button"
