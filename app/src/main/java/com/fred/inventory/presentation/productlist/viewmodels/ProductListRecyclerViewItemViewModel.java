@@ -4,7 +4,6 @@ import android.databinding.ObservableField;
 import android.databinding.ObservableInt;
 import android.view.View;
 import com.fred.inventory.domain.models.Product;
-import java.util.Date;
 
 /**
  * View model for each item in the product list
@@ -32,10 +31,6 @@ public interface ProductListRecyclerViewItemViewModel {
   ObservableInt quantity();
 
   ObservableInt progressBarVisibility();
-
-  ObservableField<Date> expirationDate();
-
-  ObservableInt expirationDateVisibility();
 
   View.OnClickListener deleteButtonClickListener();
 

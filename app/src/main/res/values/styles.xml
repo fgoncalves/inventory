@@ -7,7 +7,7 @@
     <item name="android:colorPrimaryDark">@color/primary_dark</item>
     <item name="android:colorAccent">@color/accent</item>
     <item name="android:actionMenuTextColor">@color/white</item>
-    <item name="android:statusBarColor">@color/status_bar</item>
+    <item name="android:statusBarColor">@color/primary_dark</item>
   </style>
 
   <style name="AppTheme.NoActionBar">
@@ -38,7 +38,7 @@
 
   <style name="MainTitleText">
     <item name="android:textColor">@color/primary_text</item>
-    <item name="android:textSize">27sp</item>
+    <item name="android:textSize">20sp</item>
     <item name="android:singleLine">true</item>
     <item name="android:maxLines">1</item>
   </style>
@@ -50,12 +50,12 @@
 
   <style name="SecondaryText" parent="InfoText">
     <item name="android:singleLine">true</item>
-    <item name="android:textSize">18sp</item>
+    <item name="android:textSize">16sp</item>
   </style>
 
   <style name="EmptyTextStyle">
     <item name="android:textColor">@color/primary_text</item>
-    <item name="android:textSize">27sp</item>
+    <item name="android:textSize">24sp</item>
   </style>
 
   <style name="FabButton">

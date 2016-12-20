@@ -7,7 +7,6 @@ import com.fred.inventory.domain.models.Product;
 import com.fred.inventory.domain.usecases.DeleteProductUseCase;
 import com.fred.inventory.utils.rx.schedulers.SchedulerTransformer;
 import com.fred.inventory.utils.rx.schedulers.qualifiers.IOToUiSchedulerTransformer;
-import java.util.Date;
 import javax.inject.Inject;
 import timber.log.Timber;
 
@@ -17,8 +16,6 @@ public class ProductListRecyclerViewItemViewModelImpl
   private final ObservableField<String> productQuantityLabel = new ObservableField<>();
   private final ObservableInt quantity = new ObservableInt();
   private final ObservableInt progressBarVisibility = new ObservableInt();
-  private final ObservableField<Date> expirationDate = new ObservableField<>();
-  private final ObservableInt expirationDateVisibility = new ObservableInt();
   private final DeleteProductUseCase deleteProductUseCase;
   private final SchedulerTransformer transformer;
   private final View.OnClickListener deleteButtonClickListener = new View.OnClickListener() {
@@ -55,12 +52,6 @@ public class ProductListRecyclerViewItemViewModelImpl
     } else {
       progressBarVisibility.set(View.VISIBLE);
     }
-    if (product.getExpirationDate() != null) {
-      expirationDate.set(product.getExpirationDate());
-      expirationDateVisibility.set(View.VISIBLE);
-    } else {
-      expirationDateVisibility.set(View.GONE);
-    }
   }
 
   @Override public ObservableField<String> productName() {
@@ -77,14 +68,6 @@ public class ProductListRecyclerViewItemViewModelImpl
 
   @Override public ObservableInt progressBarVisibility() {
     return progressBarVisibility;
-  }
-
-  @Override public ObservableField<Date> expirationDate() {
-    return expirationDate;
-  }
-
-  @Override public ObservableInt expirationDateVisibility() {
-    return expirationDateVisibility;
   }
 
   @Override public View.OnClickListener deleteButtonClickListener() {

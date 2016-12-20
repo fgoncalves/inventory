@@ -1,6 +1,5 @@
 package com.fred.inventory;
 
-import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -25,6 +24,7 @@ public class MainActivity extends AppCompatActivity {
 
     inject();
     addListOfProductListsScreen();
+    setStatusBarColor();
   }
 
   /**
@@ -32,13 +32,8 @@ public class MainActivity extends AppCompatActivity {
    */
   private void setStatusBarColor() {
     Window window = getWindow();
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-      window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-    }
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-      window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-      window.setStatusBarColor(ContextCompat.getColor(this, R.color.primary));
-    }
+    window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+    window.setStatusBarColor(ContextCompat.getColor(this, R.color.primary_dark));
   }
 
   /**

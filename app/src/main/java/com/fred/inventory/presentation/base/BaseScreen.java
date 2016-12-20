@@ -21,6 +21,7 @@ public abstract class BaseScreen extends Fragment {
       throw new IllegalStateException(
           "Cannot create an instance of a BaseScreen without an AppCompatActivity");
     }
+    setHasOptionsMenu(true);
   }
 
   @Override public void onResume() {
