@@ -3,10 +3,11 @@
   <!-- Base application theme. -->
   <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
     <!-- Customize your theme here. -->
-    <item name="colorPrimary">@color/primary</item>
-    <item name="colorPrimaryDark">@color/primary_dark</item>
-    <item name="colorAccent">@color/accent</item>
-    <item name="actionMenuTextColor">@android:color/white</item>
+    <item name="android:colorPrimary">@color/primary</item>
+    <item name="android:colorPrimaryDark">@color/primary_dark</item>
+    <item name="android:colorAccent">@color/accent</item>
+    <item name="android:actionMenuTextColor">@color/white</item>
+    <item name="android:statusBarColor">@color/status_bar</item>
   </style>
 
   <style name="AppTheme.NoActionBar">
@@ -24,14 +25,14 @@
   </style>
 
   <style name="ToolbarDoneButton" parent="Base.Widget.AppCompat.Button.Borderless">
-    <item name="android:textColor">@color/primary_text</item>
+    <item name="android:textColor">@color/white</item>
     <item name="android:textAllCaps">true</item>
     <item name="android:textStyle">bold</item>
   </style>
 
   <style name="MainToolbarClickToEdit">
     <item name="android:textSize">22sp</item>
-    <item name="android:textColor">@color/primary_text</item>
+    <item name="android:textColor">@color/white</item>
     <item name="android:gravity">center_vertical</item>
   </style>
 

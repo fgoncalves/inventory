@@ -27,10 +27,10 @@
         android:layout_height="56dp"
         android:background="@color/primary"
         android:title="@string/lists"
+        android:theme="?attr/actionBarTheme"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:titleTextColor="@color/primary_text"
         />
 
     <android.support.v7.widget.RecyclerView
