@@ -10,7 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import com.fred.inventory.MainActivity;
 import com.fred.inventory.R;
-import com.fred.inventory.databinding.ItemNewBinding;
+import com.fred.inventory.databinding.ItemBinding;
 import com.fred.inventory.presentation.base.BaseScreen;
 import com.fred.inventory.presentation.items.modules.ItemViewModule;
 import com.fred.inventory.presentation.items.viewmodels.ItemViewModel;
@@ -60,7 +60,7 @@ public class ItemScreen extends BaseScreen {
 
   @Nullable @Override public View onCreateView(LayoutInflater inflater, ViewGroup container,
       Bundle savedInstanceState) {
-    ItemNewBinding binding = DataBindingUtil.inflate(inflater, R.layout.item_new, container, false);
+    ItemBinding binding = DataBindingUtil.inflate(inflater, R.layout.item, container, false);
 
     MainActivity.scoped(new ItemViewModule()).inject(this);
     binding.setViewModel(viewModel);
