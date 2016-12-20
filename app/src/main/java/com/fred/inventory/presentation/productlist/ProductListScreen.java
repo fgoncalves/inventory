@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import com.fred.inventory.MainActivity;
@@ -123,6 +124,22 @@ public class ProductListScreen extends BaseScreen {
     } else {
       super.onActivityResult(requestCode, resultCode, data);
     }
+  }
+
+  @Override protected int getMenuResource() {
+    return R.menu.product_list_menu;
+  }
+
+  @Override protected boolean isHomeButtonSupported() {
+    return true;
+  }
+
+  @Override public boolean onOptionsItemSelected(MenuItem item) {
+    if (item.getItemId() == R.id.toolbar_done_button) {
+      viewModel.onDoneButtonClick(item.getActionView());
+      return true;
+    }
+    return super.onOptionsItemSelected(item);
   }
 
   private void startBarcodeScanner() {

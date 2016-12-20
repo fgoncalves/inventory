@@ -4,12 +4,16 @@ import android.app.Fragment;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuInflater;
 
 /**
  * Base fragment for the entire app. This should be implemented by all fragments in the app. It
  * contains base methods that can be used by all fragments.
  */
 public abstract class BaseScreen extends Fragment {
+  protected static final int NO_RESOURCE_ID = 0;
+
   @Override public void onActivityCreated(Bundle savedInstanceState) {
     super.onActivityCreated(savedInstanceState);
 
@@ -26,8 +30,31 @@ public abstract class BaseScreen extends Fragment {
     if (toolbar != null) {
       appCompatActivity.setSupportActionBar(toolbar);
       appCompatActivity.getSupportActionBar().setTitle(getToolbarTitle());
+      appCompatActivity.getSupportActionBar().setDisplayHomeAsUpEnabled(isHomeButtonSupported());
     }
   }
+
+  @Override
+  public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+    super.onCreateOptionsMenu(menu, inflater);
+    int menuRes = getMenuResource();
+    if (menuRes == NO_RESOURCE_ID) return;
+    inflater.inflate(menuRes, menu);
+  }
+
+  /**
+   * Get the resource id for the menu
+   *
+   * @return The resource id for the toolbar menu
+   */
+  protected abstract int getMenuResource();
+
+  /**
+   * Check if the toolbar should have a home button
+   *
+   * @return True if the home button should be displayed. False otherwise.
+   */
+  protected abstract boolean isHomeButtonSupported();
 
   /**
    * Call this method to handle the back press

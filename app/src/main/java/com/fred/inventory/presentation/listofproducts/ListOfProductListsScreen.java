@@ -54,4 +54,12 @@ public class ListOfProductListsScreen extends BaseScreen {
   @Override protected String getToolbarTitle() {
     return getString(R.string.lists);
   }
+
+  @Override protected int getMenuResource() {
+    return NO_RESOURCE_ID;
+  }
+
+  @Override protected boolean isHomeButtonSupported() {
+    return false;
+  }
 }

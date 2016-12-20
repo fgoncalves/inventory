@@ -96,4 +96,12 @@ public class ItemScreen extends BaseScreen {
   @Override protected String getToolbarTitle() {
     return "";
   }
+
+  @Override protected int getMenuResource() {
+    return NO_RESOURCE_ID;
+  }
+
+  @Override protected boolean isHomeButtonSupported() {
+    return true;
+  }
 }
