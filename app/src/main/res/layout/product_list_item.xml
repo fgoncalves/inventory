@@ -11,92 +11,87 @@
         />
   </data>
 
-  <android.support.constraint.ConstraintLayout
+  <android.support.v7.widget.CardView
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
+      android:layout_marginEnd="10dp"
+      android:layout_marginStart="10dp"
+      android:layout_marginTop="10dp"
       android:background="@color/white"
       android:onClick="@{viewModel.itemClickListener()}"
+      app:cardElevation="4dp"
       >
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        >
 
-    <TextView
-        android:id="@+id/product_list_item_name"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        android:layout_marginRight="8dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
-        android:maxLines="3"
-        android:singleLine="false"
-        android:text="@{viewModel.productName()}"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toLeftOf="@+id/product_list_item_quantity"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:text="Bertoli"
-        style="@style/MainTitleText"
-        />
+      <TextView
+          android:id="@+id/product_list_item_name"
+          android:layout_width="0dp"
+          android:layout_height="wrap_content"
+          android:layout_marginBottom="16dp"
+          android:layout_marginEnd="8dp"
+          android:layout_marginStart="16dp"
+          android:layout_marginTop="16dp"
+          android:maxLines="3"
+          android:singleLine="false"
+          android:text="@{viewModel.productName()}"
+          app:layout_constraintBottom_toBottomOf="parent"
+          app:layout_constraintHorizontal_bias="0.66"
+          app:layout_constraintLeft_toLeftOf="parent"
+          app:layout_constraintRight_toLeftOf="@+id/product_list_item_quantity"
+          app:layout_constraintTop_toTopOf="parent"
+          tools:text="Bertoli"
+          style="@style/MainTitleText"
+          />
 
-    <TextView
-        android:id="@+id/product_list_item_quantity"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
-        android:layout_marginRight="16dp"
-        android:gravity="right"
-        android:text="@{viewModel.productQuantityLabel()}"
-        app:layout_constraintBaseline_toBaselineOf="@+id/product_list_item_name"
-        app:layout_constraintRight_toLeftOf="@+id/product_list_item_delete_button"
-        tools:text="200 g"
-        style="@style/MainTitleText"
-        />
+      <TextView
+          android:id="@+id/product_list_item_quantity"
+          android:layout_width="0dp"
+          android:layout_height="wrap_content"
+          android:layout_marginEnd="16dp"
+          android:layout_marginRight="16dp"
+          android:gravity="right"
+          android:text="@{viewModel.productQuantityLabel()}"
+          app:layout_constraintBaseline_toBaselineOf="@+id/product_list_item_name"
+          app:layout_constraintRight_toLeftOf="@+id/product_list_item_delete_button"
+          tools:text="200 g"
+          style="@style/MainTitleText"
+          />
 
-    <ProgressBar
-        android:id="@+id/product_list_item_progress_bar"
-        android:layout_width="0dp"
-        android:layout_height="3dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
-        android:max="1000"
-        android:maxHeight="3dp"
-        android:minHeight="3dp"
-        android:progress="@{viewModel.quantity()}"
-        android:progressDrawable="@drawable/item_quantity_progress_bar_background"
-        android:visibility="@{viewModel.progressBarVisibility()}"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/product_list_item_name"
-        tools:visibility="visible"
-        style="@android:style/Widget.ProgressBar.Horizontal"
-        />
+      <ProgressBar
+          android:id="@+id/product_list_item_progress_bar"
+          android:layout_width="0dp"
+          android:layout_height="3dp"
+          android:layout_marginTop="16dp"
+          android:max="1000"
+          android:maxHeight="3dp"
+          android:minHeight="3dp"
+          android:progress="@{viewModel.quantity()}"
+          android:progressDrawable="@drawable/item_quantity_progress_bar_background"
+          android:visibility="@{viewModel.progressBarVisibility()}"
+          app:layout_constraintHorizontal_bias="0.0"
+          app:layout_constraintLeft_toLeftOf="parent"
+          app:layout_constraintRight_toRightOf="parent"
+          app:layout_constraintTop_toBottomOf="@+id/product_list_item_name"
+          tools:visibility="visible"
+          style="@android:style/Widget.ProgressBar.Horizontal"
+          />
 
-    <ImageView
-        android:id="@+id/product_list_item_delete_button"
-        android:layout_width="20dp"
-        android:layout_height="20dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginRight="16dp"
-        android:layout_marginTop="16dp"
-        android:onClick="@{viewModel.deleteButtonClickListener()}"
-        android:tint="@color/primary_text"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ic_bin"
-        />
-
-    <View
-        android:layout_width="0dp"
-        android:layout_height="1dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginRight="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:background="@color/divider"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/product_list_item_progress_bar"
-        />
-  </android.support.constraint.ConstraintLayout>
+      <ImageView
+          android:id="@+id/product_list_item_delete_button"
+          android:layout_width="20dp"
+          android:layout_height="20dp"
+          android:layout_marginEnd="16dp"
+          android:layout_marginRight="16dp"
+          android:onClick="@{viewModel.deleteButtonClickListener()}"
+          android:tint="@color/primary_text"
+          app:layout_constraintBottom_toBottomOf="@+id/product_list_item_name"
+          app:layout_constraintRight_toRightOf="parent"
+          app:layout_constraintTop_toTopOf="@+id/product_list_item_name"
+          app:srcCompat="@drawable/ic_bin"
+          />
+    </android.support.constraint.ConstraintLayout>
+  </android.support.v7.widget.CardView>
 </layout>
