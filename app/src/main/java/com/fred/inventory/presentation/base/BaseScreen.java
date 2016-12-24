@@ -6,6 +6,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
+import com.fred.inventory.utils.path.PathManager;
+import javax.inject.Inject;
 
 /**
  * Base fragment for the entire app. This should be implemented by all fragments in the app. It
@@ -13,6 +16,8 @@ import android.view.MenuInflater;
  */
 public abstract class BaseScreen extends Fragment {
   protected static final int NO_RESOURCE_ID = 0;
+
+  @Inject PathManager pathManager;
 
   @Override public void onActivityCreated(Bundle savedInstanceState) {
     super.onActivityCreated(savedInstanceState);
@@ -35,12 +40,19 @@ public abstract class BaseScreen extends Fragment {
     }
   }
 
-  @Override
-  public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+  @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
     super.onCreateOptionsMenu(menu, inflater);
     int menuRes = getMenuResource();
     if (menuRes == NO_RESOURCE_ID) return;
     inflater.inflate(menuRes, menu);
+  }
+
+  @Override public boolean onOptionsItemSelected(MenuItem item) {
+    if (item.getItemId() == android.R.id.home) {
+      pathManager.back();
+      return true;
+    }
+    return super.onOptionsItemSelected(item);
   }
 
   /**

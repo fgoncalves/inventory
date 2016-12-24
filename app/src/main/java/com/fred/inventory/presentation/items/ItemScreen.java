@@ -21,6 +21,7 @@ public class ItemScreen extends BaseScreen {
   private static final String PRODUCT_ID = "product.id";
 
   @Inject ItemViewModel viewModel;
+  private Toolbar toolbar;
 
   /**
    * Create an instance of an item screen which will display a new item for the given product
@@ -90,11 +91,12 @@ public class ItemScreen extends BaseScreen {
   }
 
   @Override public Toolbar getToolbar() {
-    return null;
+    if (toolbar == null) toolbar = (Toolbar) getView().findViewById(R.id.item_toolbar);
+    return toolbar;
   }
 
   @Override protected String getToolbarTitle() {
-    return "";
+    return toolbar.getTitle().toString();
   }
 
   @Override protected int getMenuResource() {

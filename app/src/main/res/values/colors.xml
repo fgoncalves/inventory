@@ -15,4 +15,5 @@
   <color name="black_alpha_50">#80000000</color>
   <color name="pale_grey">#f5f6f7</color>
   <color name="white_85">#D8FFFFFF</color>
+  <color name="transparent">#00FFFFFF</color>
 </resources>

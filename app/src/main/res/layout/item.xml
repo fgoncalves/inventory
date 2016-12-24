@@ -16,6 +16,19 @@
       android:background="@color/white"
       >
 
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/item_toolbar"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:background="@color/primary"
+        android:minHeight="?attr/actionBarSize"
+        android:theme="?attr/actionBarTheme"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:title="@string/item"
+        />
+
     <ImageView
         android:id="@+id/ic_edit_product_name"
         android:layout_width="wrap_content"
@@ -35,13 +48,13 @@
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="16dp"
         android:addTextChangedListener="@{viewModel.itemNameTextWatcher()}"
         android:text="@{viewModel.itemNameObservable()}"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintLeft_toRightOf="@+id/ic_edit_product_name"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/item_toolbar"
         tools:text="Olive oil"
         style="@style/MainTitleText"
         />
