@@ -151,8 +151,8 @@ public class ProductListViewModelImpl
     Subscription subscription = saveProductListInLocalStorageUseCase.save(productList)
         .compose(transformer.applySchedulers())
         .subscribe(value -> {
-          ProductListViewModelImpl.this.productList = productList;
-          goToItemScreen(productList, null);
+          ProductListViewModelImpl.this.productList = value;
+          goToItemScreen(value, null);
         }, e -> Timber.d(e, "Failed to save product list"));
 
     rxSubscriptionPool.addSubscription(getClass().getCanonicalName(), subscription);
