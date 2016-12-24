@@ -1,6 +1,7 @@
 package com.fred.inventory.utils.path;
 
 import android.app.Fragment;
+import android.os.Bundle;
 import android.support.annotation.IdRes;
 import android.transition.Transition;
 import android.view.View;
@@ -11,6 +12,8 @@ import android.view.View;
  * Created by fred on 08.11.15.
  */
 public interface PathManager {
+  String PATH = "path";
+
   /**
    * Go to the next screen with the appropriate animations between screens and shared elements.
    * The implementation will not use the shared animation if the sdk doesn't support them.
@@ -61,4 +64,19 @@ public interface PathManager {
    * @return The last fragment added to the back stack
    */
   Fragment top();
+
+  /**
+   * Save the current path in the out state under the name
+   * {@link #PATH}
+   *
+   * @param outState The bundle where the path will be saved
+   */
+  void savePath(Bundle outState);
+
+  /**
+   * Restore the path from the given state
+   *
+   * @param savedState The bundle where the state has been saved
+   */
+  void restorePath(Bundle savedState, @IdRes int containerId);
 }

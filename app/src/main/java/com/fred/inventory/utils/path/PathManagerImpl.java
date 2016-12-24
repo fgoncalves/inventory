@@ -4,6 +4,7 @@ import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.os.Build;
+import android.os.Bundle;
 import android.support.annotation.IdRes;
 import android.transition.Transition;
 import android.view.View;
@@ -61,5 +62,12 @@ public class PathManagerImpl implements PathManager {
   @Override public Fragment top() {
     String tag = manager.getBackStackEntryAt(manager.getBackStackEntryCount() - 1).getName();
     return manager.findFragmentByTag(tag);
+  }
+
+  @Override public void savePath(Bundle outState) {
+    manager.putFragment(outState, PATH, top());
+  }
+
+  @Override public void restorePath(Bundle savedState, @IdRes int containerId) {
   }
 }

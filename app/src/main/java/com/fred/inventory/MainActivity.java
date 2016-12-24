@@ -21,10 +21,15 @@ public class MainActivity extends AppCompatActivity {
     objectGraph = ObjectGraph.create(new RootModule(this));
 
     setContentView(R.layout.main_activity);
-
     inject();
-    addListOfProductListsScreen();
     setStatusBarColor();
+
+    if (savedInstanceState != null) {
+      pathManager.restorePath(savedInstanceState, R.id.main_container);
+      return;
+    }
+
+    addListOfProductListsScreen();
   }
 
   /**
@@ -53,6 +58,11 @@ public class MainActivity extends AppCompatActivity {
     if (pathManager.back()) return;
 
     finish();
+  }
+
+  @Override protected void onSaveInstanceState(Bundle outState) {
+    super.onSaveInstanceState(outState);
+    pathManager.savePath(outState);
   }
 
   private void addListOfProductListsScreen() {

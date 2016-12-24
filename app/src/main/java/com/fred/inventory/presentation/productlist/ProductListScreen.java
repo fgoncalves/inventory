@@ -77,6 +77,7 @@ public class ProductListScreen extends BaseScreen {
 
   @Override public void onSaveInstanceState(Bundle outState) {
     super.onSaveInstanceState(outState);
+    if (productListId == null) return;
     Icepick.saveInstanceState(this, outState);
   }
 
