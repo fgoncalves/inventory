@@ -11,7 +11,7 @@ import com.fred.inventory.utils.binding.Observer;
  * <p/>
  * Created by fred on 29.05.16.
  */
-public interface ClickToEditViewModel {
+public interface OldClickToEditViewModel {
   void bindEditableTextObserver(Observer<String> observer);
 
   void bindTextObserver(Observer<String> observer);
@@ -36,5 +36,5 @@ public interface ClickToEditViewModel {
 
   void onAttachToWindow();
 
-  void setState(ClickToEditTextView.ClickToEditTextViewState state);
+  void setState(OldClickToEditTextView.ClickToEditTextViewState state);
 }

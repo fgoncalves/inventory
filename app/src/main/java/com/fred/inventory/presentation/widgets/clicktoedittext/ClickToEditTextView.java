@@ -1,30 +1,64 @@
 package com.fred.inventory.presentation.widgets.clicktoedittext;
 
+import android.content.Context;
 import android.support.annotation.NonNull;
-import android.text.TextWatcher;
+import android.util.AttributeSet;
+import android.widget.ViewSwitcher;
+import com.fred.inventory.utils.KeyboardUtil;
 
 /**
- * A text view that will turn editable on click and back uneditable upon loosing focus.
+ * The view for the click to edit text view
  * <p/>
- * Created by fred on 20.03.16.
+ * This assumes that the view is composed of 2 views: A TextView and an EditText.
+ * The first one must be a text view and the second the edit text view.
+ * <p/>
+ * This view mu
+ * <p/>
+ * Created by fred on 26.12.16.
  */
-public interface ClickToEditTextView {
-  void setError(String error);
 
-  enum ClickToEditTextViewState {
-    EDITABLE,
-    NON_EDITABLE
+public class ClickToEditTextView extends ViewSwitcher {
+  /**
+   * Implement this to receive notifications about the changed mode
+   */
+  public interface OnModeChangedListener {
+    /**
+     * Called when the mode changed in the view
+     *
+     * @param mode The mode that was set
+     */
+    void onModeChanged(@NonNull final ClickToEditTextViewMode mode);
   }
 
-  void setText(@NonNull String text);
+  private OnModeChangedListener onModeChangedListener;
 
-  void setState(ClickToEditTextViewState state);
+  public ClickToEditTextView(Context context) {
+    super(context);
+  }
 
-  String getText();
+  public ClickToEditTextView(Context context, AttributeSet attrs) {
+    super(context, attrs);
+  }
 
-  void onShowKeyboardRequest();
+  public void setMode(ClickToEditTextViewMode mode) {
+    switch (mode) {
+      case EDIT:
+        if (getCurrentView() == getChildAt(0)) {
+          showNext();
+          KeyboardUtil.showKeyboard(getCurrentView());
+        }
+        break;
+      case TEXT:
+        if (getCurrentView() == getChildAt(1)) {
+          KeyboardUtil.hideKeyboard(getCurrentView());
+          showPrevious();
+        }
+        break;
+    }
+    if (onModeChangedListener != null) onModeChangedListener.onModeChanged(mode);
+  }
 
-  void onHideKeyboardRequest();
-
-  void addTextChangedListener(TextWatcher textWatcher);
+  public void setOnModeChangedListener(OnModeChangedListener onModeChangedListener) {
+    this.onModeChangedListener = onModeChangedListener;
+  }
 }

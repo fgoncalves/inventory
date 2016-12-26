@@ -10,13 +10,13 @@ import com.fred.inventory.utils.binding.Observer;
 import com.fred.inventory.utils.binding.widgets.ObservableTextWatcher;
 import javax.inject.Inject;
 
-public class ClickToEditViewModelImpl implements ClickToEditViewModel {
+public class OldClickToEditViewModelImpl implements OldClickToEditViewModel {
   private final Observable<String> editableTextObservable = Observable.create();
   private final Observable<String> textObservable = Observable.create();
   private final Observable<Boolean> showKeyBoardObservable = Observable.create();
   private final Observable<Void> switchToEditTextView = Observable.create();
   private final Observable<Void> switchToTextView = Observable.create();
-  private final Observable<ClickToEditTextView.ClickToEditTextViewState> stateObservable =
+  private final Observable<OldClickToEditTextView.ClickToEditTextViewState> stateObservable =
       Observable.create();
   private final ObservableTextWatcher textWatcher =
       (ObservableTextWatcher) ObservableTextWatcher.create().bind(value -> {
@@ -25,18 +25,18 @@ public class ClickToEditViewModelImpl implements ClickToEditViewModel {
       });
   private final TextView.OnEditorActionListener editorActionListener = (v, actionId, event) -> {
     if (actionId == EditorInfo.IME_ACTION_DONE) {
-      stateObservable.set(ClickToEditTextView.ClickToEditTextViewState.NON_EDITABLE);
+      stateObservable.set(OldClickToEditTextView.ClickToEditTextViewState.NON_EDITABLE);
       showKeyBoardObservable.set(false);
       return true;
     }
     return false;
   };
   private final View.OnClickListener textClickListener = v -> {
-    stateObservable.set(ClickToEditTextView.ClickToEditTextViewState.EDITABLE);
+    stateObservable.set(OldClickToEditTextView.ClickToEditTextViewState.EDITABLE);
     showKeyBoardObservable.set(true);
   };
   // This one is simply internal
-  private final Observer<ClickToEditTextView.ClickToEditTextViewState> stateObserver = value -> {
+  private final Observer<OldClickToEditTextView.ClickToEditTextViewState> stateObserver = value -> {
     switch (value) {
       case NON_EDITABLE:
         switchToTextView.set(null);
@@ -46,13 +46,13 @@ public class ClickToEditViewModelImpl implements ClickToEditViewModel {
     }
   };
 
-  @Inject public ClickToEditViewModelImpl() {
+  @Inject public OldClickToEditViewModelImpl() {
   }
 
   @Override public void onAttachToWindow() {
     editableTextObservable.set(textObservable.get());
     textObservable.set(textObservable.get());
-    stateObservable.set(ClickToEditTextView.ClickToEditTextViewState.NON_EDITABLE);
+    stateObservable.set(OldClickToEditTextView.ClickToEditTextViewState.NON_EDITABLE);
     stateObservable.bind(stateObserver);
   }
 
@@ -100,7 +100,7 @@ public class ClickToEditViewModelImpl implements ClickToEditViewModel {
     textObservable.set(text);
   }
 
-  @Override public void setState(ClickToEditTextView.ClickToEditTextViewState state) {
+  @Override public void setState(OldClickToEditTextView.ClickToEditTextViewState state) {
     stateObservable.set(state);
   }
 }

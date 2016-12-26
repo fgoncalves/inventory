@@ -3,6 +3,7 @@ package com.fred.inventory.presentation.items;
 import android.databinding.BindingConversion;
 import android.databinding.ObservableField;
 import android.databinding.ObservableInt;
+import com.fred.inventory.presentation.widgets.clicktoedittext.ClickToEditTextViewMode;
 import com.fred.inventory.utils.StringUtils;
 import java.text.DateFormat;
 import java.util.Date;
@@ -28,5 +29,11 @@ public class BindingConversions {
   @BindingConversion
   public static int convertIntegerObservableToInt(ObservableInt integerObservableField) {
     return integerObservableField.get();
+  }
+
+  @BindingConversion
+  public static ClickToEditTextViewMode convertClickToEditTextViewModeObservableToClickToEditTextViewMode(
+      ObservableField<ClickToEditTextViewMode> observableField) {
+    return observableField.get();
   }
 }

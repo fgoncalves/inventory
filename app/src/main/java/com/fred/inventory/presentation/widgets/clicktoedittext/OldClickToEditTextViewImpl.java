@@ -15,19 +15,19 @@ import android.widget.ViewSwitcher;
 import com.fred.inventory.MainActivity;
 import javax.inject.Inject;
 
-public class ClickToEditTextViewImpl extends ViewSwitcher implements ClickToEditTextView {
+public class OldClickToEditTextViewImpl extends ViewSwitcher implements OldClickToEditTextView {
   private TextView text;
   private EditText editText;
   private TextInputLayout editTextInputLayout;
 
-  @Inject ClickToEditViewModel viewModel;
+  @Inject OldClickToEditViewModel viewModel;
 
-  public ClickToEditTextViewImpl(Context context) {
+  public OldClickToEditTextViewImpl(Context context) {
     super(context);
     createChildren(context, null);
   }
 
-  public ClickToEditTextViewImpl(Context context, AttributeSet attrs) {
+  public OldClickToEditTextViewImpl(Context context, AttributeSet attrs) {
     super(context, attrs);
     createChildren(context, attrs);
   }
