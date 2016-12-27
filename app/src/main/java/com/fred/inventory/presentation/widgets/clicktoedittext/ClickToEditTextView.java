@@ -1,9 +1,16 @@
 package com.fred.inventory.presentation.widgets.clicktoedittext;
 
 import android.content.Context;
-import android.support.annotation.NonNull;
+import android.content.res.TypedArray;
+import android.os.Build;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.AttributeSet;
+import android.view.View;
+import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.ViewSwitcher;
+import com.fred.inventory.R;
 import com.fred.inventory.utils.KeyboardUtil;
 
 /**
@@ -18,26 +25,67 @@ import com.fred.inventory.utils.KeyboardUtil;
  */
 
 public class ClickToEditTextView extends ViewSwitcher {
-  /**
-   * Implement this to receive notifications about the changed mode
-   */
-  public interface OnModeChangedListener {
-    /**
-     * Called when the mode changed in the view
-     *
-     * @param mode The mode that was set
-     */
-    void onModeChanged(@NonNull final ClickToEditTextViewMode mode);
-  }
+  private int editTextStyle;
+  private int textViewStyle;
+  private EditText editText;
+  private TextView textView;
+  private TextWatcher editTextWatcher = new TextWatcher() {
+    @Override public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 
-  private OnModeChangedListener onModeChangedListener;
+    }
+
+    @Override public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+    }
+
+    @Override public void afterTextChanged(Editable editable) {
+      if (editText.getText().equals(editable)) return;
+      editText.setText(editable);
+    }
+  };
 
   public ClickToEditTextView(Context context) {
-    super(context);
+    this(context, null);
   }
 
   public ClickToEditTextView(Context context, AttributeSet attrs) {
     super(context, attrs);
+    TypedArray a =
+        context.getTheme().obtainStyledAttributes(attrs, R.styleable.ClickToEditTextView, 0, 0);
+
+    if (attrs != null) {
+      try {
+        textViewStyle = a.getResourceId(R.styleable.ClickToEditTextView_textViewStyle, -1);
+        editTextStyle = a.getResourceId(R.styleable.ClickToEditTextView_editTextStyle, -1);
+      } finally {
+        a.recycle();
+      }
+    }
+
+    createChildren(context, attrs);
+  }
+
+  @Override protected void onFinishInflate() {
+    super.onFinishInflate();
+    if (textViewStyle != -1) setTextAppearance(((TextView) getChildAt(0)), textViewStyle);
+    if (editTextStyle != -1) setTextAppearance(((TextView) getChildAt(1)), editTextStyle);
+    addChildren();
+  }
+
+  @Override protected void onAttachedToWindow() {
+    super.onAttachedToWindow();
+    addClickListener();
+    setOnFocusChangeListener();
+    addTextChangedListener();
+  }
+
+  @Override public void setOnClickListener(OnClickListener l) {
+    textView.setOnClickListener(l);
+  }
+
+  public void setText(CharSequence text) {
+    textView.setText(text);
+    editText.setText(text);
   }
 
   public void setMode(ClickToEditTextViewMode mode) {
@@ -55,10 +103,51 @@ public class ClickToEditTextView extends ViewSwitcher {
         }
         break;
     }
-    if (onModeChangedListener != null) onModeChangedListener.onModeChanged(mode);
   }
 
-  public void setOnModeChangedListener(OnModeChangedListener onModeChangedListener) {
-    this.onModeChangedListener = onModeChangedListener;
+  public CharSequence getText() {
+    return textView.getText();
+  }
+
+  private void setTextAppearance(TextView textView, int style) {
+    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+      textView.setTextAppearance(getContext(), style);
+    } else {
+      textView.setTextAppearance(style);
+    }
+  }
+
+  private void setOnFocusChangeListener() {
+    editText.setOnFocusChangeListener((view, hasFocus) -> {
+      if (hasFocus) setMode(ClickToEditTextViewMode.EDIT);
+    });
+  }
+
+  private void addTextChangedListener() {
+    editText.addTextChangedListener(editTextWatcher);
+  }
+
+  private void createChildren(Context context, AttributeSet attrs) {
+    if (attrs == null) {
+      textView = new TextView(context);
+      editText = new EditText(context);
+    } else {
+      textView = new TextView(context, attrs);
+      editText = new EditText(context, attrs);
+    }
+
+    textView.setId(View.generateViewId());
+    editText.setId(View.generateViewId());
+  }
+
+  private void addChildren() {
+    addView(textView);
+    addView(editText);
+  }
+
+  private void addClickListener() {
+    textView.setOnClickListener((view) -> {
+      if (!isInEditMode()) setMode(ClickToEditTextViewMode.EDIT);
+    });
   }
 }
