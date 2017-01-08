@@ -6,4 +6,18 @@
       android:id="@+id/toolbar_done_button"
       android:title="@string/done"
       app:showAsAction="always"/>
+
+  <item
+      android:id="@+id/action_menu"
+      android:title="@string/more"
+      android:icon="@drawable/ic_more"
+      app:showAsAction="always">
+
+    <menu>
+      <item
+          android:id="@+id/action_support"
+          android:icon="@drawable/ic_search"
+          android:title="@string/search"/>
+    </menu>
+  </item>
 </menu>
