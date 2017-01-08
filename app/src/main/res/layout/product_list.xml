@@ -34,6 +34,7 @@
           android:layout_height="match_parent"
           android:inputType="textCapSentences"
           android:text="@{viewModel.productListName()}"
+          app:addTextChangedListener="@{viewModel.productListTextWatcher()}"
           style="@style/MainToolbarClickToEdit"
           />
     </android.support.v7.widget.Toolbar>

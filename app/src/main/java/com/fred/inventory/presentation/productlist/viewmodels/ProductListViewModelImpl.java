@@ -3,6 +3,7 @@ package com.fred.inventory.presentation.productlist.viewmodels;
 import android.databinding.ObservableField;
 import android.databinding.ObservableInt;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextWatcher;
 import android.view.View;
 import com.fred.inventory.R;
 import com.fred.inventory.domain.models.Product;
@@ -15,6 +16,7 @@ import com.fred.inventory.presentation.productlist.adapters.ProductListRecyclerV
 import com.fred.inventory.utils.StringUtils;
 import com.fred.inventory.utils.binding.Observable;
 import com.fred.inventory.utils.binding.Observer;
+import com.fred.inventory.utils.binding.widgets.OneTimeTextWatcher;
 import com.fred.inventory.utils.path.PathManager;
 import com.fred.inventory.utils.rx.RxSubscriptionPool;
 import com.fred.inventory.utils.rx.schedulers.SchedulerTransformer;
@@ -29,6 +31,8 @@ public class ProductListViewModelImpl
     implements ProductListViewModel, ProductListRecyclerViewAdapter.OnProductDeletedListener,
     ProductListRecyclerViewAdapter.OnItemClickListener {
   private final ObservableField<String> productListName = new ObservableField<>();
+  private final OneTimeTextWatcher productListNameTextWatcher =
+      new OneTimeTextWatcher(productListName);
   private final GetProductListUseCase getProductListUseCase;
   private final SaveProductListInLocalStorageUseCase saveProductListInLocalStorageUseCase;
   private final SchedulerTransformer transformer;
@@ -82,6 +86,10 @@ public class ProductListViewModelImpl
 
   @Override public ObservableField<String> productListName() {
     return productListName;
+  }
+
+  @Override public TextWatcher productListTextWatcher() {
+    return productListNameTextWatcher;
   }
 
   @Override public ObservableInt progressBarVisibility() {

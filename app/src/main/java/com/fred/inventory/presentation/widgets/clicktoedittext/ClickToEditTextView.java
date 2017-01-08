@@ -93,8 +93,14 @@ public class ClickToEditTextView extends ViewSwitcher {
   }
 
   public void setText(CharSequence text) {
+    int selection = editText.getSelectionEnd();
     textView.setText(text);
     editText.setText(text);
+    editText.setSelection(selection);
+  }
+
+  public void addTextChangedListener(TextWatcher textWatcher) {
+    editText.addTextChangedListener(textWatcher);
   }
 
   public void setMode(Mode mode) {
