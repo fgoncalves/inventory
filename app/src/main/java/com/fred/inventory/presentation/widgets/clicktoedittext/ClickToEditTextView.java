@@ -25,11 +25,11 @@ import com.fred.inventory.utils.KeyboardUtil;
  */
 
 public class ClickToEditTextView extends ViewSwitcher {
-  private int editTextStyle;
-  private int textViewStyle;
-  private EditText editText;
-  private TextView textView;
-  private TextWatcher editTextWatcher = new TextWatcher() {
+  public enum Mode {
+    EDIT, TEXT
+  }
+
+  private final TextWatcher textWatcher = new TextWatcher() {
     @Override public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 
     }
@@ -39,10 +39,14 @@ public class ClickToEditTextView extends ViewSwitcher {
     }
 
     @Override public void afterTextChanged(Editable editable) {
-      if (editText.getText().equals(editable)) return;
-      editText.setText(editable);
+      if (textView.getText().equals(editable.toString())) return;
+      textView.setText(editable.toString());
     }
   };
+  private int editTextStyle;
+  private int textViewStyle;
+  private EditText editText;
+  private TextView textView;
 
   public ClickToEditTextView(Context context) {
     this(context, null);
@@ -67,8 +71,8 @@ public class ClickToEditTextView extends ViewSwitcher {
 
   @Override protected void onFinishInflate() {
     super.onFinishInflate();
-    if (textViewStyle != -1) setTextAppearance(((TextView) getChildAt(0)), textViewStyle);
-    if (editTextStyle != -1) setTextAppearance(((TextView) getChildAt(1)), editTextStyle);
+    if (textViewStyle != -1) setTextAppearance(textView, textViewStyle);
+    if (editTextStyle != -1) setTextAppearance(editText, editTextStyle);
     addChildren();
   }
 
@@ -76,7 +80,12 @@ public class ClickToEditTextView extends ViewSwitcher {
     super.onAttachedToWindow();
     addClickListener();
     setOnFocusChangeListener();
-    addTextChangedListener();
+    editText.addTextChangedListener(textWatcher);
+  }
+
+  @Override protected void onDetachedFromWindow() {
+    super.onDetachedFromWindow();
+    editText.removeTextChangedListener(textWatcher);
   }
 
   @Override public void setOnClickListener(OnClickListener l) {
@@ -88,7 +97,7 @@ public class ClickToEditTextView extends ViewSwitcher {
     editText.setText(text);
   }
 
-  public void setMode(ClickToEditTextViewMode mode) {
+  public void setMode(Mode mode) {
     switch (mode) {
       case EDIT:
         if (getCurrentView() == getChildAt(0)) {
@@ -119,12 +128,12 @@ public class ClickToEditTextView extends ViewSwitcher {
 
   private void setOnFocusChangeListener() {
     editText.setOnFocusChangeListener((view, hasFocus) -> {
-      if (hasFocus) setMode(ClickToEditTextViewMode.EDIT);
+      if (hasFocus) {
+        setMode(Mode.EDIT);
+      } else {
+        setMode(Mode.TEXT);
+      }
     });
-  }
-
-  private void addTextChangedListener() {
-    editText.addTextChangedListener(editTextWatcher);
   }
 
   private void createChildren(Context context, AttributeSet attrs) {
@@ -147,7 +156,7 @@ public class ClickToEditTextView extends ViewSwitcher {
 
   private void addClickListener() {
     textView.setOnClickListener((view) -> {
-      if (!isInEditMode()) setMode(ClickToEditTextViewMode.EDIT);
+      if (!isInEditMode()) setMode(Mode.EDIT);
     });
   }
 }

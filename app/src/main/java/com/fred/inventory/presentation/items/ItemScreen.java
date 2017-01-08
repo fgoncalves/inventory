@@ -65,7 +65,6 @@ public class ItemScreen extends BaseScreen {
 
     MainActivity.scoped(new ItemViewModule()).inject(this);
     binding.setViewModel(viewModel);
-    binding.executePendingBindings();
 
     return binding.getRoot();
   }

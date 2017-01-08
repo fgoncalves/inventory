@@ -28,10 +28,11 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         >
-      <com.fred.inventory.presentation.widgets.clicktoedittext.ClickToEditTextViewImpl
+      <com.fred.inventory.presentation.widgets.clicktoedittext.ClickToEditTextView
           android:id="@+id/product_list_name"
           android:layout_width="match_parent"
           android:layout_height="match_parent"
+          android:inputType="textCapSentences"
           android:text="@{viewModel.productListName()}"
           style="@style/MainToolbarClickToEdit"
           />
@@ -69,8 +70,8 @@
 
     <android.support.constraint.ConstraintLayout
         android:id="@+id/empty_product_list_recycler"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         android:visibility="@{viewModel.emptyListVisibility()}"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"

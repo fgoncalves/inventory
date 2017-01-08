@@ -18,7 +18,7 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-public class OldClickToEditTextViewModelImplTest {
+public class OldModelImplTest {
   @Mock Observable.OnPropertyChangedCallback modePropertyChangedCallback;
   @Mock Observable.OnPropertyChangedCallback textPropertyChangedCallback;
   private ClickToEditTextViewModelImpl viewModel;
