@@ -9,15 +9,16 @@
 
   <item
       android:id="@+id/action_menu"
-      android:title="@string/more"
       android:icon="@drawable/ic_more"
+      android:title="@string/more"
       app:showAsAction="always">
 
     <menu>
       <item
-          android:id="@+id/action_support"
+          android:id="@+id/action_search"
           android:icon="@drawable/ic_search"
-          android:title="@string/search"/>
+          android:title="@string/search"
+          app:actionViewClass="android.support.v7.widget.SearchView"/>
     </menu>
   </item>
 </menu>
