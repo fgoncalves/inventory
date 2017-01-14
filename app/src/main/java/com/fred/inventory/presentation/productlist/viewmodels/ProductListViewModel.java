@@ -53,4 +53,10 @@ public interface ProductListViewModel {
   RecyclerView.Adapter<?> productListRecyclerViewAdapter();
 
   void onCodeScanned(String barcode);
+
+  void onSearchButtonClicked(View actionView);
+
+  ObservableInt toolBarDisplayedChild();
+
+  boolean onHomeButtonPressed();
 }

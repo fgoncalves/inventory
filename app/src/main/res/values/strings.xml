@@ -19,6 +19,7 @@
   <string name="item">Item</string>
   <string name="search">Search</string>
   <string name="more">more</string>
+  <string name="search_term">Search</string>
   <string-array name="item_types">
     <item>Item(s)</item>
     <item>Max.</item>

@@ -30,9 +30,12 @@ import timber.log.Timber;
 public class ProductListViewModelImpl
     implements ProductListViewModel, ProductListRecyclerViewAdapter.OnProductDeletedListener,
     ProductListRecyclerViewAdapter.OnItemClickListener {
+  private static final int PRODUCT_LIST_NAME_VIEW = 0;
+  private static final int SEARCH_EDIT_TEXT_VIEW = 1;
   private final ObservableField<String> productListName = new ObservableField<>();
   private final OneTimeTextWatcher productListNameTextWatcher =
       new OneTimeTextWatcher(productListName);
+  private final ObservableInt toolbarDisplayedChild = new ObservableInt(0);
   private final GetProductListUseCase getProductListUseCase;
   private final SaveProductListInLocalStorageUseCase saveProductListInLocalStorageUseCase;
   private final SchedulerTransformer transformer;
@@ -166,6 +169,10 @@ public class ProductListViewModelImpl
     return listVisibility;
   }
 
+  @Override public ObservableInt toolBarDisplayedChild() {
+    return toolbarDisplayedChild;
+  }
+
   @Override public void unbindProductListIdObserver(Observer<Long> observer) {
     productListIdObservable.unbind(observer);
   }
@@ -176,6 +183,12 @@ public class ProductListViewModelImpl
 
   @Override public RecyclerView.Adapter<?> productListRecyclerViewAdapter() {
     return (RecyclerView.Adapter<?>) adapter;
+  }
+
+  @Override public boolean onHomeButtonPressed() {
+    if (toolbarDisplayedChild.get() == PRODUCT_LIST_NAME_VIEW) return false;
+    toolbarDisplayedChild.set(PRODUCT_LIST_NAME_VIEW);
+    return true;
   }
 
   private ProductList createFromInput() {
@@ -213,6 +226,10 @@ public class ProductListViewModelImpl
         }, e -> Timber.e(e, "Failed to get the product info"));
 
     rxSubscriptionPool.addSubscription(getClass().getCanonicalName(), subscription);
+  }
+
+  @Override public void onSearchButtonClicked(View actionView) {
+    toolbarDisplayedChild.set(SEARCH_EDIT_TEXT_VIEW);
   }
 
   private void goToItemScreen(ProductList productList, Product product) {
