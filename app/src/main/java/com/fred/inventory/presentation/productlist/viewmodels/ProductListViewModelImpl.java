@@ -260,7 +260,7 @@ public class ProductListViewModelImpl
       listVisibility.set(hasItems ? View.VISIBLE : View.GONE);
       productListName.set(productList.getName());
       productListIdObservable.set(productList.getId());
-      adapter.setData(productList.getProducts());
+      adapter.add(productList.getProducts());
     }
   }
 }

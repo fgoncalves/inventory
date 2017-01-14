@@ -10,6 +10,8 @@ import java.util.List;
  */
 
 public interface ProductListRecyclerViewAdapter {
+  void replaceAll(List<Product> models);
+
   interface OnProductDeletedListener {
     void onProductDeleted(Product product);
   }
@@ -18,7 +20,13 @@ public interface ProductListRecyclerViewAdapter {
     void onItemClicked(Product product);
   }
 
-  void setData(List<Product> products);
+  void add(Product model);
+
+  void remove(Product model);
+
+  void add(List<Product> models);
+
+  void remove(List<Product> models);
 
   List<Product> getItems();
 
