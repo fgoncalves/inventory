@@ -46,6 +46,8 @@ public interface ProductListViewModel {
 
   ObservableInt progressBarVisibility();
 
+  ObservableInt recyclerViewScrollPosition();
+
   void unbindProductListIdObserver(Observer<Long> observer);
 
   void bindProductListIdObserver(Observer<Long> observer);
@@ -57,6 +59,10 @@ public interface ProductListViewModel {
   void onSearchButtonClicked(View actionView);
 
   ObservableInt toolBarDisplayedChild();
+
+  ObservableField<String> searchQuery();
+
+  TextWatcher searchQueryTextWatcher();
 
   boolean onHomeButtonPressed();
 }

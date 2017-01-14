@@ -3,6 +3,7 @@ package com.fred.inventory.presentation.productlist.viewmodels;
 import android.databinding.ObservableField;
 import android.databinding.ObservableInt;
 import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
 import com.fred.inventory.R;
@@ -21,6 +22,8 @@ import com.fred.inventory.utils.path.PathManager;
 import com.fred.inventory.utils.rx.RxSubscriptionPool;
 import com.fred.inventory.utils.rx.schedulers.SchedulerTransformer;
 import com.fred.inventory.utils.rx.schedulers.qualifiers.IOToUiSchedulerTransformer;
+import java.util.ArrayList;
+import java.util.List;
 import javax.inject.Inject;
 import rx.Subscriber;
 import rx.Subscription;
@@ -43,10 +46,29 @@ public class ProductListViewModelImpl
   private final ObservableInt listVisibility = new ObservableInt(View.GONE);
   private final ObservableInt emptyListVisibility = new ObservableInt(View.GONE);
   private final ObservableInt progressBarVisibility = new ObservableInt(View.GONE);
+  private final ObservableInt recyclerViewScrollPosition = new ObservableInt(0);
+  private final ObservableField<String> searchQuery = new ObservableField<>("");
   private final Observable<Long> productListIdObservable = Observable.create();
   private final PathManager pathManager;
   private final ProductListRecyclerViewAdapter adapter;
   private final GetProductInfoFromCodeUseCase getProductInfoFromCodeUseCase;
+  private final TextWatcher searchQueryTextWatcher = new TextWatcher() {
+    @Override public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+    }
+
+    @Override public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+    }
+
+    @Override public void afterTextChanged(Editable editable) {
+      String query = editable.toString();
+      List<Product> filteredProducts = filter(productList.getProducts(), query);
+      adapter.replaceAll(filteredProducts);
+      recyclerViewScrollPosition.set(0);
+    }
+  };
+
   private ProductList productList;
   private OnScanBarCodeButtonClickListener scanBarCodeButtonClickListener;
 
@@ -173,6 +195,10 @@ public class ProductListViewModelImpl
     return toolbarDisplayedChild;
   }
 
+  @Override public ObservableInt recyclerViewScrollPosition() {
+    return recyclerViewScrollPosition;
+  }
+
   @Override public void unbindProductListIdObserver(Observer<Long> observer) {
     productListIdObservable.unbind(observer);
   }
@@ -187,8 +213,13 @@ public class ProductListViewModelImpl
 
   @Override public boolean onHomeButtonPressed() {
     if (toolbarDisplayedChild.get() == PRODUCT_LIST_NAME_VIEW) return false;
+    searchQuery.set(""); // Clear search so entire list is shown
     toolbarDisplayedChild.set(PRODUCT_LIST_NAME_VIEW);
     return true;
+  }
+
+  @Override public ObservableField<String> searchQuery() {
+    return searchQuery;
   }
 
   private ProductList createFromInput() {
@@ -202,6 +233,10 @@ public class ProductListViewModelImpl
     boolean hasItems = !adapter.getItems().isEmpty();
     emptyListVisibility.set(hasItems ? View.GONE : View.VISIBLE);
     listVisibility.set(hasItems ? View.VISIBLE : View.GONE);
+  }
+
+  @Override public TextWatcher searchQueryTextWatcher() {
+    return searchQueryTextWatcher;
   }
 
   @Override public void onItemClicked(Product product) {
@@ -241,6 +276,18 @@ public class ProductListViewModelImpl
     }
     productListIdObservable.set(productList.getId());
     pathManager.go(itemScreen, R.id.main_container);
+  }
+
+  private List<Product> filter(List<Product> products, String query) {
+    if (StringUtils.isBlank(query)) return products;
+
+    List<Product> filteredProducts = new ArrayList<>();
+    for (Product product : products) {
+      if (product.getName().toLowerCase().contains(query.toLowerCase())) {
+        filteredProducts.add(product);
+      }
+    }
+    return filteredProducts;
   }
 
   private class ProductListSubscriber extends Subscriber<ProductList> {
