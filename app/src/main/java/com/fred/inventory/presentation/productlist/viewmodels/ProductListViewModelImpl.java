@@ -47,7 +47,7 @@ public class ProductListViewModelImpl
   private final ObservableInt emptyListVisibility = new ObservableInt(View.GONE);
   private final ObservableInt progressBarVisibility = new ObservableInt(View.GONE);
   private final ObservableInt recyclerViewScrollPosition = new ObservableInt(0);
-  private final ObservableField<String> searchQuery = new ObservableField<>("");
+  private final ObservableField<String> searchQuery = new ObservableField<>();
   private final Observable<Long> productListIdObservable = Observable.create();
   private final PathManager pathManager;
   private final ProductListRecyclerViewAdapter adapter;

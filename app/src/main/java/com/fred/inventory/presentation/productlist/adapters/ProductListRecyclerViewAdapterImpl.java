@@ -20,7 +20,7 @@ public class ProductListRecyclerViewAdapterImpl
   private final SortedList<Product> sortedList =
       new SortedList<>(Product.class, new SortedList.Callback<Product>() {
         @Override public int compare(Product o1, Product o2) {
-          return o1.getName().compareTo(o2.getName());
+          return o1.getName().compareToIgnoreCase(o2.getName());
         }
 
         @Override public void onChanged(int position, int count) {
