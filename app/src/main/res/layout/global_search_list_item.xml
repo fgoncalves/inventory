@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    >
+  <data>
+    <variable
+        name="viewModel"
+        type="com.fred.inventory.presentation.globalsearch.viewmodels.GlobalSearchListItemViewModel"
+        />
+  </data>
+
+  <android.support.v7.widget.CardView
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_marginEnd="10dp"
+      android:layout_marginStart="10dp"
+      android:layout_marginTop="10dp"
+      android:background="@color/white"
+      android:onClick="@{viewModel.itemClickListener()}"
+      app:cardElevation="4dp"
+      >
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        >
+
+      <TextView
+          android:id="@+id/global_search_list_item_name"
+          android:layout_width="0dp"
+          android:layout_height="wrap_content"
+          android:layout_marginEnd="8dp"
+          android:layout_marginStart="16dp"
+          android:maxLines="3"
+          android:singleLine="false"
+          android:text="@{viewModel.productName()}"
+          app:layout_constraintBottom_toBottomOf="parent"
+          app:layout_constraintLeft_toLeftOf="parent"
+          app:layout_constraintRight_toLeftOf="@+id/global_search_list_item_quantity"
+          app:layout_constraintTop_toTopOf="parent"
+          tools:text="Bertoli"
+          style="@style/MainTitleText"
+          />
+
+      <TextView
+          android:id="@+id/global_search_list_item_quantity"
+          android:layout_width="0dp"
+          android:layout_height="wrap_content"
+          android:layout_marginEnd="16dp"
+          android:gravity="end"
+          android:text="@{viewModel.productQuantityLabel()}"
+          app:layout_constraintBaseline_toBaselineOf="@+id/global_search_list_item_name"
+          app:layout_constraintRight_toRightOf="parent"
+          tools:text="200 g"
+          style="@style/MainTitleText"
+          />
+
+      <ProgressBar
+          android:id="@+id/global_search_list_item_progress_bar"
+          android:layout_width="0dp"
+          android:layout_height="3dp"
+          android:layout_marginTop="16dp"
+          android:max="1000"
+          android:maxHeight="3dp"
+          android:minHeight="3dp"
+          android:progress="@{viewModel.quantity()}"
+          android:progressDrawable="@drawable/item_quantity_progress_bar_background"
+          android:visibility="@{viewModel.progressBarVisibility()}"
+          app:layout_constraintHorizontal_bias="0.0"
+          app:layout_constraintLeft_toLeftOf="parent"
+          app:layout_constraintRight_toRightOf="parent"
+          app:layout_constraintTop_toBottomOf="@+id/global_search_list_item_product_list_name"
+          tools:visibility="visible"
+          style="@android:style/Widget.ProgressBar.Horizontal"
+          />
+
+      <TextView
+          android:id="@+id/global_search_list_item_product_list_name"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_marginTop="16dp"
+          android:text="@{viewModel.productListName()}"
+          app:layout_constraintLeft_toLeftOf="@+id/global_search_list_item_name"
+          app:layout_constraintTop_toBottomOf="@+id/global_search_list_item_name"
+          tools:text="Groceries"
+          style="@style/SecondaryText"
+          />
+    </android.support.constraint.ConstraintLayout>
+  </android.support.v7.widget.CardView>
+</layout>
