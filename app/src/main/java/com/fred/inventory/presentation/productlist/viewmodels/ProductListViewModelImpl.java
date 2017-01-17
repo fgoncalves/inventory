@@ -245,13 +245,11 @@ public class ProductListViewModelImpl
 
   @Override public void onCodeScanned(String barcode) {
     Subscription subscription = getProductInfoFromCodeUseCase.info(barcode)
-        .flatMap(new Func1<Product, rx.Observable<ProductList>>() {
-          @Override public rx.Observable<ProductList> call(Product product) {
+        .flatMap(product -> {
             ProductList productList = createFromInput();
             productList.setProducts(adapter.getItems());
             productList.getProducts().add(product);
             return saveProductListInLocalStorageUseCase.save(productList);
-          }
         })
         .compose(transformer.applySchedulers())
         .subscribe(productList -> {
