@@ -2,6 +2,7 @@ package com.fred.inventory.presentation.base;
 
 import android.support.v7.util.SortedList;
 import android.support.v7.widget.RecyclerView;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
@@ -46,6 +47,17 @@ public abstract class SortedRecyclerViewAdapter<MODEL, VH extends RecyclerView.V
   protected SortedRecyclerViewAdapter(Class<MODEL> classModel, C modelComparator) {
     this.modelComparator = modelComparator;
     this.sortedList = new SortedList<>(classModel, callback);
+  }
+
+  @Override public int getItemCount() {
+    return sortedList.size();
+  }
+
+  public List<MODEL> getItems() {
+    List<MODEL> products = new ArrayList<>();
+    for (int i = 0; i < sortedList.size(); i++)
+      products.add(sortedList.get(i));
+    return products;
   }
 
   public void add(MODEL model) {

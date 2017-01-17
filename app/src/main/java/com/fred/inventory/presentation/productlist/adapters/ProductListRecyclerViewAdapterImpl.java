@@ -61,17 +61,6 @@ public class ProductListRecyclerViewAdapterImpl extends
     });
   }
 
-  @Override public int getItemCount() {
-    return sortedList.size();
-  }
-
-  @Override public List<Product> getItems() {
-    List<Product> products = new ArrayList<>();
-    for (int i = 0; i < sortedList.size(); i++)
-      products.add(sortedList.get(i));
-    return products;
-  }
-
   @Override
   public void setOnProductDeletedListener(OnProductDeletedListener onProductDeletedListener) {
     this.onProductDeletedListener = onProductDeletedListener;
