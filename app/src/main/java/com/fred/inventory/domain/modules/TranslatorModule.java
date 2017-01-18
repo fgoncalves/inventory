@@ -1,9 +1,11 @@
 package com.fred.inventory.domain.modules;
 
+import com.fred.inventory.domain.models.GlobalSearchResult;
 import com.fred.inventory.domain.models.Image;
 import com.fred.inventory.domain.models.Product;
 import com.fred.inventory.domain.models.ProductList;
 import com.fred.inventory.domain.modules.qualifiers.DBImageToImageTranslator;
+import com.fred.inventory.domain.modules.qualifiers.DBProductListListToGlobalSearchResultListTranslator;
 import com.fred.inventory.domain.modules.qualifiers.DBProductListToProductListTranslator;
 import com.fred.inventory.domain.modules.qualifiers.DBProductToProductTranslator;
 import com.fred.inventory.domain.modules.qualifiers.ImageToDBImageTranslator;
@@ -13,6 +15,7 @@ import com.fred.inventory.domain.modules.qualifiers.ProductToDBProductTranslator
 import com.fred.inventory.domain.translators.Translator;
 import dagger.Module;
 import dagger.Provides;
+import java.util.List;
 import javax.inject.Singleton;
 
 @Module(complete = false, library = true) public class TranslatorModule {
@@ -53,6 +56,12 @@ import javax.inject.Singleton;
   @Provides @Singleton @OutpanProductToProductTranslator
   public Translator<com.fred.inventory.data.outpan.models.Product, Product> providesOutpanProductToProductTranslator(
       com.fred.inventory.domain.translators.OutpanProductToProductTranslator translator) {
+    return translator;
+  }
+
+  @Provides @Singleton @DBProductListListToGlobalSearchResultListTranslator
+  public Translator<List<com.fred.inventory.data.db.models.ProductList>, List<GlobalSearchResult>> providesOutpanProductToProductTranslator(
+      com.fred.inventory.domain.translators.DBProductListListToGlobalSearchResultListTranslator translator) {
     return translator;
   }
 }

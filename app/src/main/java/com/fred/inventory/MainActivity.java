@@ -45,6 +45,7 @@ public class MainActivity extends AppCompatActivity {
   private void setupNavigationView() {
     navigationView.setNavigationItemSelectedListener(item -> {
       drawerLayout.closeDrawer(GravityCompat.START);
+      item.setChecked(false);
       if (item.getItemId() == R.id.drawer_search) {
         pathManager.go(GlobalSearchScreen.newInstance(), R.id.main_container);
         return true;
