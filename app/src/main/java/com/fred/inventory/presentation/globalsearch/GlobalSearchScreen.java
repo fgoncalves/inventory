@@ -35,7 +35,7 @@ public class GlobalSearchScreen extends BaseScreen {
   }
 
   @Override protected int getMenuResource() {
-    return R.menu.global_search_menu;
+    return R.menu.drawer_menu;
   }
 
   @Override protected boolean isHomeButtonSupported() {

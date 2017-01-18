@@ -1,11 +1,15 @@
 package com.fred.inventory;
 
 import android.os.Bundle;
+import android.support.design.widget.NavigationView;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Window;
 import android.view.WindowManager;
 import com.fred.inventory.presentation.base.BaseScreen;
+import com.fred.inventory.presentation.globalsearch.GlobalSearchScreen;
 import com.fred.inventory.presentation.listofproducts.ListOfProductListsScreen;
 import com.fred.inventory.utils.path.PathManager;
 import dagger.ObjectGraph;
@@ -15,6 +19,8 @@ public class MainActivity extends AppCompatActivity {
   @Inject PathManager pathManager;
 
   private static ObjectGraph objectGraph;
+  private NavigationView navigationView;
+  private DrawerLayout drawerLayout;
 
   @Override protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
@@ -29,7 +35,22 @@ public class MainActivity extends AppCompatActivity {
       return;
     }
 
+    navigationView = (NavigationView) findViewById(R.id.drawer);
+    drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+
+    setupNavigationView();
     addListOfProductListsScreen();
+  }
+
+  private void setupNavigationView() {
+    navigationView.setNavigationItemSelectedListener(item -> {
+      drawerLayout.closeDrawer(GravityCompat.START);
+      if (item.getItemId() == R.id.drawer_search) {
+        pathManager.go(GlobalSearchScreen.newInstance(), R.id.main_container);
+        return true;
+      }
+      return false;
+    });
   }
 
   /**

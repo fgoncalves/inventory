@@ -12,7 +12,7 @@ import javax.inject.Inject;
 public class GlobalSearchViewModelImpl implements GlobalSearchViewModel {
   private final ObservableField<String> searchQuery = new ObservableField<>("");
   private final TextWatcher searchQueryTextWatcher = new OneTimeTextWatcher(searchQuery);
-  private final ObservableInt progressBarVisibility = new ObservableInt(View.VISIBLE);
+  private final ObservableInt progressBarVisibility = new ObservableInt(View.GONE);
   private final GlobalSearchRecyclerViewAdapter adapter;
 
   @Inject public GlobalSearchViewModelImpl(GlobalSearchRecyclerViewAdapter adapter) {
