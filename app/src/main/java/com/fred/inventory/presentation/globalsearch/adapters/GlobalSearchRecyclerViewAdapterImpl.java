@@ -44,7 +44,7 @@ public class GlobalSearchRecyclerViewAdapterImpl extends
   }
 
   @Override public void onBindViewHolder(ViewHolder holder, int position) {
-    // TODO: bind data here
+    holder.viewModel.onBindViewHolder(sortedList.get(position));
   }
 
   public static class ViewHolder extends RecyclerView.ViewHolder {
