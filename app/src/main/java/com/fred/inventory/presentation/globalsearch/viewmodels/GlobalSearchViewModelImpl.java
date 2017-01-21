@@ -50,6 +50,7 @@ public class GlobalSearchViewModelImpl implements GlobalSearchViewModel {
   @Override public void onResume() {
     adapter.setOnItemClickedListener(result -> {
       final ProductListScreen screen = ProductListScreen.newInstance(result.getProductListId());
+      pathManager.back();
       pathManager.go(screen, R.id.main_container);
     });
   }
