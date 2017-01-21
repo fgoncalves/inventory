@@ -35,12 +35,13 @@
           android:maxLines="3"
           android:singleLine="false"
           android:text="@{viewModel.productName()}"
-          app:layout_constraintBottom_toBottomOf="parent"
           app:layout_constraintLeft_toLeftOf="parent"
           app:layout_constraintRight_toLeftOf="@+id/global_search_list_item_quantity"
           app:layout_constraintTop_toTopOf="parent"
           tools:text="Bertoli"
           style="@style/MainTitleText"
+          app:layout_constraintHorizontal_bias="0.66"
+          android:layout_marginTop="16dp"
           />
 
       <TextView

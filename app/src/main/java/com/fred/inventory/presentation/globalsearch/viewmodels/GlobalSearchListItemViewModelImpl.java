@@ -25,7 +25,7 @@ public class GlobalSearchListItemViewModelImpl implements GlobalSearchListItemVi
     productQuantityLabel.set(globalSearchResult.getProduct().getQuantityLabel());
     quantity.set(globalSearchResult.getProduct().getQuantity());
     if (globalSearchResult.getProduct().isUnit()) {
-      progressBarVisibility.set(View.GONE);
+      progressBarVisibility.set(View.INVISIBLE);
     } else {
       progressBarVisibility.set(View.VISIBLE);
     }

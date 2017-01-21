@@ -21,5 +21,5 @@ public interface GlobalSearchViewModel {
 
   ObservableInt listVisibility();
 
-  boolean onOptionsItemSelected(MenuItem item);
+  void onSearchButtonClicked(MenuItem item);
 }

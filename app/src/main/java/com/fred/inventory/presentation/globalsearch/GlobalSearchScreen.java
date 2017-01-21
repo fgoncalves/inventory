@@ -56,6 +56,10 @@ public class GlobalSearchScreen extends BaseScreen {
   }
 
   @Override public boolean onOptionsItemSelected(MenuItem item) {
-    return viewModel.onOptionsItemSelected(item);
+    if (item.getItemId() == R.id.action_global_search) {
+      viewModel.onSearchButtonClicked(item);
+      return true;
+    }
+    return super.onOptionsItemSelected(item);
   }
 }
