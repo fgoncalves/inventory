@@ -37,6 +37,7 @@ public class DBProductListListToGlobalSearchResultListTranslator
     List<GlobalSearchResult> result = new ArrayList<>();
     for (com.fred.inventory.data.db.models.Product product : productList.getProducts()) {
       GlobalSearchResult globalSearchResult = new GlobalSearchResult();
+      globalSearchResult.setProductListId(productList.getId());
       globalSearchResult.setProductListName(productList.getName());
       globalSearchResult.setProduct(dbProductToProductTranslator.translate(product));
       result.add(globalSearchResult);

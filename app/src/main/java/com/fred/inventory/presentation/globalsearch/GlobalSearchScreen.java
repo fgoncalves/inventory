@@ -35,6 +35,16 @@ public class GlobalSearchScreen extends BaseScreen {
     return binding.getRoot();
   }
 
+  @Override public void onResume() {
+    super.onResume();
+    viewModel.onResume();
+  }
+
+  @Override public void onPause() {
+    super.onPause();
+    viewModel.onPause();
+  }
+
   @Override protected int getMenuResource() {
     return R.menu.global_search_tool_bar_menu;
   }

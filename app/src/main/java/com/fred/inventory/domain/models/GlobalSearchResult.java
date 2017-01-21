@@ -5,6 +5,7 @@ package com.fred.inventory.domain.models;
  */
 
 public class GlobalSearchResult {
+  private Long productListId;
   private String productListName;
   private Product product;
 
@@ -22,6 +23,14 @@ public class GlobalSearchResult {
 
   public void setProduct(Product product) {
     this.product = product;
+  }
+
+  public Long getProductListId() {
+    return productListId;
+  }
+
+  public void setProductListId(Long productListId) {
+    this.productListId = productListId;
   }
 
   @Override public boolean equals(Object o) {

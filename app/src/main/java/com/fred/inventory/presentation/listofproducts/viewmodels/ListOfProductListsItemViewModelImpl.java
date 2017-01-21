@@ -6,6 +6,7 @@ import android.view.View;
 import com.fred.inventory.R;
 import com.fred.inventory.domain.models.ProductList;
 import com.fred.inventory.domain.usecases.DeleteProductListUseCase;
+import com.fred.inventory.presentation.base.OnItemClickListener;
 import com.fred.inventory.utils.rx.schedulers.SchedulerTransformer;
 import com.fred.inventory.utils.rx.schedulers.qualifiers.IOToUiSchedulerTransformer;
 import javax.inject.Inject;

@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import com.fred.inventory.MainActivity;
 import com.fred.inventory.databinding.GlobalSearchListItemBinding;
 import com.fred.inventory.domain.models.GlobalSearchResult;
+import com.fred.inventory.presentation.base.OnItemClickListener;
 import com.fred.inventory.presentation.base.SortedRecyclerViewAdapter;
 import com.fred.inventory.presentation.globalsearch.adapters.comparators.GlobalSearchResultComparator;
 import com.fred.inventory.presentation.globalsearch.modules.GlobalSearchListItemModule;
@@ -16,6 +17,7 @@ import javax.inject.Inject;
 public class GlobalSearchRecyclerViewAdapterImpl extends
     SortedRecyclerViewAdapter<GlobalSearchResult, GlobalSearchRecyclerViewAdapterImpl.ViewHolder, GlobalSearchResultComparator>
     implements GlobalSearchRecyclerViewAdapter {
+  private OnItemClickListener<GlobalSearchResult> itemClickedListener;
 
   @Inject public GlobalSearchRecyclerViewAdapterImpl(GlobalSearchResultComparator comparator) {
     super(GlobalSearchResult.class, comparator);
@@ -43,8 +45,18 @@ public class GlobalSearchRecyclerViewAdapterImpl extends
     return holder;
   }
 
+  @Override public void setOnItemClickedListener(
+      OnItemClickListener<GlobalSearchResult> itemClickedListener) {
+    this.itemClickedListener = itemClickedListener;
+  }
+
   @Override public void onBindViewHolder(ViewHolder holder, int position) {
     holder.viewModel.onBindViewHolder(sortedList.get(position));
+    holder.viewModel.setSearchResultClickListener(() -> {
+      if (itemClickedListener != null) {
+        itemClickedListener.onItemClicked(sortedList.get(holder.getAdapterPosition()));
+      }
+    });
   }
 
   public static class ViewHolder extends RecyclerView.ViewHolder {

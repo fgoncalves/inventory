@@ -4,12 +4,17 @@ import android.databinding.ObservableField;
 import android.databinding.ObservableInt;
 import android.view.View;
 import com.fred.inventory.domain.models.GlobalSearchResult;
+import com.fred.inventory.presentation.base.OnItemClickListener;
 
 /**
  * View model for each item in the global search list
  */
 
 public interface GlobalSearchListItemViewModel {
+  interface SearchResultClickListener {
+    void onSearchResultClicked();
+  }
+
   void onBindViewHolder(GlobalSearchResult globalSearchResult);
 
   ObservableField<String> productName();
@@ -22,5 +27,7 @@ public interface GlobalSearchListItemViewModel {
 
   ObservableInt progressBarVisibility();
 
-  View.OnClickListener itemClickListener();
+  View.OnClickListener listItemClickListener();
+
+  void setSearchResultClickListener(SearchResultClickListener searchResultClickListener);
 }

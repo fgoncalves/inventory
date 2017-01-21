@@ -18,7 +18,7 @@
       android:layout_marginStart="10dp"
       android:layout_marginTop="10dp"
       android:background="@color/white"
-      android:onClick="@{viewModel.itemClickListener()}"
+      android:onClick="@{viewModel.listItemClickListener()}"
       app:cardElevation="4dp"
       >
     <android.support.constraint.ConstraintLayout

@@ -7,13 +7,15 @@ import com.fred.inventory.domain.models.GlobalSearchResult;
 import javax.inject.Inject;
 
 public class GlobalSearchListItemViewModelImpl implements GlobalSearchListItemViewModel {
+  private SearchResultClickListener searchResultClickListener;
+
   private final ObservableField<String> productName = new ObservableField<>("");
   private final ObservableField<String> productListName = new ObservableField<>("");
   private final ObservableField<String> productQuantityLabel = new ObservableField<>("");
   private final ObservableInt quantity = new ObservableInt(0);
   private final ObservableInt progressBarVisibility = new ObservableInt(View.INVISIBLE);
-  private final View.OnClickListener itemClickListener = view -> {
-    // TODO: Start the product list
+  private final View.OnClickListener clickListener = view -> {
+    if (searchResultClickListener != null) searchResultClickListener.onSearchResultClicked();
   };
 
   @Inject public GlobalSearchListItemViewModelImpl() {
@@ -29,6 +31,11 @@ public class GlobalSearchListItemViewModelImpl implements GlobalSearchListItemVi
     } else {
       progressBarVisibility.set(View.VISIBLE);
     }
+  }
+
+  @Override
+  public void setSearchResultClickListener(SearchResultClickListener searchResultClickListener) {
+    this.searchResultClickListener = searchResultClickListener;
   }
 
   @Override public ObservableField<String> productName() {
@@ -51,7 +58,7 @@ public class GlobalSearchListItemViewModelImpl implements GlobalSearchListItemVi
     return progressBarVisibility;
   }
 
-  @Override public View.OnClickListener itemClickListener() {
-    return itemClickListener;
+  @Override public View.OnClickListener listItemClickListener() {
+    return clickListener;
   }
 }
