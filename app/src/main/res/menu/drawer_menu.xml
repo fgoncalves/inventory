@@ -5,7 +5,7 @@
   <group android:checkableBehavior="single">
     <item
         android:id="@+id/drawer_search"
-        android:icon="@drawable/ic_search"
+        android:icon="@drawable/ic_search_accent"
         android:title="@string/search"/>
   </group>
 </menu>
