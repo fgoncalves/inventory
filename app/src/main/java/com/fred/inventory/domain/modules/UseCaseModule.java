@@ -12,6 +12,8 @@ import com.fred.inventory.domain.usecases.ListAllProductListsUseCase;
 import com.fred.inventory.domain.usecases.ListAllProductListsUseCaseImpl;
 import com.fred.inventory.domain.usecases.SaveProductListInLocalStorageUseCase;
 import com.fred.inventory.domain.usecases.SaveProductListInLocalStorageUseCaseImpl;
+import com.fred.inventory.domain.usecases.SearchForProductUseCase;
+import com.fred.inventory.domain.usecases.SearchForProductUseCaseImpl;
 import dagger.Module;
 import dagger.Provides;
 import javax.inject.Singleton;
@@ -44,6 +46,11 @@ import javax.inject.Singleton;
 
   @Provides @Singleton public GetProductInfoFromCodeUseCase providesGetProductInfoFromCode(
       GetProductInfoFromCodeUseCaseImpl useCase) {
+    return useCase;
+  }
+
+  @Provides @Singleton public SearchForProductUseCase providesSearchForProductUseCase(
+      SearchForProductUseCaseImpl useCase) {
     return useCase;
   }
 }

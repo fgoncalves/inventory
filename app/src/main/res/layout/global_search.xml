@@ -47,6 +47,7 @@
         android:layout_marginBottom="16dp"
         android:overScrollMode="never"
         android:scrollbars="none"
+        android:visibility="@{viewModel.listVisibility()}"
         app:adapter="@{viewModel.globalSearchRecyclerViewAdapter()}"
         app:layoutManager="android.support.v7.widget.LinearLayoutManager"
         app:layout_constraintBottom_toBottomOf="parent"

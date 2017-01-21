@@ -4,6 +4,7 @@ import android.databinding.ObservableField;
 import android.databinding.ObservableInt;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextWatcher;
+import android.view.MenuItem;
 
 /**
  * The view model for the global search screen
@@ -17,4 +18,8 @@ public interface GlobalSearchViewModel {
   RecyclerView.Adapter<?> globalSearchRecyclerViewAdapter();
 
   ObservableInt progressBarVisibility();
+
+  ObservableInt listVisibility();
+
+  boolean onOptionsItemSelected(MenuItem item);
 }

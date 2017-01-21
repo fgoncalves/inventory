@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import com.fred.inventory.MainActivity;
@@ -35,7 +36,7 @@ public class GlobalSearchScreen extends BaseScreen {
   }
 
   @Override protected int getMenuResource() {
-    return R.menu.drawer_menu;
+    return R.menu.global_search_tool_bar_menu;
   }
 
   @Override protected boolean isHomeButtonSupported() {
@@ -52,5 +53,9 @@ public class GlobalSearchScreen extends BaseScreen {
 
   @Override protected String getToolbarTitle() {
     return "";
+  }
+
+  @Override public boolean onOptionsItemSelected(MenuItem item) {
+    return viewModel.onOptionsItemSelected(item);
   }
 }
