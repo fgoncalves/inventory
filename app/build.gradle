@@ -1,18 +1,18 @@
 buildscript {
-    repositories {
-        maven { url 'https://maven.fabric.io/public' }
-    }
+  repositories {
+    maven { url 'https://maven.fabric.io/public' }
+  }
 
-    dependencies {
-        classpath 'io.fabric.tools:gradle:1.+'
-    }
+  dependencies {
+    classpath 'io.fabric.tools:gradle:1.+'
+  }
 }
 apply plugin: 'com.android.application'
 apply plugin: 'io.fabric'
 apply from: '../signing.gradle'
 
 repositories {
-    maven { url 'https://maven.fabric.io/public' }
+  maven { url 'https://maven.fabric.io/public' }
 }
 
 apply plugin: 'jacoco'
@@ -51,6 +51,22 @@ android {
       signingConfig signingConfigs.release
       minifyEnabled false
       proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+      applicationVariants.all { variant ->
+        variant.outputs.each { output ->
+          output.outputFile = new File(output.outputFile.parent,
+              output.outputFile.name.replace("app", "supplies-${versionName}"))
+        }
+      }
+    }
+    debug {
+      debuggable true
+      minifyEnabled false
+      applicationVariants.all { variant ->
+        variant.outputs.each { output ->
+          output.outputFile = new File(output.outputFile.parent,
+              output.outputFile.name.replace("app", "supplies-${versionName}"))
+        }
+      }
     }
   }
   compileOptions {
@@ -88,9 +104,9 @@ dependencies {
   testCompile('com.squareup.assertj:assertj-android:1.0.0') {
     exclude module: 'support-annotations'
   }
-    compile('com.crashlytics.sdk.android:crashlytics:2.6.5@aar') {
-        transitive = true;
-    }
+  compile('com.crashlytics.sdk.android:crashlytics:2.6.5@aar') {
+    transitive = true;
+  }
 }
 
 task jacocoTestReport(type: JacocoReport) {
