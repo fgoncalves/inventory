@@ -72,4 +72,8 @@ public class GlobalSearchScreen extends BaseScreen {
     }
     return super.onOptionsItemSelected(item);
   }
+
+  @Override protected boolean supportsDrawer() {
+    return false;
+  }
 }

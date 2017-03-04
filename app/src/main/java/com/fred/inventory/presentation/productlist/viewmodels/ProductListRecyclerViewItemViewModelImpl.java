@@ -3,8 +3,9 @@ package com.fred.inventory.presentation.productlist.viewmodels;
 import android.databinding.ObservableField;
 import android.databinding.ObservableInt;
 import android.view.View;
-import com.fred.inventory.domain.models.Product;
-import com.fred.inventory.domain.usecases.DeleteProductUseCase;
+import com.fred.inventory.data.firebase.models.SuppliesList;
+import com.fred.inventory.data.firebase.models.SupplyItem;
+import com.fred.inventory.domain.usecases.RemoveItemFromSuppliesListUseCase;
 import com.fred.inventory.utils.rx.schedulers.SchedulerTransformer;
 import com.fred.inventory.utils.rx.schedulers.qualifiers.IOToUiSchedulerTransformer;
 import javax.inject.Inject;
@@ -16,15 +17,14 @@ public class ProductListRecyclerViewItemViewModelImpl
   private final ObservableField<String> productQuantityLabel = new ObservableField<>();
   private final ObservableInt quantity = new ObservableInt();
   private final ObservableInt progressBarVisibility = new ObservableInt();
-  private final DeleteProductUseCase deleteProductUseCase;
+  private final RemoveItemFromSuppliesListUseCase removeItemFromSuppliesListUseCase;
   private final SchedulerTransformer transformer;
   private final View.OnClickListener deleteButtonClickListener = new View.OnClickListener() {
     @Override public void onClick(View view) {
-      deleteProductUseCase.delete(product)
-          .compose(transformer.<Void>applySchedulers())
-          .subscribe(aVoid -> {
-            if (deleteListener != null) deleteListener.onDelete();
-          }, throwable -> Timber.e(throwable, "Failed to delete item from product list"));
+      removeItemFromSuppliesListUseCase.remove(suppliesList.uuid(), supplyItem)
+          .compose(transformer.applySchedulers())
+          .subscribe(value -> {
+          }, throwable -> Timber.e(throwable, "Failed to delete item from supplyItem list"));
     }
   };
   private final View.OnClickListener itemClickListener = new View.OnClickListener() {
@@ -32,22 +32,24 @@ public class ProductListRecyclerViewItemViewModelImpl
       if (onItemClickListener != null) onItemClickListener.onClicked();
     }
   };
-  private OnDeleteListener deleteListener;
   private OnItemClickListener onItemClickListener;
-  private Product product;
+  private SupplyItem supplyItem;
+  private SuppliesList suppliesList;
 
-  @Inject public ProductListRecyclerViewItemViewModelImpl(DeleteProductUseCase deleteProductUseCase,
+  @Inject public ProductListRecyclerViewItemViewModelImpl(
+      RemoveItemFromSuppliesListUseCase removeItemFromSuppliesListUseCase,
       @IOToUiSchedulerTransformer SchedulerTransformer transformer) {
-    this.deleteProductUseCase = deleteProductUseCase;
+    this.removeItemFromSuppliesListUseCase = removeItemFromSuppliesListUseCase;
     this.transformer = transformer;
   }
 
-  @Override public void onBindViewHolder(Product product) {
-    this.product = product;
-    productName.set(product.getName());
-    productQuantityLabel.set(product.getQuantityLabel());
-    quantity.set(product.getQuantity());
-    if (product.isUnit()) {
+  @Override public void onBindViewHolder(SuppliesList suppliesList, SupplyItem supplyItem) {
+    this.supplyItem = supplyItem;
+    this.suppliesList = suppliesList;
+    productName.set(supplyItem.name());
+    productQuantityLabel.set(supplyItem.quantityLabel());
+    quantity.set(supplyItem.quantity());
+    if (supplyItem.unit()) {
       progressBarVisibility.set(View.GONE);
     } else {
       progressBarVisibility.set(View.VISIBLE);
@@ -72,10 +74,6 @@ public class ProductListRecyclerViewItemViewModelImpl
 
   @Override public View.OnClickListener deleteButtonClickListener() {
     return deleteButtonClickListener;
-  }
-
-  @Override public void setOnDeleteListener(OnDeleteListener onDeleteListener) {
-    deleteListener = onDeleteListener;
   }
 
   @Override public View.OnClickListener itemClickListener() {

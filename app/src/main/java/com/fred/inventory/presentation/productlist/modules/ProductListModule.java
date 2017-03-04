@@ -1,7 +1,7 @@
 package com.fred.inventory.presentation.productlist.modules;
 
 import com.fred.inventory.RootModule;
-import com.fred.inventory.domain.models.Product;
+import com.fred.inventory.data.firebase.models.SupplyItem;
 import com.fred.inventory.presentation.productlist.ProductListScreen;
 import com.fred.inventory.presentation.productlist.adapters.ProductListRecyclerViewAdapter;
 import com.fred.inventory.presentation.productlist.adapters.ProductListRecyclerViewAdapterImpl;
@@ -25,7 +25,7 @@ public class ProductListModule {
     return adapter;
   }
 
-  @Provides @Singleton public Comparator<Product> providesProductComparator(
+  @Provides @Singleton public Comparator<SupplyItem> providesProductComparator(
       ProductNameComparator productNameComparator) {
     return productNameComparator;
   }

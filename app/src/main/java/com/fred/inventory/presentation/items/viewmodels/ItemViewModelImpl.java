@@ -11,10 +11,9 @@ import android.widget.ArrayAdapter;
 import android.widget.SeekBar;
 import android.widget.SpinnerAdapter;
 import com.fred.inventory.R;
-import com.fred.inventory.domain.models.Product;
-import com.fred.inventory.domain.models.ProductList;
-import com.fred.inventory.domain.usecases.GetProductListUseCase;
-import com.fred.inventory.domain.usecases.SaveProductListInLocalStorageUseCase;
+import com.fred.inventory.data.firebase.models.SupplyItem;
+import com.fred.inventory.domain.usecases.CreateOrUpdateSupplyItemUseCase;
+import com.fred.inventory.domain.usecases.GetSupplyItemUseCase;
 import com.fred.inventory.utils.StringUtils;
 import com.fred.inventory.utils.binding.widgets.OneTimeTextWatcher;
 import com.fred.inventory.utils.path.PathManager;
@@ -36,8 +35,8 @@ public class ItemViewModelImpl implements ItemViewModel {
   private final TextWatcher itemNameTextWatcher = new OneTimeTextWatcher(itemNameObservable());
 
   private final Context context;
-  private final GetProductListUseCase getProductListUseCase;
-  private final SaveProductListInLocalStorageUseCase saveProductListInLocalStorageUseCase;
+  private final GetSupplyItemUseCase getSupplyItemUseCase;
+  private final CreateOrUpdateSupplyItemUseCase createOrUpdateSupplyItemUseCase;
   private final SchedulerTransformer transformer;
   private final RxSubscriptionPool rxSubscriptionPool;
   private final DatePickerDialog.OnDateSetListener dateSetListener =
@@ -88,19 +87,18 @@ public class ItemViewModelImpl implements ItemViewModel {
   private final TextWatcher itemQuantityLabelTextWatcher =
       new OneTimeTextWatcher(itemQuantityLabel);
 
-  private Long productListId;
-  private Long productId;
-  private ProductList productList;
-  private Product product;
+  private String supplyListUuid;
+  private String supplyItemId;
   private boolean isUnit;
+  private SupplyItem supplyItem;
 
-  @Inject public ItemViewModelImpl(Context context, GetProductListUseCase getProductListUseCase,
-      SaveProductListInLocalStorageUseCase saveProductListInLocalStorageUseCase,
+  @Inject public ItemViewModelImpl(Context context, GetSupplyItemUseCase getSupplyItemUseCase,
+      CreateOrUpdateSupplyItemUseCase createOrUpdateSupplyItemUseCase,
       @IOToUiSchedulerTransformer SchedulerTransformer transformer,
       RxSubscriptionPool rxSubscriptionPool, PathManager pathManager) {
     this.context = context;
-    this.getProductListUseCase = getProductListUseCase;
-    this.saveProductListInLocalStorageUseCase = saveProductListInLocalStorageUseCase;
+    this.getSupplyItemUseCase = getSupplyItemUseCase;
+    this.createOrUpdateSupplyItemUseCase = createOrUpdateSupplyItemUseCase;
     this.transformer = transformer;
     this.rxSubscriptionPool = rxSubscriptionPool;
     this.pathManager = pathManager;
@@ -110,43 +108,29 @@ public class ItemViewModelImpl implements ItemViewModel {
   }
 
   @Override public void onResume() {
-    Subscription subscription = getProductListUseCase.get(productListId)
-        .compose(transformer.<ProductList>applySchedulers())
-        .subscribe(new ProductListSubscriber());
+    if (supplyListUuid != null && supplyItemId != null) {
+      Subscription subscription = getSupplyItemUseCase.get(supplyListUuid, supplyItemId)
+          .compose(transformer.applySchedulers())
+          .subscribe(new SupplyItemSubscriber());
 
-    rxSubscriptionPool.addSubscription(getClass().getCanonicalName(), subscription);
+      rxSubscriptionPool.addSubscription(getClass().getCanonicalName(), subscription);
+    }
   }
 
   @Override public void onPause() {
     rxSubscriptionPool.unsubscribeFrom(getClass().getCanonicalName());
   }
 
-  @Override public void forProductList(Long productListId) {
-    this.productListId = productListId;
+  @Override public void forProductList(String suppliesListId) {
+    this.supplyListUuid = suppliesListId;
   }
 
-  @Override public void forProduct(Long productId) {
-    this.productId = productId;
+  @Override public void forProduct(String supplyItemId) {
+    this.supplyItemId = supplyItemId;
   }
 
   @Override public ObservableInt spinnerSelection() {
     return spinnerSelection;
-  }
-
-  /**
-   * Loop though the product list and find the product with the id this presenter was prepared for.
-   * If the id is null, then the return value is null.
-   *
-   * @param productList The product list to look for the product.
-   * @return The product to display. Null otherwise.
-   */
-  private Product findProduct(ProductList productList) {
-    if (productId == null) return null;
-
-    for (Product product : productList.getProducts())
-      if (product.getId().equals(productId)) return product;
-
-    return null;
   }
 
   @Override public void onEditExpireDateButtonClick(View view) {
@@ -172,13 +156,10 @@ public class ItemViewModelImpl implements ItemViewModel {
   @Override public void onDoneButtonClick(View view) {
     if (!checkInput()) return;
 
-    if (product == null) product = new Product();
+    SupplyItem supplyItem = createFromInput();
 
-    fillProductFromInput(product);
-    addOrUpdateProductInList(productList, product);
-
-    saveProductListInLocalStorageUseCase.save(productList)
-        .compose(transformer.<ProductList>applySchedulers())
+    createOrUpdateSupplyItemUseCase.createOrUpdate(supplyListUuid, supplyItem)
+        .compose(transformer.applySchedulers())
         .subscribe(value -> pathManager.back(), e -> Timber.e(e, "Failed to save product in db"));
   }
 
@@ -218,15 +199,6 @@ public class ItemViewModelImpl implements ItemViewModel {
     return seekBarChangeListener;
   }
 
-  private void addOrUpdateProductInList(ProductList productList, Product product) {
-    int index = productList.getProducts().indexOf(product);
-    if (index == -1) {
-      productList.getProducts().add(product);
-    } else {
-      productList.getProducts().set(index, product);
-    }
-  }
-
   private boolean checkInput() {
     boolean valid = true;
     if (StringUtils.isBlank(itemName.get())) {
@@ -236,30 +208,15 @@ public class ItemViewModelImpl implements ItemViewModel {
     return valid;
   }
 
-  private void fillProductFromInput(Product product) {
-    product.setName(itemName.get());
-    product.setExpirationDate(expirationDate.get());
-    product.setQuantityLabel(itemQuantityLabel.get());
-    product.setQuantity(seekBarProgress.get());
-    product.setUnit(isUnit);
+  private SupplyItem createFromInput() {
+    String uuid = supplyItem == null ? "" : supplyItem.uuid();
+    String barcode = supplyItem == null ? "" : supplyItem.barcode();
+    return SupplyItem.create(uuid, itemName.get(), seekBarProgress.get(), isUnit, barcode,
+        itemQuantityLabel.get(), expirationDate.get());
   }
 
-  private class ProductListSubscriber extends Subscriber<ProductList> {
+  private class SupplyItemSubscriber extends Subscriber<SupplyItem> {
     @Override public void onCompleted() {
-      if (product == null) return;
-
-      itemName.set(product.getName());
-      expirationDate.set(product.getExpirationDate());
-      itemQuantityLabel.set(product.getQuantityLabel());
-      seekBarProgress.set(product.getQuantity());
-      isUnit = product.isUnit();
-      if (isUnit) {
-        seekBarVisibility.set(View.GONE);
-        spinnerSelection.set(0);
-      } else {
-        seekBarVisibility.set(View.VISIBLE);
-        spinnerSelection.set(1);
-      }
     }
 
     @Override public void onError(Throwable e) {
@@ -267,9 +224,20 @@ public class ItemViewModelImpl implements ItemViewModel {
       // TODO: make view show something
     }
 
-    @Override public void onNext(ProductList productList) {
-      ItemViewModelImpl.this.productList = productList;
-      ItemViewModelImpl.this.product = findProduct(productList);
+    @Override public void onNext(SupplyItem supplyItem) {
+      ItemViewModelImpl.this.supplyItem = supplyItem;
+      itemName.set(supplyItem.name());
+      expirationDate.set(supplyItem.expirationDate());
+      itemQuantityLabel.set(supplyItem.quantityLabel());
+      seekBarProgress.set(supplyItem.quantity());
+      isUnit = supplyItem.unit();
+      if (isUnit) {
+        seekBarVisibility.set(View.GONE);
+        spinnerSelection.set(0);
+      } else {
+        seekBarVisibility.set(View.VISIBLE);
+        spinnerSelection.set(1);
+      }
     }
   }
 }

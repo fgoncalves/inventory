@@ -8,4 +8,10 @@
         android:icon="@drawable/ic_search_accent"
         android:title="@string/search"/>
   </group>
+  <group android:id="@+id/account_group">
+    <item
+        android:id="@+id/drawer_logout"
+        android:icon="@drawable/ic_exit"
+        android:title="@string/sign_out"/>
+  </group>
 </menu>

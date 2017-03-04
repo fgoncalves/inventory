@@ -1,23 +1,18 @@
 package com.fred.inventory.presentation.listofproducts.adapters;
 
-import com.fred.inventory.domain.models.ProductList;
-import java.util.List;
+import com.fred.inventory.data.firebase.models.SuppliesList;
 
 /**
  * The adapter for the product lists
  */
 public interface ListOfProductListsAdapter {
-  interface OnProductListDeletedListener {
-    void onProductListDeleted(ProductList productList);
-  }
-
   interface OnItemClickListener {
-    void onItemClicked(ProductList productList);
+    void onItemClicked(SuppliesList suppliesList);
   }
 
-  void setData(List<ProductList> productListList);
+  void add(SuppliesList suppliesList);
 
-  void setOnProductListDeletedListener(OnProductListDeletedListener onProductListDeletedListener);
+  void remove(SuppliesList suppliesList);
 
   void setOnItemClickListener(OnItemClickListener onItemClickListener);
 

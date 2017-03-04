@@ -4,6 +4,8 @@ import android.animation.ValueAnimator;
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.ResultReceiver;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
@@ -18,6 +20,7 @@ import com.fred.inventory.databinding.ProductListBinding;
 import com.fred.inventory.presentation.base.BaseScreen;
 import com.fred.inventory.presentation.productlist.modules.ProductListModule;
 import com.fred.inventory.presentation.productlist.viewmodels.ProductListViewModel;
+import com.fred.inventory.utils.KeyboardUtil;
 import com.fred.inventory.utils.binding.Observer;
 import com.fred.inventory.utils.path.PathManager;
 import com.google.zxing.integration.android.IntentIntegrator;
@@ -27,17 +30,17 @@ import icepick.Icicle;
 import javax.inject.Inject;
 
 public class ProductListScreen extends BaseScreen {
-  private static final String PRODUCT_LIST_ID_BUNDLE_KEY = "product.lis.id";
-  private final Observer<Long> productListIdObserver = new Observer<Long>() {
-    @Override public void update(Long value) {
-      productListId = value;
+  private static final String SUPPLIES_LIST_ID_BUNDLE_KEY = "supplies.list.uuid";
+  private final Observer<String> suppliesListIdObserver = new Observer<String>() {
+    @Override public void update(String value) {
+      suppliesListUuid = value;
     }
   };
 
   @Inject ProductListViewModel viewModel;
   @Inject PathManager pathManager;
 
-  @Icicle Long productListId;
+  @Icicle String suppliesListUuid;
   private ValueAnimator toolbarValueAnimator;
 
   /**
@@ -53,13 +56,13 @@ public class ProductListScreen extends BaseScreen {
   /**
    * Create a product list to display the given product list.
    *
-   * @param productListId Product list id of the list to show
+   * @param uuid Supplies list's id of the list to show
    * @return The product list screen
    */
-  public static ProductListScreen newInstance(Long productListId) {
+  public static ProductListScreen newInstance(String uuid) {
     ProductListScreen fragment = new ProductListScreen();
     Bundle args = new Bundle();
-    args.putLong(PRODUCT_LIST_ID_BUNDLE_KEY, productListId);
+    args.putString(SUPPLIES_LIST_ID_BUNDLE_KEY, uuid);
     fragment.setArguments(args);
     return fragment;
   }
@@ -85,19 +88,19 @@ public class ProductListScreen extends BaseScreen {
 
   @Override public void onSaveInstanceState(Bundle outState) {
     super.onSaveInstanceState(outState);
-    if (productListId == null) return;
+    if (suppliesListUuid == null) return;
     Icepick.saveInstanceState(this, outState);
   }
 
   @Override public void onActivityCreated(Bundle savedInstanceState) {
     super.onActivityCreated(savedInstanceState);
     if (getArguments() != null) {
-      if (getArguments().containsKey(PRODUCT_LIST_ID_BUNDLE_KEY)) {
-        productListId = getArguments().getLong(PRODUCT_LIST_ID_BUNDLE_KEY);
+      if (getArguments().containsKey(SUPPLIES_LIST_ID_BUNDLE_KEY)) {
+        suppliesListUuid = getArguments().getString(SUPPLIES_LIST_ID_BUNDLE_KEY);
       }
     }
     Icepick.restoreInstanceState(this, savedInstanceState);
-    viewModel.forProductList(productListId);
+    viewModel.forProductList(suppliesListUuid);
     viewModel.onActivityCreated();
   }
 
@@ -108,12 +111,12 @@ public class ProductListScreen extends BaseScreen {
 
   @Override public void onStart() {
     super.onStart();
-    viewModel.bindProductListIdObserver(productListIdObserver);
+    viewModel.bindProductListIdObserver(suppliesListIdObserver);
   }
 
   @Override public void onStop() {
     super.onStop();
-    viewModel.unbindProductListIdObserver(productListIdObserver);
+    viewModel.unbindProductListIdObserver(suppliesListIdObserver);
   }
 
   @Override public Toolbar getToolbar() {
@@ -154,14 +157,27 @@ public class ProductListScreen extends BaseScreen {
       return true;
     }
     if (item.getItemId() == android.R.id.home) {
-      if (viewModel.onHomeButtonPressed()) {
-        reverseToolbarTransition();
-        return true;
-      }
-      pathManager.back();
-      return true;
+      boolean hidden = KeyboardUtil.hideKeyboard(getView(), new ResultReceiver(new Handler()) {
+        @Override protected void onReceiveResult(int resultCode, Bundle resultData) {
+          handleBackPress();
+        }
+      });
+      return hidden || handleHomeButtonPress();
     }
     return super.onOptionsItemSelected(item);
+  }
+
+  @Override protected boolean supportsDrawer() {
+    return false;
+  }
+
+  private boolean handleHomeButtonPress() {
+    if (viewModel.onHomeButtonPressed()) {
+      reverseToolbarTransition();
+      return true;
+    }
+    pathManager.back();
+    return true;
   }
 
   private void reverseToolbarTransition() {

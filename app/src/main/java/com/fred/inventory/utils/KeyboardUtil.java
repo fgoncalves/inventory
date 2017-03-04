@@ -1,8 +1,10 @@
 package com.fred.inventory.utils;
 
 import android.content.Context;
+import android.os.ResultReceiver;
 import android.support.annotation.NonNull;
 import android.view.View;
+import android.view.ViewTreeObserver;
 import android.view.inputmethod.InputMethodManager;
 
 /**
@@ -17,14 +19,29 @@ public class KeyboardUtil {
     InputMethodManager inputManager =
         (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
     view.requestFocus();
-    inputManager.showSoftInput(view, InputMethodManager.SHOW_IMPLICIT);
+    view.getViewTreeObserver()
+        .addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+          @Override public void onGlobalLayout() {
+            view.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+            inputManager.showSoftInput(view, InputMethodManager.SHOW_IMPLICIT);
+          }
+        });
   }
 
-  public static void hideKeyboard(@NonNull final View view) {
+  public static boolean hideKeyboard(@NonNull final View view) {
     Context context = view.getContext();
     InputMethodManager inputManager =
         (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
     view.requestFocus();
-    inputManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
+    return inputManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
+  }
+
+  public static boolean hideKeyboard(@NonNull final View view, ResultReceiver resultReceiver) {
+    Context context = view.getContext();
+    InputMethodManager inputManager =
+        (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
+    view.requestFocus();
+
+    return inputManager.hideSoftInputFromWindow(view.getWindowToken(), 0, resultReceiver);
   }
 }

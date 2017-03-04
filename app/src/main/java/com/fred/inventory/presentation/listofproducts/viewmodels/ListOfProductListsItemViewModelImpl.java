@@ -2,11 +2,11 @@ package com.fred.inventory.presentation.listofproducts.viewmodels;
 
 import android.content.Context;
 import android.databinding.ObservableField;
+import android.support.v7.app.AlertDialog;
 import android.view.View;
 import com.fred.inventory.R;
-import com.fred.inventory.domain.models.ProductList;
-import com.fred.inventory.domain.usecases.DeleteProductListUseCase;
-import com.fred.inventory.presentation.base.OnItemClickListener;
+import com.fred.inventory.data.firebase.models.SuppliesList;
+import com.fred.inventory.domain.usecases.DeleteSuppliesListUseCase;
 import com.fred.inventory.utils.rx.schedulers.SchedulerTransformer;
 import com.fred.inventory.utils.rx.schedulers.qualifiers.IOToUiSchedulerTransformer;
 import javax.inject.Inject;
@@ -17,11 +17,16 @@ public class ListOfProductListsItemViewModelImpl implements ListOfProductListsIt
   private final ObservableField<String> infoTextObservable = new ObservableField<>();
   private final View.OnClickListener deleteButtonClickListener = new View.OnClickListener() {
     @Override public void onClick(View view) {
-      deleteProductListUseCase.delete(productList)
-          .compose(transformer.<Void>applySchedulers())
-          .subscribe(aVoid -> {
-            if (onDeleteButtonClick != null) onDeleteButtonClick.onDeleteClicked();
-          }, throwable -> Timber.e(throwable, "Failed to delte product list"));
+      new AlertDialog.Builder(context).setMessage(R.string.deletion_confirmation_supplies_list)
+          .setNegativeButton(R.string.cancel, (dialogInterface, i) -> dialogInterface.dismiss())
+          .setPositiveButton(R.string.yes, (dialogInterface, i) -> {
+            dialogInterface.dismiss();
+            deleteSuppliesListUseCase.delete(suppliesList.uuid())
+                .compose(transformer.applySchedulers())
+                .subscribe(aVoid -> {
+                }, throwable -> Timber.e(throwable, "Failed to delete product list"));
+          })
+          .show();
     }
   };
   private final View.OnClickListener itemClickListener = new View.OnClickListener() {
@@ -30,25 +35,24 @@ public class ListOfProductListsItemViewModelImpl implements ListOfProductListsIt
     }
   };
   private final Context context;
-  private final DeleteProductListUseCase deleteProductListUseCase;
+  private final DeleteSuppliesListUseCase deleteSuppliesListUseCase;
   private final SchedulerTransformer transformer;
-  private OnDeleteButtonClick onDeleteButtonClick;
   private OnItemClickListener onItemClickListener;
-  private ProductList productList;
+  private SuppliesList suppliesList;
 
   @Inject public ListOfProductListsItemViewModelImpl(Context context,
-      DeleteProductListUseCase deleteProductListUseCase,
+      DeleteSuppliesListUseCase deleteSuppliesListUseCase,
       @IOToUiSchedulerTransformer SchedulerTransformer transformer) {
     this.context = context;
-    this.deleteProductListUseCase = deleteProductListUseCase;
+    this.deleteSuppliesListUseCase = deleteSuppliesListUseCase;
     this.transformer = transformer;
   }
 
-  @Override public void onBindViewHolder(ProductList productList) {
-    this.productList = productList;
-    productListNameObservable.set(productList.getName());
-    infoTextObservable.set(
-        context.getString(R.string.number_of_items, productList.getProducts().size()));
+  @Override public void onBindViewHolder(SuppliesList suppliesList) {
+    this.suppliesList = suppliesList;
+    productListNameObservable.set(suppliesList.name());
+    infoTextObservable.set(context.getString(R.string.number_of_items,
+        suppliesList.items() == null ? 0 : suppliesList.items().size()));
   }
 
   @Override public ObservableField<String> itemNameObservable() {
@@ -65,10 +69,6 @@ public class ListOfProductListsItemViewModelImpl implements ListOfProductListsIt
 
   @Override public View.OnClickListener itemClickListener() {
     return itemClickListener;
-  }
-
-  @Override public void setOnDeleteButtonClick(OnDeleteButtonClick onDeleteButtonClick) {
-    this.onDeleteButtonClick = onDeleteButtonClick;
   }
 
   @Override public void setOnItemClickListener(OnItemClickListener onItemClickListener) {

@@ -13,4 +13,8 @@
   <dimen name="list_of_product_lists_title_text_margin_top">20dp</dimen>
   <dimen name="list_of_product_lists_card_view_corner_radius">4dp</dimen>
   <dimen name="list_of_product_lists__card_view_elevation">5dp</dimen>
+  <dimen name="activity_vertical_margin">16dp</dimen>
+  <dimen name="activity_horizontal_margin">16dp</dimen>
+  <dimen name="nav_header_vertical_spacing">16dp</dimen>
+  <dimen name="nav_header_height">160dp</dimen>
 </resources>

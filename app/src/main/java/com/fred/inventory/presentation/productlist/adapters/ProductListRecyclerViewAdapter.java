@@ -1,6 +1,7 @@
 package com.fred.inventory.presentation.productlist.adapters;
 
-import com.fred.inventory.domain.models.Product;
+import com.fred.inventory.data.firebase.models.SuppliesList;
+import com.fred.inventory.data.firebase.models.SupplyItem;
 import java.util.List;
 
 /**
@@ -10,28 +11,21 @@ import java.util.List;
  */
 
 public interface ProductListRecyclerViewAdapter {
-
-  interface OnProductDeletedListener {
-    void onProductDeleted(Product product);
-  }
-
   interface OnItemClickListener {
-    void onItemClicked(Product product);
+    void onItemClicked(SupplyItem supplyItem);
   }
 
-  void replaceAll(List<Product> models);
+  void replaceAll(List<SupplyItem> models);
 
-  void add(Product model);
+  void add(SupplyItem model);
 
-  void remove(Product model);
+  void remove(SupplyItem model);
 
-  void add(List<Product> models);
+  int getItemCount();
 
-  void remove(List<Product> models);
+  List<SupplyItem> getItems();
 
-  List<Product> getItems();
-
-  void setOnProductDeletedListener(OnProductDeletedListener onProductDeletedListener);
+  void setSuppliesList(SuppliesList suppliesList);
 
   void setOnItemClickListener(OnItemClickListener onItemClickListener);
 }

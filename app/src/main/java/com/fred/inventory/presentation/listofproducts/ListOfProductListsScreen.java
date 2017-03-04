@@ -62,4 +62,8 @@ public class ListOfProductListsScreen extends BaseScreen {
   @Override protected boolean isHomeButtonSupported() {
     return false;
   }
+
+  @Override protected boolean supportsDrawer() {
+    return true;
+  }
 }

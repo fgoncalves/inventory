@@ -1,54 +1,20 @@
 package com.fred.inventory.domain.models;
 
+import android.support.annotation.NonNull;
+import com.fred.inventory.data.firebase.models.SuppliesList;
+import com.fred.inventory.data.firebase.models.SupplyItem;
+import com.google.auto.value.AutoValue;
+
 /**
  * Represents an domain model from the global search
  */
+@AutoValue public abstract class GlobalSearchResult {
+  public abstract SuppliesList suppliesList();
 
-public class GlobalSearchResult {
-  private Long productListId;
-  private String productListName;
-  private Product product;
+  public abstract SupplyItem supplyItem();
 
-  public String getProductListName() {
-    return productListName;
-  }
-
-  public void setProductListName(String productListName) {
-    this.productListName = productListName;
-  }
-
-  public Product getProduct() {
-    return product;
-  }
-
-  public void setProduct(Product product) {
-    this.product = product;
-  }
-
-  public Long getProductListId() {
-    return productListId;
-  }
-
-  public void setProductListId(Long productListId) {
-    this.productListId = productListId;
-  }
-
-  @Override public boolean equals(Object o) {
-    if (this == o) return true;
-    if (!(o instanceof GlobalSearchResult)) return false;
-
-    GlobalSearchResult that = (GlobalSearchResult) o;
-
-    if (productListName != null ? !productListName.equals(that.productListName)
-        : that.productListName != null) {
-      return false;
-    }
-    return product != null ? product.equals(that.product) : that.product == null;
-  }
-
-  @Override public int hashCode() {
-    int result = productListName != null ? productListName.hashCode() : 0;
-    result = 31 * result + (product != null ? product.hashCode() : 0);
-    return result;
+  public static GlobalSearchResult create(@NonNull final SuppliesList suppliesList,
+      @NonNull final SupplyItem supplyItem) {
+    return new AutoValue_GlobalSearchResult(suppliesList, supplyItem);
   }
 }

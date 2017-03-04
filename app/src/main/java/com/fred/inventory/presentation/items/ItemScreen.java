@@ -17,8 +17,8 @@ import com.fred.inventory.presentation.items.viewmodels.ItemViewModel;
 import javax.inject.Inject;
 
 public class ItemScreen extends BaseScreen {
-  private static final String PRODUCT_LIST_ID = "product.list.id";
-  private static final String PRODUCT_ID = "product.id";
+  private static final String SUPPLIES_LIST_ID = "product.list.id";
+  private static final String SUPPLIES_ID = "product.id";
 
   @Inject ItemViewModel viewModel;
   private Toolbar toolbar;
@@ -27,14 +27,14 @@ public class ItemScreen extends BaseScreen {
    * Create an instance of an item screen which will display a new item for the given product
    * list.
    *
-   * @param productListId The product list id to display the item for
+   * @param suppliesListId The supplies list id to display the item for
    * @return The instance of the screen to use
    */
-  public static ItemScreen newInstance(@NonNull Long productListId) {
+  public static ItemScreen newInstance(@NonNull String suppliesListId) {
     ItemScreen itemScreen = new ItemScreen();
 
     Bundle args = new Bundle();
-    args.putLong(PRODUCT_LIST_ID, productListId);
+    args.putString(SUPPLIES_LIST_ID, suppliesListId);
     itemScreen.setArguments(args);
 
     return itemScreen;
@@ -44,16 +44,17 @@ public class ItemScreen extends BaseScreen {
    * Create an instance of an item screen which will display the given item for the given product
    * list.
    *
-   * @param productListId The product list id to display the item for
-   * @param productId The product to display
+   * @param suppliesListId The product list id to display the item for
+   * @param supplyItemId The product to display
    * @return The instance of the screen to use
    */
-  public static ItemScreen newInstance(@NonNull Long productListId, @NonNull Long productId) {
+  public static ItemScreen newInstance(@NonNull String suppliesListId,
+      @NonNull String supplyItemId) {
     ItemScreen itemScreen = new ItemScreen();
 
     Bundle args = new Bundle();
-    args.putLong(PRODUCT_LIST_ID, productListId);
-    args.putLong(PRODUCT_ID, productId);
+    args.putString(SUPPLIES_LIST_ID, suppliesListId);
+    args.putString(SUPPLIES_ID, supplyItemId);
     itemScreen.setArguments(args);
 
     return itemScreen;
@@ -71,11 +72,11 @@ public class ItemScreen extends BaseScreen {
 
   @Override public void onResume() {
     super.onResume();
-    if (getArguments().containsKey(PRODUCT_LIST_ID)) {
-      viewModel.forProductList(getArguments().getLong(PRODUCT_LIST_ID));
+    if (getArguments().containsKey(SUPPLIES_LIST_ID)) {
+      viewModel.forProductList(getArguments().getString(SUPPLIES_LIST_ID));
     }
-    if (getArguments().containsKey(PRODUCT_ID)) {
-      viewModel.forProduct(getArguments().getLong(PRODUCT_ID));
+    if (getArguments().containsKey(SUPPLIES_ID)) {
+      viewModel.forProduct(getArguments().getString(SUPPLIES_ID));
     }
     viewModel.onResume();
   }
@@ -104,5 +105,9 @@ public class ItemScreen extends BaseScreen {
 
   @Override protected boolean isHomeButtonSupported() {
     return true;
+  }
+
+  @Override protected boolean supportsDrawer() {
+    return false;
   }
 }

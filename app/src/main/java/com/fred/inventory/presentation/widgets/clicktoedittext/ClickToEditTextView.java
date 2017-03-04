@@ -79,7 +79,13 @@ public class ClickToEditTextView extends ViewSwitcher {
   @Override protected void onAttachedToWindow() {
     super.onAttachedToWindow();
     addClickListener();
-    setOnFocusChangeListener();
+    setOnFocusChangeListener((view, hasFocus) -> {
+      if (hasFocus) {
+        setMode(Mode.EDIT);
+      } else {
+        setMode(Mode.TEXT);
+      }
+    });
     editText.addTextChangedListener(textWatcher);
   }
 
@@ -130,16 +136,6 @@ public class ClickToEditTextView extends ViewSwitcher {
     } else {
       textView.setTextAppearance(style);
     }
-  }
-
-  private void setOnFocusChangeListener() {
-    editText.setOnFocusChangeListener((view, hasFocus) -> {
-      if (hasFocus) {
-        setMode(Mode.EDIT);
-      } else {
-        setMode(Mode.TEXT);
-      }
-    });
   }
 
   private void createChildren(Context context, AttributeSet attrs) {

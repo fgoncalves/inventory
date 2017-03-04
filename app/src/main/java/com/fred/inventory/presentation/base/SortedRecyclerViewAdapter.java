@@ -73,6 +73,7 @@ public abstract class SortedRecyclerViewAdapter<MODEL, VH extends RecyclerView.V
   }
 
   public void remove(List<MODEL> models) {
+    if (models.isEmpty()) return;
     sortedList.beginBatchedUpdates();
     for (MODEL model : models) {
       sortedList.remove(model);
@@ -81,15 +82,9 @@ public abstract class SortedRecyclerViewAdapter<MODEL, VH extends RecyclerView.V
   }
 
   public void replaceAll(List<MODEL> models) {
-    sortedList.beginBatchedUpdates();
-    for (int i = sortedList.size() - 1; i >= 0; i--) {
-      final MODEL model = sortedList.get(i);
-      if (!models.contains(model)) {
-        sortedList.remove(model);
-      }
-    }
+    sortedList.clear();
+    notifyDataSetChanged();
     sortedList.addAll(models);
-    sortedList.endBatchedUpdates();
   }
 
   protected abstract boolean areContentsTheSame(MODEL oldItem, MODEL newItem);

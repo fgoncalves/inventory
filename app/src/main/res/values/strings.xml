@@ -20,6 +20,16 @@
   <string name="search">Search</string>
   <string name="more">more</string>
   <string name="search_term">Search</string>
+  <string name="failed_to_login_to_firebase">Unfortunately we couldn\'t login to Firebase. Please try again later.</string>
+  <string name="ok">ok</string>
+  <string name="failed_to_login_to_google">Unfortunately we couldn\'t login to Google. Please try again later.</string>
+  <string name="deletion_confirmation_supplies_list">This action will delete all the items in the list. Are you sure you want to do this?</string>
+  <string name="cancel">Cancel</string>
+  <string name="yes">Yes</string>
+  <string name="open_drawer">Open drawer</string>
+  <string name="close_drawer">Close drawer</string>
+  <string name="sign_out">Sign Out</string>
+  <string name="version">Version:</string>
   <string-array name="item_types">
     <item>Item(s)</item>
     <item>Max.</item>

@@ -4,23 +4,25 @@ import android.databinding.ObservableInt;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import com.fred.inventory.R;
-import com.fred.inventory.domain.models.ProductList;
-import com.fred.inventory.domain.usecases.ListAllProductListsUseCase;
+import com.fred.inventory.data.firebase.models.SuppliesList;
+import com.fred.inventory.domain.usecases.GetUserSuppliesListDatabaseReferenceUseCase;
 import com.fred.inventory.presentation.listofproducts.adapters.ListOfProductListsAdapter;
 import com.fred.inventory.presentation.productlist.ProductListScreen;
 import com.fred.inventory.utils.path.PathManager;
 import com.fred.inventory.utils.rx.RxSubscriptionPool;
 import com.fred.inventory.utils.rx.schedulers.SchedulerTransformer;
 import com.fred.inventory.utils.rx.schedulers.qualifiers.IOToUiSchedulerTransformer;
-import java.util.List;
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
 import javax.inject.Inject;
 import rx.Subscriber;
 import rx.Subscription;
 import timber.log.Timber;
 
 public class ListOfProductListsViewModelImpl
-    implements ListOfProductListsViewModel, ListOfProductListsAdapter.OnProductListDeletedListener,
-    ListOfProductListsAdapter.OnItemClickListener {
+    implements ListOfProductListsViewModel, ListOfProductListsAdapter.OnItemClickListener {
   private final ObservableInt emptyViewVisibility = new ObservableInt(View.GONE);
   private final ObservableInt listViewVisibility = new ObservableInt(View.GONE);
   private final ObservableInt progressBarVisibility = new ObservableInt(View.GONE);
@@ -30,18 +32,54 @@ public class ListOfProductListsViewModelImpl
       pathManager.go(screen, R.id.main_container);
     }
   };
-  private final ListAllProductListsUseCase listAllProductListsUseCase;
+  private final GetUserSuppliesListDatabaseReferenceUseCase
+      getUserSuppliesListDatabaseReferenceUseCase;
   private final SchedulerTransformer ioToUiSchedulerTransformer;
   private final RxSubscriptionPool rxSubscriptionPool;
   private final ListOfProductListsAdapter adapter;
   private final PathManager pathManager;
+  private final ChildEventListener supplyListsChildEventListener = new ChildEventListener() {
+    @Override public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+      emptyViewVisibility.set(View.GONE);
+      listViewVisibility.set(View.VISIBLE);
 
-  @Inject
-  public ListOfProductListsViewModelImpl(ListAllProductListsUseCase listAllProductListsUseCase,
+      SuppliesList suppliesList = SuppliesList.create(dataSnapshot);
+      adapter.add(suppliesList);
+    }
+
+    @Override public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+
+    }
+
+    @Override public void onChildRemoved(DataSnapshot dataSnapshot) {
+      SuppliesList suppliesList = SuppliesList.create(dataSnapshot);
+      adapter.remove(suppliesList);
+
+      if (adapter.getItemCount() == 0) {
+        emptyViewVisibility.set(View.VISIBLE);
+        listViewVisibility.set(View.GONE);
+      } else {
+        emptyViewVisibility.set(View.GONE);
+        listViewVisibility.set(View.VISIBLE);
+      }
+    }
+
+    @Override public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
+    }
+
+    @Override public void onCancelled(DatabaseError databaseError) {
+
+    }
+  };
+  private DatabaseReference databaseReference;
+
+  @Inject public ListOfProductListsViewModelImpl(
+      GetUserSuppliesListDatabaseReferenceUseCase getUserSuppliesListDatabaseReferenceUseCase,
       @IOToUiSchedulerTransformer SchedulerTransformer ioToUiSchedulerTransformer,
       RxSubscriptionPool rxSubscriptionPool, ListOfProductListsAdapter adapter,
       PathManager pathManager) {
-    this.listAllProductListsUseCase = listAllProductListsUseCase;
+    this.getUserSuppliesListDatabaseReferenceUseCase = getUserSuppliesListDatabaseReferenceUseCase;
     this.ioToUiSchedulerTransformer = ioToUiSchedulerTransformer;
     this.rxSubscriptionPool = rxSubscriptionPool;
     this.adapter = adapter;
@@ -49,7 +87,6 @@ public class ListOfProductListsViewModelImpl
   }
 
   @Override public void onResume() {
-    adapter.setOnProductListDeletedListener(this);
     adapter.setOnItemClickListener(this);
 
     progressBarVisibility.set(View.VISIBLE);
@@ -59,6 +96,9 @@ public class ListOfProductListsViewModelImpl
 
   @Override public void onPause() {
     rxSubscriptionPool.unsubscribeFrom(getClass().getCanonicalName());
+    if (databaseReference != null) {
+      databaseReference.removeEventListener(supplyListsChildEventListener);
+    }
   }
 
   @Override public RecyclerView.Adapter<?> adapter() {
@@ -77,22 +117,12 @@ public class ListOfProductListsViewModelImpl
     return listViewVisibility;
   }
 
-  @Override public void onProductListDeleted(ProductList productList) {
-    if (adapter.getItemCount() == 0) {
-      emptyViewVisibility.set(View.VISIBLE);
-      listViewVisibility.set(View.GONE);
-    } else {
-      emptyViewVisibility.set(View.GONE);
-      listViewVisibility.set(View.VISIBLE);
-    }
-  }
-
   @Override public ObservableInt progressBarVisibility() {
     return progressBarVisibility;
   }
 
-  @Override public void onItemClicked(ProductList productList) {
-    final ProductListScreen screen = ProductListScreen.newInstance(productList.getId());
+  @Override public void onItemClicked(SuppliesList suppliesList) {
+    final ProductListScreen screen = ProductListScreen.newInstance(suppliesList.uuid());
     pathManager.go(screen, R.id.main_container);
   }
 
@@ -101,27 +131,20 @@ public class ListOfProductListsViewModelImpl
    *
    * @return The subscription for the rx operation
    */
-  public Subscription retrieveData() {
-    return listAllProductListsUseCase.list()
-        .compose(ioToUiSchedulerTransformer.<List<ProductList>>applySchedulers())
+  private Subscription retrieveData() {
+    return getUserSuppliesListDatabaseReferenceUseCase.getUserSuppliesListDatabaseReference()
+        .compose(ioToUiSchedulerTransformer.applySchedulers())
         .subscribe(new ListOfProductListsSubscriber());
   }
 
   /**
    * Subscriber for the list of product lists
    */
-  private class ListOfProductListsSubscriber extends Subscriber<List<ProductList>> {
-    private List<ProductList> productLists;
-
+  private class ListOfProductListsSubscriber extends Subscriber<DatabaseReference> {
     @Override public void onCompleted() {
       progressBarVisibility.set(View.GONE);
-      if (productLists == null || productLists.isEmpty()) {
-        emptyViewVisibility.set(View.VISIBLE);
-        listViewVisibility.set(View.GONE);
-      } else {
-        emptyViewVisibility.set(View.GONE);
-        listViewVisibility.set(View.VISIBLE);
-      }
+      emptyViewVisibility.set(View.VISIBLE);
+      listViewVisibility.set(View.GONE);
     }
 
     @Override public void onError(Throwable e) {
@@ -130,9 +153,9 @@ public class ListOfProductListsViewModelImpl
       // TODO: Show error
     }
 
-    @Override public void onNext(List<ProductList> productLists) {
-      this.productLists = productLists;
-      adapter.setData(productLists);
+    @Override public void onNext(DatabaseReference databaseReference) {
+      ListOfProductListsViewModelImpl.this.databaseReference = databaseReference;
+      databaseReference.addChildEventListener(supplyListsChildEventListener);
     }
   }
 }

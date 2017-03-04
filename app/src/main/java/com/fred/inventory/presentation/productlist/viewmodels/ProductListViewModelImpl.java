@@ -7,13 +7,16 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
 import com.fred.inventory.R;
-import com.fred.inventory.domain.models.Product;
-import com.fred.inventory.domain.models.ProductList;
+import com.fred.inventory.data.firebase.models.SuppliesList;
+import com.fred.inventory.data.firebase.models.SupplyItem;
+import com.fred.inventory.domain.usecases.CreateOrUpdateSuppliesListUserCase;
+import com.fred.inventory.domain.usecases.CreateOrUpdateSupplyItemUseCase;
+import com.fred.inventory.domain.usecases.GetItemsDatabaseReference;
 import com.fred.inventory.domain.usecases.GetProductInfoFromCodeUseCase;
-import com.fred.inventory.domain.usecases.GetProductListUseCase;
-import com.fred.inventory.domain.usecases.SaveProductListInLocalStorageUseCase;
+import com.fred.inventory.domain.usecases.GetSuppliesListUseCase;
 import com.fred.inventory.presentation.items.ItemScreen;
 import com.fred.inventory.presentation.productlist.adapters.ProductListRecyclerViewAdapter;
+import com.fred.inventory.presentation.widgets.clicktoedittext.ClickToEditTextView;
 import com.fred.inventory.utils.StringUtils;
 import com.fred.inventory.utils.binding.Observable;
 import com.fred.inventory.utils.binding.Observer;
@@ -22,25 +25,34 @@ import com.fred.inventory.utils.path.PathManager;
 import com.fred.inventory.utils.rx.RxSubscriptionPool;
 import com.fred.inventory.utils.rx.schedulers.SchedulerTransformer;
 import com.fred.inventory.utils.rx.schedulers.qualifiers.IOToUiSchedulerTransformer;
+import com.google.auto.value.AutoValue;
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import javax.inject.Inject;
 import rx.Subscriber;
 import rx.Subscription;
-import rx.functions.Func1;
 import timber.log.Timber;
 
 public class ProductListViewModelImpl
-    implements ProductListViewModel, ProductListRecyclerViewAdapter.OnProductDeletedListener,
-    ProductListRecyclerViewAdapter.OnItemClickListener {
+    implements ProductListViewModel, ProductListRecyclerViewAdapter.OnItemClickListener {
   private static final int PRODUCT_LIST_NAME_VIEW = 0;
   private static final int SEARCH_EDIT_TEXT_VIEW = 1;
-  private final ObservableField<String> productListName = new ObservableField<>();
+  private final ObservableField<String> suppliesListName = new ObservableField<>();
+  private final ObservableField<ClickToEditTextView.Mode> productListNameMode =
+      new ObservableField<>(ClickToEditTextView.Mode.TEXT);
   private final OneTimeTextWatcher productListNameTextWatcher =
-      new OneTimeTextWatcher(productListName);
+      new OneTimeTextWatcher(suppliesListName);
   private final ObservableInt toolbarDisplayedChild = new ObservableInt(0);
-  private final GetProductListUseCase getProductListUseCase;
-  private final SaveProductListInLocalStorageUseCase saveProductListInLocalStorageUseCase;
+  private final GetSuppliesListUseCase getSuppliesListUseCase;
+  private final GetItemsDatabaseReference getItemsDatabaseReference;
+  private final CreateOrUpdateSuppliesListUserCase createOrUpdateSuppliesListUserCase;
+  private final CreateOrUpdateSupplyItemUseCase createOrUpdateSupplyItemUseCase;
   private final SchedulerTransformer transformer;
   private final RxSubscriptionPool rxSubscriptionPool;
   private final ObservableInt listVisibility = new ObservableInt(View.GONE);
@@ -48,7 +60,7 @@ public class ProductListViewModelImpl
   private final ObservableInt progressBarVisibility = new ObservableInt(View.GONE);
   private final ObservableInt recyclerViewScrollPosition = new ObservableInt(0);
   private final ObservableField<String> searchQuery = new ObservableField<>();
-  private final Observable<Long> productListIdObservable = Observable.create();
+  private final Observable<String> productListIdObservable = Observable.create();
   private final PathManager pathManager;
   private final ProductListRecyclerViewAdapter adapter;
   private final GetProductInfoFromCodeUseCase getProductInfoFromCodeUseCase;
@@ -62,24 +74,58 @@ public class ProductListViewModelImpl
     }
 
     @Override public void afterTextChanged(Editable editable) {
+      if (suppliesList == null) return;
+
       String query = editable.toString();
-      List<Product> filteredProducts = filter(productList.getProducts(), query);
-      adapter.replaceAll(filteredProducts);
+      List<SupplyItem> supplyItems = filter(suppliesList.items(), query);
+      adapter.replaceAll(supplyItems);
+      toggleListViewVisibility();
       recyclerViewScrollPosition.set(0);
     }
   };
+  private final ChildEventListener itemsChildEventListener = new ChildEventListener() {
+    @Override public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+      SupplyItem supplyItem = SupplyItem.create(dataSnapshot);
+      adapter.add(supplyItem);
+      addSupplyItem(supplyItem);
+      toggleListViewVisibility();
+    }
 
-  private ProductList productList;
+    @Override public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+    }
+
+    @Override public void onChildRemoved(DataSnapshot dataSnapshot) {
+      SupplyItem supplyItem = SupplyItem.create(dataSnapshot);
+      adapter.remove(supplyItem);
+      removeSupplyItem(supplyItem);
+      toggleListViewVisibility();
+    }
+
+    @Override public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
+    }
+
+    @Override public void onCancelled(DatabaseError databaseError) {
+
+    }
+  };
+
+  private SuppliesList suppliesList;
   private OnScanBarCodeButtonClickListener scanBarCodeButtonClickListener;
+  private DatabaseReference databaseReference;
 
-  @Inject public ProductListViewModelImpl(GetProductListUseCase getProductListUseCase,
-      SaveProductListInLocalStorageUseCase saveProductListInLocalStorageUseCase,
+  @Inject public ProductListViewModelImpl(GetSuppliesListUseCase getSuppliesListUseCase,
+      GetItemsDatabaseReference getItemsDatabaseReference,
+      CreateOrUpdateSuppliesListUserCase createOrUpdateSuppliesListUserCase,
+      CreateOrUpdateSupplyItemUseCase createOrUpdateSupplyItemUseCase,
       @IOToUiSchedulerTransformer SchedulerTransformer transformer,
       RxSubscriptionPool rxSubscriptionPool, PathManager pathManager,
       ProductListRecyclerViewAdapter adapter,
       GetProductInfoFromCodeUseCase getProductInfoFromCodeUseCase) {
-    this.getProductListUseCase = getProductListUseCase;
-    this.saveProductListInLocalStorageUseCase = saveProductListInLocalStorageUseCase;
+    this.getSuppliesListUseCase = getSuppliesListUseCase;
+    this.getItemsDatabaseReference = getItemsDatabaseReference;
+    this.createOrUpdateSuppliesListUserCase = createOrUpdateSuppliesListUserCase;
+    this.createOrUpdateSupplyItemUseCase = createOrUpdateSupplyItemUseCase;
     this.transformer = transformer;
     this.rxSubscriptionPool = rxSubscriptionPool;
     this.pathManager = pathManager;
@@ -87,16 +133,16 @@ public class ProductListViewModelImpl
     this.getProductInfoFromCodeUseCase = getProductInfoFromCodeUseCase;
   }
 
-  @Override public void forProductList(Long id) {
-    productListIdObservable.set(id);
+  @Override public void forProductList(String uuid) {
+    productListIdObservable.set(uuid);
   }
 
   @Override public void onActivityCreated() {
-    adapter.setOnProductDeletedListener(this);
     adapter.setOnItemClickListener(this);
 
     if (productListIdObservable.get() == null) {
       emptyListVisibility.set(View.VISIBLE);
+      productListNameMode.set(ClickToEditTextView.Mode.EDIT);
       // TODO: put input in text view
       return;
     }
@@ -107,10 +153,11 @@ public class ProductListViewModelImpl
 
   @Override public void onDestroyView() {
     rxSubscriptionPool.unsubscribeFrom(getClass().getCanonicalName());
+    if (databaseReference != null) databaseReference.removeEventListener(itemsChildEventListener);
   }
 
   @Override public ObservableField<String> productListName() {
-    return productListName;
+    return suppliesListName;
   }
 
   @Override public TextWatcher productListTextWatcher() {
@@ -122,26 +169,25 @@ public class ProductListViewModelImpl
   }
 
   private void queryForProductList() {
-    Subscription subscription = getProductListUseCase.get(productListIdObservable.get())
+    Subscription subscription = getSuppliesListUseCase.get(productListIdObservable.get())
         .compose(transformer.applySchedulers())
-        .subscribe(new ProductListSubscriber());
+        .subscribe(new SuppliesListSubscriber());
 
     rxSubscriptionPool.addSubscription(getClass().getCanonicalName(), subscription);
   }
 
   @Override public void onDoneButtonClick(View view) {
-    final String name = productListName.get();
+    final String name = suppliesListName.get();
     if (StringUtils.isBlank(name)) {
       // TODO: Set error
       return;
     }
 
-    ProductList productList = createFromInput();
-    productList.setProducts(adapter.getItems());
+    productListNameMode.set(ClickToEditTextView.Mode.TEXT);
 
-    Subscription subscription = saveProductListInLocalStorageUseCase.save(productList)
-        .compose(transformer.applySchedulers())
-        .subscribe(value -> pathManager.back(), e -> Timber.d(e, "Failed to save product list"));
+    Subscription subscription =
+        createOrUpdateSuppliesList(name).subscribe(value -> pathManager.back(),
+            e -> Timber.d(e, "Failed to save product list"));
 
     rxSubscriptionPool.addSubscription(getClass().getCanonicalName(), subscription);
   }
@@ -152,7 +198,7 @@ public class ProductListViewModelImpl
   }
 
   @Override public void onScanBarCodeButtonClick(View view) {
-    String name = productListName.get();
+    String name = suppliesListName.get();
     if (StringUtils.isBlank(name)) {
       // TODO: Show error here
       return;
@@ -164,21 +210,15 @@ public class ProductListViewModelImpl
   }
 
   @Override public void onAddButtonClick(View view) {
-    String name = productListName.get();
+    String name = suppliesListName.get();
     if (StringUtils.isBlank(name)) {
       // TODO: Show error here
       return;
     }
 
-    ProductList productList = createFromInput();
-    productList.setProducts(adapter.getItems());
-
-    Subscription subscription = saveProductListInLocalStorageUseCase.save(productList)
-        .compose(transformer.applySchedulers())
-        .subscribe(value -> {
-          ProductListViewModelImpl.this.productList = value;
-          goToItemScreen(value, null);
-        }, e -> Timber.d(e, "Failed to save product list"));
+    Subscription subscription = createOrUpdateSuppliesList(name).subscribe(value -> {
+      goToItemScreen(value.uuid(), null);
+    }, e -> Timber.d(e, "Failed to save product list"));
 
     rxSubscriptionPool.addSubscription(getClass().getCanonicalName(), subscription);
   }
@@ -199,11 +239,11 @@ public class ProductListViewModelImpl
     return recyclerViewScrollPosition;
   }
 
-  @Override public void unbindProductListIdObserver(Observer<Long> observer) {
+  @Override public void unbindProductListIdObserver(Observer<String> observer) {
     productListIdObservable.unbind(observer);
   }
 
-  @Override public void bindProductListIdObserver(Observer<Long> observer) {
+  @Override public void bindProductListIdObserver(Observer<String> observer) {
     productListIdObservable.bind(observer);
   }
 
@@ -222,41 +262,25 @@ public class ProductListViewModelImpl
     return searchQuery;
   }
 
-  private ProductList createFromInput() {
-    ProductList productList = new ProductList();
-    productList.setId(productListIdObservable.get());
-    productList.setName(productListName.get());
-    return productList;
-  }
-
-  @Override public void onProductDeleted(Product product) {
-    boolean hasItems = !adapter.getItems().isEmpty();
-    emptyListVisibility.set(hasItems ? View.GONE : View.VISIBLE);
-    listVisibility.set(hasItems ? View.VISIBLE : View.GONE);
-  }
-
   @Override public TextWatcher searchQueryTextWatcher() {
     return searchQueryTextWatcher;
   }
 
-  @Override public void onItemClicked(Product product) {
-    goToItemScreen(productList, product);
+  @Override public void onItemClicked(SupplyItem supplyItem) {
+    goToItemScreen(suppliesList.uuid(), supplyItem.uuid());
   }
 
   @Override public void onCodeScanned(String barcode) {
-    Subscription subscription = getProductInfoFromCodeUseCase.info(barcode)
-        .flatMap(product -> {
-            ProductList productList = createFromInput();
-            productList.setProducts(adapter.getItems());
-            productList.getProducts().add(product);
-            return saveProductListInLocalStorageUseCase.save(productList);
-        })
-        .compose(transformer.applySchedulers())
-        .subscribe(productList -> {
-          ProductListViewModelImpl.this.productList = productList;
-          goToItemScreen(productList,
-              productList.getProducts().get(productList.getProducts().size() - 1));
-        }, e -> Timber.e(e, "Failed to get the product info"));
+    Subscription subscription = getProductInfoFromCodeUseCase.info(barcode).flatMap(supplyItem -> {
+      String name = suppliesListName.get();
+      return createOrUpdateSuppliesList(name).flatMap(
+          suppliesList -> createOrUpdateSupplyItemUseCase.createOrUpdate(suppliesList.uuid(),
+              supplyItem)).map(item -> SuppliesListAndItem.create(suppliesList, item));
+    }).compose(transformer.applySchedulers()).subscribe(suppliesListAndItem -> {
+      suppliesList = suppliesListAndItem.suppliesList();
+      goToItemScreen(suppliesListAndItem.suppliesList().uuid(),
+          suppliesListAndItem.supplyItem().uuid());
+    }, e -> Timber.e(e, "Failed use barcode scanner for adding supply item"));
 
     rxSubscriptionPool.addSubscription(getClass().getCanonicalName(), subscription);
   }
@@ -265,30 +289,49 @@ public class ProductListViewModelImpl
     toolbarDisplayedChild.set(SEARCH_EDIT_TEXT_VIEW);
   }
 
-  private void goToItemScreen(ProductList productList, Product product) {
+  @Override public ObservableField<ClickToEditTextView.Mode> productListNameMode() {
+    return productListNameMode;
+  }
+
+  private void goToItemScreen(String suppliesListUuid, String supplyItemUuid) {
     ItemScreen itemScreen;
-    if (product == null) {
-      itemScreen = ItemScreen.newInstance(productList.getId());
+    if (supplyItemUuid == null) {
+      itemScreen = ItemScreen.newInstance(suppliesListUuid);
     } else {
-      itemScreen = ItemScreen.newInstance(productList.getId(), product.getId());
+      itemScreen = ItemScreen.newInstance(suppliesListUuid, supplyItemUuid);
     }
-    productListIdObservable.set(productList.getId());
+    productListIdObservable.set(suppliesList.uuid());
     pathManager.go(itemScreen, R.id.main_container);
   }
 
-  private List<Product> filter(List<Product> products, String query) {
-    if (StringUtils.isBlank(query)) return products;
+  private List<SupplyItem> filter(Map<String, SupplyItem> supplyItems, String query) {
+    if (StringUtils.isBlank(query)) return new ArrayList<>(supplyItems.values());
 
-    List<Product> filteredProducts = new ArrayList<>();
-    for (Product product : products) {
-      if (product.getName().toLowerCase().contains(query.toLowerCase())) {
-        filteredProducts.add(product);
+    List<SupplyItem> filteredProducts = new ArrayList<>();
+    for (SupplyItem supplyItem : supplyItems.values()) {
+      if (supplyItem.name().toLowerCase().contains(query.toLowerCase())) {
+        filteredProducts.add(supplyItem);
       }
     }
     return filteredProducts;
   }
 
-  private class ProductListSubscriber extends Subscriber<ProductList> {
+  /**
+   * This method will grab the given name, the current list's uui and items and try to create it or
+   * update it.
+   *
+   * @param name The new name of the list
+   */
+  private rx.Observable<SuppliesList> createOrUpdateSuppliesList(String name) {
+    String uuid = suppliesList == null ? "" : suppliesList.uuid();
+    Map<String, SupplyItem> items = suppliesList == null ? new HashMap<>() : suppliesList.items();
+    SuppliesList suppliesList = SuppliesList.create(uuid, name, items);
+    return createOrUpdateSuppliesListUserCase.createOrUpdate(suppliesList)
+        .compose(transformer.applySchedulers());
+  }
+
+  private class SuppliesListSubscriber extends Subscriber<SuppliesList> {
+
     @Override public void onCompleted() {
       progressBarVisibility.set(View.GONE);
     }
@@ -298,14 +341,74 @@ public class ProductListViewModelImpl
       Timber.e(e, "Failed to get the product list");
     }
 
-    @Override public void onNext(ProductList productList) {
-      ProductListViewModelImpl.this.productList = productList;
-      boolean hasItems = !productList.getProducts().isEmpty();
-      emptyListVisibility.set(hasItems ? View.GONE : View.VISIBLE);
-      listVisibility.set(hasItems ? View.VISIBLE : View.GONE);
-      productListName.set(productList.getName());
-      productListIdObservable.set(productList.getId());
-      adapter.add(productList.getProducts());
+    @Override public void onNext(SuppliesList suppliesList) {
+      ProductListViewModelImpl.this.suppliesList = suppliesList;
+      suppliesListName.set(suppliesList.name());
+      productListIdObservable.set(suppliesList.uuid());
+
+      // Show edit text view if name is empty
+      if (StringUtils.isBlank(suppliesList.name())) {
+        productListNameMode.set(ClickToEditTextView.Mode.EDIT);
+      }
+
+      adapter.setSuppliesList(suppliesList);
+      getItemsDatabaseReference.get(suppliesList.uuid())
+          .compose(transformer.applySchedulers())
+          .subscribe(databaseReference -> {
+            databaseReference.addChildEventListener(itemsChildEventListener);
+            ProductListViewModelImpl.this.databaseReference = databaseReference;
+          }, throwable -> {
+            // TODO: show error
+            Timber.e(throwable,
+                "Failed to get database reference for items in list: " + suppliesList.uuid());
+          }, () -> {
+            progressBarVisibility.set(View.GONE);
+            if (adapter.getItemCount() == 0) {
+              emptyListVisibility.set(View.VISIBLE);
+              listVisibility.set(View.GONE);
+            }
+          });
+    }
+  }
+
+  /**
+   * Remove the given item from the supplies list
+   *
+   * @param supplyItem Item to remove
+   */
+  private void removeSupplyItem(SupplyItem supplyItem) {
+    Map<String, SupplyItem> supplyItems = new HashMap<>(suppliesList.items());
+    supplyItems.remove(supplyItem.uuid());
+    suppliesList = SuppliesList.create(suppliesList.uuid(), suppliesList.name(), supplyItems);
+  }
+
+  /**
+   * Add the given item from the supplies list
+   *
+   * @param supplyItem The item to add
+   */
+  private void addSupplyItem(SupplyItem supplyItem) {
+    Map<String, SupplyItem> supplyItems = new HashMap<>(suppliesList.items());
+    supplyItems.put(supplyItem.uuid(), supplyItem);
+    suppliesList = SuppliesList.create(suppliesList.uuid(), suppliesList.name(), supplyItems);
+  }
+
+  /**
+   * Hide or show the list view depending on the number of items in the adapter
+   */
+  private void toggleListViewVisibility() {
+    boolean hasItems = adapter.getItemCount() > 0;
+    emptyListVisibility.set(hasItems ? View.GONE : View.VISIBLE);
+    listVisibility.set(hasItems ? View.VISIBLE : View.GONE);
+  }
+
+  @AutoValue static abstract class SuppliesListAndItem {
+    public abstract SuppliesList suppliesList();
+
+    public abstract SupplyItem supplyItem();
+
+    public static SuppliesListAndItem create(SuppliesList suppliesList, SupplyItem supplyItem) {
+      return new AutoValue_ProductListViewModelImpl_SuppliesListAndItem(suppliesList, supplyItem);
     }
   }
 }

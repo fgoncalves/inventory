@@ -22,11 +22,11 @@ public class GlobalSearchListItemViewModelImpl implements GlobalSearchListItemVi
   }
 
   @Override public void onBindViewHolder(GlobalSearchResult globalSearchResult) {
-    productListName.set(globalSearchResult.getProductListName());
-    productName.set(globalSearchResult.getProduct().getName());
-    productQuantityLabel.set(globalSearchResult.getProduct().getQuantityLabel());
-    quantity.set(globalSearchResult.getProduct().getQuantity());
-    if (globalSearchResult.getProduct().isUnit()) {
+    productListName.set(globalSearchResult.suppliesList().name());
+    productName.set(globalSearchResult.supplyItem().name());
+    productQuantityLabel.set(globalSearchResult.supplyItem().quantityLabel());
+    quantity.set(globalSearchResult.supplyItem().quantity());
+    if (globalSearchResult.supplyItem().unit()) {
       progressBarVisibility.set(View.INVISIBLE);
     } else {
       progressBarVisibility.set(View.VISIBLE);

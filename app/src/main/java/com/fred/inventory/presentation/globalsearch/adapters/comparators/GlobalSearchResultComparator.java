@@ -10,8 +10,8 @@ public class GlobalSearchResultComparator implements Comparator<GlobalSearchResu
 
   @Override public int compare(GlobalSearchResult one, GlobalSearchResult other) {
     int productListNameComparison =
-        one.getProductListName().compareToIgnoreCase(other.getProductListName());
+        one.suppliesList().name().compareToIgnoreCase(other.suppliesList().name());
     if (productListNameComparison != 0) return productListNameComparison;
-    return one.getProduct().getName().compareToIgnoreCase(other.getProduct().getName());
+    return one.supplyItem().name().compareToIgnoreCase(other.supplyItem().name());
   }
 }

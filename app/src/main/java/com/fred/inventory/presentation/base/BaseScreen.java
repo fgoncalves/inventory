@@ -2,11 +2,16 @@ package com.fred.inventory.presentation.base;
 
 import android.app.Fragment;
 import android.os.Bundle;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import com.fred.inventory.MainActivity;
+import com.fred.inventory.R;
 import com.fred.inventory.utils.path.PathManager;
 import javax.inject.Inject;
 
@@ -31,12 +36,31 @@ public abstract class BaseScreen extends Fragment {
 
   @Override public void onResume() {
     super.onResume();
-    AppCompatActivity appCompatActivity = (AppCompatActivity) getActivity();
+    MainActivity mainActivity = (MainActivity) getActivity();
+    DrawerLayout drawerLayout = mainActivity.getDrawerLayout();
+    boolean supportsDrawer = supportsDrawer();
+
+    if (supportsDrawer) {
+      drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED, Gravity.START);
+    } else {
+      drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED, Gravity.START);
+    }
+
     Toolbar toolbar = getToolbar();
     if (toolbar != null) {
-      appCompatActivity.setSupportActionBar(toolbar);
-      appCompatActivity.getSupportActionBar().setTitle(getToolbarTitle());
-      appCompatActivity.getSupportActionBar().setDisplayHomeAsUpEnabled(isHomeButtonSupported());
+      mainActivity.setSupportActionBar(toolbar);
+      mainActivity.getSupportActionBar().setTitle(getToolbarTitle());
+
+      if (supportsDrawer) {
+        ActionBarDrawerToggle toggle =
+            new ActionBarDrawerToggle(mainActivity, drawerLayout, toolbar, R.string.open_drawer,
+                R.string.close_drawer);
+
+        drawerLayout.addDrawerListener(toggle);
+        toggle.syncState();
+      } else {
+        mainActivity.getSupportActionBar().setDisplayHomeAsUpEnabled(isHomeButtonSupported());
+      }
     }
   }
 
@@ -98,4 +122,12 @@ public abstract class BaseScreen extends Fragment {
    * @return The title for the action bar
    */
   protected abstract String getToolbarTitle();
+
+  /**
+   * Check if the screen supports a drawer. If it does we'll set the toolbar home button as an
+   * hamburguer icon.
+   *
+   * @return True if the drawer is supported
+   */
+  protected abstract boolean supportsDrawer();
 }

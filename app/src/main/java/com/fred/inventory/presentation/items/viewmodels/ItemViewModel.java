@@ -17,9 +17,9 @@ public interface ItemViewModel {
 
   void onPause();
 
-  void forProductList(Long productListId);
+  void forProductList(String suppliesListId);
 
-  void forProduct(Long productId);
+  void forProduct(String supplyItemId);
 
   ObservableInt spinnerSelection();
 

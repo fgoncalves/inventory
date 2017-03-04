@@ -44,8 +44,11 @@
             android:inputType="textCapSentences"
             android:text="@{viewModel.productListName()}"
             app:addTextChangedListener="@{viewModel.productListTextWatcher()}"
+            app:mode="@{viewModel.productListNameMode()}"
             style="@style/MainToolbarClickToEdit"
-            />
+            >
+          <requestFocus/>
+        </com.fred.inventory.presentation.widgets.clicktoedittext.ClickToEditTextView>
 
         <EditText
             android:id="@+id/product_list_search_text_box"
@@ -152,6 +155,7 @@
           android:layout_height="wrap_content"
           android:clickable="true"
           android:onClick="@{viewModel::onAddButtonClick}"
+          android:src="@drawable/ic_hand"
           app:fab_label="@string/manually"
           style="@style/FabButton"
           />
@@ -161,6 +165,7 @@
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:onClick="@{viewModel::onScanBarCodeButtonClick}"
+          android:src="@drawable/ic_camera"
           app:fab_label="@string/scan_code"
           style="@style/FabButton"
           />

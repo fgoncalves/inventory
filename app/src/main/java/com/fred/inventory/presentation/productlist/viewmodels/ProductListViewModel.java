@@ -5,6 +5,7 @@ import android.databinding.ObservableInt;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextWatcher;
 import android.view.View;
+import com.fred.inventory.presentation.widgets.clicktoedittext.ClickToEditTextView;
 import com.fred.inventory.utils.binding.Observer;
 
 /**
@@ -22,9 +23,9 @@ public interface ProductListViewModel {
   /***
    * Prepare this view model to show details for this product list
    *
-   * @param id The id of the product list
+   * @param uuid The id of the product list
    */
-  void forProductList(Long id);
+  void forProductList(String uuid);
 
   void onActivityCreated();
 
@@ -48,9 +49,9 @@ public interface ProductListViewModel {
 
   ObservableInt recyclerViewScrollPosition();
 
-  void unbindProductListIdObserver(Observer<Long> observer);
+  void unbindProductListIdObserver(Observer<String> observer);
 
-  void bindProductListIdObserver(Observer<Long> observer);
+  void bindProductListIdObserver(Observer<String> observer);
 
   RecyclerView.Adapter<?> productListRecyclerViewAdapter();
 
@@ -61,6 +62,8 @@ public interface ProductListViewModel {
   ObservableInt toolBarDisplayedChild();
 
   ObservableField<String> searchQuery();
+
+  ObservableField<ClickToEditTextView.Mode> productListNameMode();
 
   TextWatcher searchQueryTextWatcher();
 

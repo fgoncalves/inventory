@@ -47,7 +47,7 @@
           app:srcCompat="@drawable/ic_edit"
           />
 
-      <EditText
+      <com.fred.inventory.presentation.ForceKeyboardEditText
           android:id="@+id/item_name"
           android:layout_width="0dp"
           android:layout_height="wrap_content"
@@ -65,7 +65,9 @@
           app:layout_constraintTop_toBottomOf="@+id/item_toolbar"
           tools:text="Olive oil"
           style="@style/MainTitleText"
-          />
+          >
+        <requestFocus/>
+      </com.fred.inventory.presentation.ForceKeyboardEditText>
 
       <View
           android:id="@+id/view"
@@ -79,7 +81,7 @@
           app:layout_constraintTop_toBottomOf="@+id/item_name"
           />
 
-      <EditText
+      <com.fred.inventory.presentation.ForceKeyboardEditText
           android:id="@+id/item_quantity_label"
           android:layout_width="0dp"
           android:layout_height="wrap_content"
