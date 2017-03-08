@@ -10,6 +10,7 @@ public class OutpanProductToProductTranslator implements Translator<Product, Sup
   }
 
   @Override public SupplyItem translate(Product model) {
-    return SupplyItem.create("", model.getName(), 0, true, model.getGtin(), "1", null);
+    String name = model.getName();
+    return SupplyItem.create("", name == null ? "" : name, 0, true, model.getGtin(), "1", null);
   }
 }

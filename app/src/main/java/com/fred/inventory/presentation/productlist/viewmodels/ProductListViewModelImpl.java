@@ -377,7 +377,13 @@ public class ProductListViewModelImpl
    * @param supplyItem Item to remove
    */
   private void removeSupplyItem(SupplyItem supplyItem) {
-    Map<String, SupplyItem> supplyItems = new HashMap<>(suppliesList.items());
+    Map<String, SupplyItem> items = suppliesList.items();
+    Map<String, SupplyItem> supplyItems;
+    if (items != null) {
+      supplyItems = new HashMap<>(items);
+    } else {
+      supplyItems = new HashMap<>();
+    }
     supplyItems.remove(supplyItem.uuid());
     suppliesList = SuppliesList.create(suppliesList.uuid(), suppliesList.name(), supplyItems);
   }
@@ -388,7 +394,13 @@ public class ProductListViewModelImpl
    * @param supplyItem The item to add
    */
   private void addSupplyItem(SupplyItem supplyItem) {
-    Map<String, SupplyItem> supplyItems = new HashMap<>(suppliesList.items());
+    Map<String, SupplyItem> items = suppliesList.items();
+    Map<String, SupplyItem> supplyItems;
+    if (items != null) {
+      supplyItems = new HashMap<>(items);
+    } else {
+      supplyItems = new HashMap<>();
+    }
     supplyItems.put(supplyItem.uuid(), supplyItem);
     suppliesList = SuppliesList.create(suppliesList.uuid(), suppliesList.name(), supplyItems);
   }

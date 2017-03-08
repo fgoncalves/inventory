@@ -38,15 +38,16 @@ public class MainActivity extends AppCompatActivity {
     inject();
     setStatusBarColor();
 
+    navigationView = (NavigationView) findViewById(R.id.drawer);
+    drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+
+    setupNavigationView();
+
     if (savedInstanceState != null) {
       pathManager.restorePath(savedInstanceState, R.id.main_container);
       return;
     }
 
-    navigationView = (NavigationView) findViewById(R.id.drawer);
-    drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-
-    setupNavigationView();
     addLoginScreen();
   }
 
