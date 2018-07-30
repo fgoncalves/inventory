@@ -104,3 +104,4 @@ gradle-app.setting
 
 # Cache of project
 .gradletasknamecache
+google-services.json
