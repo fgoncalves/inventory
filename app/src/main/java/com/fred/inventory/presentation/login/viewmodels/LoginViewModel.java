@@ -1,8 +1,8 @@
 package com.fred.inventory.presentation.login.viewmodels;
 
-import android.content.Intent;
 import android.databinding.ObservableInt;
 import android.view.View;
+import com.google.android.gms.auth.api.signin.GoogleSignInResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 
 /**
@@ -30,7 +30,7 @@ public interface LoginViewModel {
 
   void onActivityCreated();
 
-  void onGoogleSignInResult(Intent data);
+  void onGoogleSignInResult(GoogleSignInResult result);
 
   ObservableInt signInButtonVisibility();
 

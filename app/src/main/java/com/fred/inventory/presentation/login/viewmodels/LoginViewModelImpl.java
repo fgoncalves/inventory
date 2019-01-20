@@ -1,20 +1,17 @@
 package com.fred.inventory.presentation.login.viewmodels;
 
-import android.content.Context;
-import android.content.Intent;
 import android.databinding.ObservableInt;
 import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentActivity;
 import android.view.View;
 import com.fred.inventory.R;
 import com.fred.inventory.domain.usecases.GetOrCreateUserUseCase;
-import com.fred.inventory.presentation.listofproducts.ListOfProductListsScreen;
+import com.fred.inventory.presentation.login.utils.GoogleApiClientFactory;
+import com.fred.inventory.presentation.supplies.SuppliesScreen;
 import com.fred.inventory.utils.path.PathManager;
 import com.fred.inventory.utils.rx.schedulers.SchedulerTransformer;
 import com.fred.inventory.utils.rx.schedulers.qualifiers.IOToUiSchedulerTransformer;
-import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.auth.api.signin.GoogleSignInResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.firebase.auth.AuthCredential;
@@ -30,11 +27,12 @@ import static android.view.View.VISIBLE;
 public class LoginViewModelImpl implements LoginViewModel {
   private final ObservableInt signInButtonVisibility = new ObservableInt(VISIBLE);
   private final ObservableInt progressBarVisibility = new ObservableInt(GONE);
-  private final Context context;
   private final PathManager pathManager;
-  private final GoogleSignInOptions googleSignInOptions;
+  private final GoogleApiClientFactory googleApiClientFactory;
   private final FragmentActivity fragmentActivity;
   private final FirebaseAuth firebaseAuth;
+  private final GetOrCreateUserUseCase getOrCreateUserUseCase;
+  private final SchedulerTransformer transformer;
   private final FirebaseAuth.AuthStateListener mAuthListener =
       new FirebaseAuth.AuthStateListener() {
         @Override public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
@@ -54,20 +52,18 @@ public class LoginViewModelImpl implements LoginViewModel {
       onStartGoogleSignInActivityListener.onStartGoogleSignIn(googleApiClient);
     }
   };
-  private final GetOrCreateUserUseCase getOrCreateUserUseCase;
-  private final SchedulerTransformer transformer;
 
   private GoogleApiClient googleApiClient;
   private OnStartGoogleSignInActivityListener onStartGoogleSignInActivityListener;
   private OnLoginErrorListener onLoginErrorListener;
 
-  @Inject public LoginViewModelImpl(Context context, PathManager pathManager,
-      GoogleSignInOptions googleSignInOptions, FragmentActivity fragmentActivity,
-      FirebaseAuth firebaseAuth, GetOrCreateUserUseCase getOrCreateUserUseCase,
+  @Inject
+  public LoginViewModelImpl(PathManager pathManager, GoogleApiClientFactory googleApiClientFactory,
+      FragmentActivity fragmentActivity, FirebaseAuth firebaseAuth,
+      GetOrCreateUserUseCase getOrCreateUserUseCase,
       @IOToUiSchedulerTransformer SchedulerTransformer transformer) {
-    this.context = context;
     this.pathManager = pathManager;
-    this.googleSignInOptions = googleSignInOptions;
+    this.googleApiClientFactory = googleApiClientFactory;
     this.fragmentActivity = fragmentActivity;
     this.firebaseAuth = firebaseAuth;
     this.getOrCreateUserUseCase = getOrCreateUserUseCase;
@@ -84,13 +80,12 @@ public class LoginViewModelImpl implements LoginViewModel {
   }
 
   @Override public void onActivityCreated() {
-    googleApiClient = new GoogleApiClient.Builder(context).enableAutoManage(fragmentActivity,
-        connectionResult -> {
-          if (!connectionResult.isSuccess()) {
-            displaySignInButton();
-            if (onLoginErrorListener != null) onLoginErrorListener.onFailedToLoginToGoogle();
-          }
-        }).addApi(Auth.GOOGLE_SIGN_IN_API, googleSignInOptions).build();
+    googleApiClient = googleApiClientFactory.createGoogleApiClient(connectionResult -> {
+      if (!connectionResult.isSuccess()) {
+        displaySignInButton();
+        if (onLoginErrorListener != null) onLoginErrorListener.onFailedToLoginToGoogle();
+      }
+    });
   }
 
   @Override public void onDestroy() {
@@ -107,8 +102,7 @@ public class LoginViewModelImpl implements LoginViewModel {
     return onGoogleSignInClickListener;
   }
 
-  @Override public void onGoogleSignInResult(Intent data) {
-    GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
+  @Override public void onGoogleSignInResult(GoogleSignInResult result) {
     if (result.isSuccess()) {
       GoogleSignInAccount account = result.getSignInAccount();
       loginToFireBaseWithGoogle(account);
@@ -141,7 +135,7 @@ public class LoginViewModelImpl implements LoginViewModel {
   }
 
   private void goToSuppliesLists() {
-    final ListOfProductListsScreen screen = ListOfProductListsScreen.newInstance();
+    final SuppliesScreen screen = SuppliesScreen.newInstance();
     pathManager.single(screen, R.id.main_container);
   }
 

@@ -7,7 +7,7 @@
   <data>
     <variable
         name="viewModel"
-        type="com.fred.inventory.presentation.items.viewmodels.ItemViewModel"
+        type="com.fred.inventory.presentation.items.viewmodels.SupplyItemViewModel"
         />
   </data>
   <ScrollView

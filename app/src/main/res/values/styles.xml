@@ -6,6 +6,9 @@
     <item name="android:colorPrimary">@color/primary</item>
     <item name="android:colorPrimaryDark">@color/primary_dark</item>
     <item name="android:colorAccent">@color/accent</item>
+    <item name="colorPrimary">@color/primary</item>
+    <item name="colorPrimaryDark">@color/primary_dark</item>
+    <item name="colorAccent">@color/accent</item>
     <item name="android:actionMenuTextColor">@color/white</item>
     <item name="android:statusBarColor">@color/primary_dark</item>
   </style>
@@ -79,5 +82,52 @@
 
   <style name="DrawerVersionNameLabel">
     <item name="android:textColor">@color/secondary_text</item>
+  </style>
+
+  <style name="Card">
+    <item name="android:background">@color/white</item>
+    <item name="android:elevation">8dp</item>
+    <item name="android:layout_margin">8dp</item>
+  </style>
+
+  <style name="CardTitle">
+    <item name="android:textSize">24sp</item>
+    <item name="android:textColor">@color/white</item>
+    <item name="android:layout_margin">16dp</item>
+    <item name="android:textStyle">bold</item>
+  </style>
+
+  <style name="CardTitle.Dark" parent="CardTitle">
+    <item name="android:textColor">@color/primary_text</item>
+  </style>
+
+  <style name="CardSubTitle">
+    <item name="android:textSize">14sp</item>
+    <item name="android:textColor">@color/secondary_text</item>
+    <item name="android:textStyle">bold</item>
+    <item name="android:paddingLeft">16dp</item>
+    <item name="android:paddingRight">16dp</item>
+    <item name="android:paddingTop">12dp</item>
+  </style>
+
+  <style name="CardSubTitle.Dark" parent="CardSubTitle">
+    <item name="android:textColor">@color/primary_text</item>
+  </style>
+
+
+  <style name="CardSubTitle.Light" parent="CardSubTitle">
+    <item name="android:textColor">@color/white</item>
+  </style>
+
+  <style name="CardDescription">
+    <item name="android:textSize">14sp</item>
+    <item name="android:textColor">@color/primary_text</item>
+    <item name="android:padding">16dp</item>
+    <item name="android:maxLines">2</item>
+    <item name="android:ellipsize">end</item>
+  </style>
+
+  <style name="CardButton" parent="Widget.AppCompat.Button.Borderless.Colored">
+    <item name="android:padding">8dp</item>
   </style>
 </resources>

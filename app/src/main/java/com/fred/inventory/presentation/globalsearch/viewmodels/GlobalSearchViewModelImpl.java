@@ -12,7 +12,7 @@ import com.fred.inventory.data.firebase.models.SupplyItem;
 import com.fred.inventory.domain.models.GlobalSearchResult;
 import com.fred.inventory.domain.usecases.GetUserSuppliesListDatabaseReferenceUseCase;
 import com.fred.inventory.presentation.globalsearch.adapters.GlobalSearchRecyclerViewAdapter;
-import com.fred.inventory.presentation.productlist.ProductListScreen;
+import com.fred.inventory.presentation.supplieslist.SuppliesListScreen;
 import com.fred.inventory.utils.binding.widgets.OneTimeTextWatcher;
 import com.fred.inventory.utils.path.PathManager;
 import com.fred.inventory.utils.rx.schedulers.SchedulerTransformer;
@@ -93,7 +93,7 @@ public class GlobalSearchViewModelImpl implements GlobalSearchViewModel {
           databaseReference.addChildEventListener(supplyListsEventListener);
         }, throwable -> Timber.e(throwable, "Failed to get supply lists database reference"));
     adapter.setOnItemClickedListener(result -> {
-      final ProductListScreen screen = ProductListScreen.newInstance(result.suppliesList().uuid());
+      final SuppliesListScreen screen = SuppliesListScreen.newInstance(result.suppliesList().uuid());
       pathManager.back();
       pathManager.go(screen, R.id.main_container);
     });

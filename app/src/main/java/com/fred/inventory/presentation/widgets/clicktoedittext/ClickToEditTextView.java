@@ -130,7 +130,7 @@ public class ClickToEditTextView extends ViewSwitcher {
     return textView.getText();
   }
 
-  private void setTextAppearance(TextView textView, int style) {
+  @SuppressWarnings("deprecation") private void setTextAppearance(TextView textView, int style) {
     if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
       textView.setTextAppearance(getContext(), style);
     } else {

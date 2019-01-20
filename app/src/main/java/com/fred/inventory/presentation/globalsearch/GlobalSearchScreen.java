@@ -12,7 +12,7 @@ import com.fred.inventory.MainActivity;
 import com.fred.inventory.R;
 import com.fred.inventory.databinding.GlobalSearchBinding;
 import com.fred.inventory.presentation.base.BaseScreen;
-import com.fred.inventory.presentation.globalsearch.modules.GlobalSearchModule;
+import com.fred.inventory.di.GlobalSearchModule;
 import com.fred.inventory.presentation.globalsearch.viewmodels.GlobalSearchViewModel;
 import javax.inject.Inject;
 

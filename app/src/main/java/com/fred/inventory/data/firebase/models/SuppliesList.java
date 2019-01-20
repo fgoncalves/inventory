@@ -1,8 +1,11 @@
 package com.fred.inventory.data.firebase.models;
 
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import com.google.auto.value.AutoValue;
 import com.google.firebase.database.DataSnapshot;
+import java.util.Collection;
+import java.util.Iterator;
 import java.util.Map;
 import me.mattlogan.auto.value.firebase.annotation.FirebaseValue;
 
@@ -26,5 +29,22 @@ import me.mattlogan.auto.value.firebase.annotation.FirebaseValue;
 
   public Object toFirebaseValue() {
     return new AutoValue_SuppliesList.FirebaseValue(this);
+  }
+
+  @NonNull public String description() {
+    if (items() == null) return "";
+
+    Collection<SupplyItem> items = items().values();
+    if (items.isEmpty()) return "";
+
+    StringBuffer description = new StringBuffer();
+    Iterator<SupplyItem> itemIterator = items.iterator();
+
+    while (itemIterator.hasNext()) {
+      description.append(itemIterator.next().name());
+      if (itemIterator.hasNext()) description.append(", ");
+    }
+
+    return description.toString();
   }
 }

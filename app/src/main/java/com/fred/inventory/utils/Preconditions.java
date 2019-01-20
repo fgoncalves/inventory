@@ -17,16 +17,4 @@ public class Preconditions {
     if (object == null) throw new NullPointerException((message != null) ? message : "");
     return object;
   }
-
-  /**
-   * Same as {@link #checkNotNull(Object, String)} but without a message
-   *
-   * @param object The object to check if is null
-   * @param <T> The type of the object
-   * @return The object in case it's not null
-   * @throws NullPointerException If the object is null
-   */
-  public static <T> T checkNotNull(T object) throws NullPointerException {
-    return checkNotNull(object, null);
-  }
 }

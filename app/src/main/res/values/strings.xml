@@ -30,6 +30,9 @@
   <string name="close_drawer">Close drawer</string>
   <string name="sign_out">Sign Out</string>
   <string name="version">Version:</string>
+  <string name="delete">delete</string>
+  <string name="get_started">Get Started</string>
+  <string name="empty_list_info">Seems like your list is empty. Start by adding some items by clicking on the big plus button!</string>
   <string-array name="item_types">
     <item>Item(s)</item>
     <item>Max.</item>

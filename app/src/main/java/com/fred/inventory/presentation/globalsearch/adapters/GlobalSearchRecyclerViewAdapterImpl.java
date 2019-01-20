@@ -10,7 +10,7 @@ import com.fred.inventory.domain.models.GlobalSearchResult;
 import com.fred.inventory.presentation.base.OnItemClickListener;
 import com.fred.inventory.presentation.base.SortedRecyclerViewAdapter;
 import com.fred.inventory.presentation.globalsearch.adapters.comparators.GlobalSearchResultComparator;
-import com.fred.inventory.presentation.globalsearch.modules.GlobalSearchListItemModule;
+import com.fred.inventory.di.GlobalSearchListItemModule;
 import com.fred.inventory.presentation.globalsearch.viewmodels.GlobalSearchListItemViewModel;
 import javax.inject.Inject;
 

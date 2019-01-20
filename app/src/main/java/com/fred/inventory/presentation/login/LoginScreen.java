@@ -12,8 +12,8 @@ import android.view.ViewGroup;
 import com.fred.inventory.MainActivity;
 import com.fred.inventory.R;
 import com.fred.inventory.databinding.LoginScreenBinding;
+import com.fred.inventory.di.LoginModule;
 import com.fred.inventory.presentation.base.BaseScreen;
-import com.fred.inventory.presentation.login.modules.LoginModule;
 import com.fred.inventory.presentation.login.viewmodels.LoginViewModel;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -52,7 +52,9 @@ public class LoginScreen extends BaseScreen
 
   @Override public void onActivityResult(int requestCode, int resultCode, Intent data) {
     super.onActivityResult(requestCode, resultCode, data);
-    if (requestCode == RC_SIGN_IN) viewModel.onGoogleSignInResult(data);
+    if (requestCode == RC_SIGN_IN) {
+      viewModel.onGoogleSignInResult(Auth.GoogleSignInApi.getSignInResultFromIntent(data));
+    }
   }
 
   @Override public void onStart() {

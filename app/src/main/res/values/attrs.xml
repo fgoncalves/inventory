@@ -4,4 +4,8 @@
     <attr format="reference" name="textViewStyle"/>
     <attr format="reference" name="editTextStyle"/>
   </declare-styleable>
+
+  <declare-styleable name="AspectRationImageView">
+    <attr name="aspectRatio" format="string" />
+  </declare-styleable>
 </resources>

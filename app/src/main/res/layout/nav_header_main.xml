@@ -11,44 +11,100 @@
         />
   </data>
 
-  <LinearLayout
+  <android.support.constraint.ConstraintLayout
       android:layout_width="match_parent"
-      android:layout_height="@dimen/nav_header_height"
-      android:background="@drawable/side_nav_bar"
-      android:gravity="bottom"
-      android:orientation="vertical"
-      android:paddingBottom="@dimen/activity_vertical_margin"
-      android:paddingLeft="@dimen/activity_horizontal_margin"
-      android:paddingRight="@dimen/activity_horizontal_margin"
-      android:paddingTop="@dimen/activity_vertical_margin"
-      android:theme="@style/ThemeOverlay.AppCompat.Dark"
+      android:layout_height="wrap_content"
       >
 
+    <View
+        android:id="@+id/background"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="@color/accent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintDimensionRatio="16:9"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        />
+
     <ImageView
-        android:id="@+id/imageView"
-        android:layout_width="72dp"
-        android:layout_height="72dp"
+        android:id="@+id/profile_picture"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:paddingTop="@dimen/nav_header_vertical_spacing"
         app:imageUrl="@{viewModel.imageUrl()}"
+        app:layout_constraintLeft_toLeftOf="@+id/profile_name"
+        app:layout_constraintTop_toTopOf="parent"
         tools:src="@drawable/ic_account"
         />
 
     <TextView
-        android:layout_width="match_parent"
+        android:id="@+id/profile_name"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:paddingTop="@dimen/nav_header_vertical_spacing"
         android:text="@{viewModel.userName()}"
         android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="@+id/background"
+        app:layout_constraintTop_toBottomOf="@+id/profile_picture"
         tools:text="Fred"
+        style="@style/CardTitle"
         />
 
     <TextView
-        android:id="@+id/textView"
-        android:layout_width="wrap_content"
+        android:id="@+id/profile_email"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="@{viewModel.userEmail()}"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/profile_name"
         tools:text="foo@bar.com"
+        style="@style/CardSubTitle.Light"
         />
 
-  </LinearLayout>
+  </android.support.constraint.ConstraintLayout>
+
+  <!--<LinearLayout-->
+  <!--android:layout_width="match_parent"-->
+  <!--android:layout_height="@dimen/nav_header_height"-->
+  <!--android:background="@drawable/side_nav_bar"-->
+  <!--android:gravity="bottom"-->
+  <!--android:orientation="vertical"-->
+  <!--android:paddingBottom="@dimen/activity_vertical_margin"-->
+  <!--android:paddingLeft="@dimen/activity_horizontal_margin"-->
+  <!--android:paddingRight="@dimen/activity_horizontal_margin"-->
+  <!--android:paddingTop="@dimen/activity_vertical_margin"-->
+  <!--android:theme="@style/ThemeOverlay.AppCompat.Dark"-->
+  <!--&gt;-->
+
+  <!--<ImageView-->
+  <!--android:id="@+id/imageView"-->
+  <!--android:layout_width="72dp"-->
+  <!--android:layout_height="72dp"-->
+  <!--android:paddingTop="@dimen/nav_header_vertical_spacing"-->
+  <!--app:imageUrl="@{viewModel.imageUrl()}"-->
+  <!--tools:src="@drawable/ic_account"-->
+  <!--/>-->
+
+  <!--<TextView-->
+  <!--android:layout_width="match_parent"-->
+  <!--android:layout_height="wrap_content"-->
+  <!--android:paddingTop="@dimen/nav_header_vertical_spacing"-->
+  <!--android:text="@{viewModel.userName()}"-->
+  <!--android:textAppearance="@style/TextAppearance.AppCompat.Body1"-->
+  <!--tools:text="Fred"-->
+  <!--/>-->
+
+  <!--<TextView-->
+  <!--android:id="@+id/textView"-->
+  <!--android:layout_width="wrap_content"-->
+  <!--android:layout_height="wrap_content"-->
+  <!--android:text="@{viewModel.userEmail()}"-->
+  <!--tools:text="foo@bar.com"-->
+  <!--/>-->
+
+  <!--</LinearLayout>-->
 </layout>

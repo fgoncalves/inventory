@@ -7,78 +7,83 @@
   <data>
     <variable
         name="viewModel"
-        type="com.fred.inventory.presentation.listofproducts.viewmodels.ListOfProductListsItemViewModel"
+        type="com.fred.inventory.presentation.supplies.viewmodels.SuppliesItemViewModel"
         />
   </data>
-  <android.support.constraint.ConstraintLayout
+
+  <android.support.v7.widget.CardView
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:layout_margin="@dimen/list_of_product_lists_margin"
-      android:background="@color/white"
-      android:onClick="@{viewModel.itemClickListener()}"
+      style="@style/Card"
       >
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/white"
+        android:onClick="@{viewModel.itemClickListener()}"
+        >
 
-    <ImageView
-        android:id="@+id/list_of_product_lists_image"
-        android:layout_width="0dp"
-        android:layout_height="180dp"
-        android:adjustViewBounds="true"
-        android:scaleType="centerCrop"
-        android:src="@drawable/placeholder_groceries"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        />
+      <ImageView
+          android:id="@+id/list_of_product_lists_image"
+          android:layout_width="0dp"
+          android:layout_height="0dp"
+          android:adjustViewBounds="true"
+          android:scaleType="centerCrop"
+          android:src="@drawable/placeholder"
+          app:layout_constraintDimensionRatio="16:9"
+          app:layout_constraintLeft_toLeftOf="parent"
+          app:layout_constraintRight_toRightOf="parent"
+          app:layout_constraintTop_toTopOf="parent"
+          />
 
-    <TextView
-        android:id="@+id/list_of_product_lists_title"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/list_of_product_lists_image"
-        android:layout_centerHorizontal="true"
-        android:layout_marginEnd="16dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
-        android:gravity="center_horizontal"
-        android:text="@{viewModel.itemNameObservable()}"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/list_of_product_lists_image"
-        tools:text="Groceries"
-        style="@style/MainTitleText"
-        />
+      <TextView
+          android:id="@+id/list_of_product_lists_title"
+          android:layout_width="0dp"
+          android:layout_height="wrap_content"
+          android:text="@{viewModel.itemNameObservable()}"
+          app:layout_constraintBottom_toBottomOf="@+id/list_of_product_lists_image"
+          app:layout_constraintLeft_toLeftOf="parent"
+          app:layout_constraintRight_toRightOf="parent"
+          tools:text="Groceries"
+          style="@style/CardTitle"
+          />
 
-    <TextView
-        android:id="@+id/list_of_product_lists_info_text"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/list_of_product_lists_title"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="16dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginStart="16dp"
-        android:gravity="center_horizontal"
-        android:text="@{viewModel.infoTextObservable()}"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintHorizontal_bias="0.33"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/list_of_product_lists_title"
-        tools:text="10 items"
-        style="@style/InfoText"
-        />
+      <TextView
+          android:id="@+id/list_of_product_lists_info_text"
+          android:layout_width="0dp"
+          android:layout_height="wrap_content"
+          android:layout_below="@+id/list_of_product_lists_title"
+          android:text="@{viewModel.infoTextObservable()}"
+          app:layout_constraintLeft_toLeftOf="parent"
+          app:layout_constraintRight_toRightOf="parent"
+          app:layout_constraintTop_toBottomOf="@+id/list_of_product_lists_image"
+          tools:text="10 items"
+          style="@style/CardSubTitle"
+          />
 
-    <ImageView
-        android:id="@+id/list_of_product_list_item_bin"
-        android:layout_width="20dp"
-        android:layout_height="20dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginTop="16dp"
-        android:onClick="@{viewModel.deleteButtonClickListener()}"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ic_bin"
-        />
+      <TextView
+          android:id="@+id/list_of_product_list_description"
+          android:layout_width="0dp"
+          android:layout_height="wrap_content"
+          app:layout_constraintTop_toBottomOf="@+id/list_of_product_lists_info_text"
+          app:layout_constraintLeft_toLeftOf="parent"
+          app:layout_constraintRight_toRightOf="parent"
+          android:text="@{viewModel.description()}"
+          tools:text="olive oil, orange juice, eggs, garlic, lemons, rice, pasta, toilet paper, tea, oranges, bananas, apples, sunflower oil, meat"
+          style="@style/CardDescription"
+          />
 
-  </android.support.constraint.ConstraintLayout>
+      <Button
+          android:id="@+id/list_of_product_list_item_bin"
+          android:layout_width="0dp"
+          android:layout_height="wrap_content"
+          android:onClick="@{viewModel.deleteButtonClickListener()}"
+          app:layout_constraintLeft_toLeftOf="parent"
+          app:layout_constraintTop_toBottomOf="@+id/list_of_product_list_description"
+          android:text="@string/delete"
+          style="@style/CardButton"
+          />
+
+    </android.support.constraint.ConstraintLayout>
+  </android.support.v7.widget.CardView>
 </layout>
